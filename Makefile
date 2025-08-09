@@ -24,6 +24,7 @@ help:
 	@echo "  analyze     - Show tree statistics and metrics"
 	@echo "  test        - Run all validations"
 	@echo "  clean       - Remove generated files"
+	@echo "  clean-metadata - Remove metadata.yml files (architectural fix)"
 	@echo "  all         - Complete build: validate → build → links → check"
 	@echo ""
 	@echo "Options:"
@@ -113,6 +114,16 @@ clean:
 	@if [ -f dependencies.dot ]; then rm -f dependencies.dot; fi
 	@if [ -f dependencies.svg ]; then rm -f dependencies.svg; fi
 	@echo "🧹 Clean complete"
+
+# Clean metadata files (architectural error fix)
+clean-metadata:
+	@echo "🧹 Removing metadata.yml files from technologies directories..."
+	@if [ -d $(TECHNOLOGIES) ]; then \
+		find $(TECHNOLOGIES) -name "metadata.yml" -type f -delete; \
+		echo "✅ Removed all metadata.yml files"; \
+	else \
+		echo "⚠️  No technologies directory found"; \
+	fi
 
 # Development targets
 dev-validate:

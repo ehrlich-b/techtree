@@ -1,0 +1,60 @@
+digraph TechTree {
+  rankdir=TB;
+  splines=ortho;
+  node [fontsize=10];
+  edge [fontsize=8];
+
+  subgraph cluster_prehistoric {
+    label="Prehistoric";
+    color="#2F4F4F";
+    style=dashed;
+    "tool-making" [label="Tool Making\n(material)" shape=box color="#8B4513" fillcolor="#8B451322" style=filled];
+    "fire-control" [label="Fire Control\n(material)" shape=box color="#8B4513" fillcolor="#8B451322" style=filled];
+    "language" [label="Language\n(knowledge)" shape=diamond color="#006400" fillcolor="#00640022" style=filled];
+    "counting" [label="Counting\n(knowledge)" shape=diamond color="#006400" fillcolor="#00640022" style=filled];
+    "cooperation" [label="Cooperation\n(social)" shape=ellipse color="#9932CC" fillcolor="#9932CC22" style=filled];
+    "teaching" [label="Teaching\n(social)" shape=ellipse color="#9932CC" fillcolor="#9932CC22" style=filled];
+  }
+
+  subgraph cluster_ancient {
+    label="Ancient";
+    color="#8B4513";
+    style=dashed;
+    "agriculture" [label="Agriculture\n(material)" shape=box color="#8B4513" fillcolor="#8B451322" style=filled];
+    "writing-systems" [label="Writing Systems\n(knowledge)" shape=diamond color="#006400" fillcolor="#00640022" style=filled];
+    "metallurgy" [label="Metallurgy\n(material)" shape=box color="#8B4513" fillcolor="#8B451322" style=filled];
+    "mathematics" [label="Mathematics\n(knowledge)" shape=diamond color="#006400" fillcolor="#00640022" style=filled];
+  }
+
+
+  // Dependencies
+  "cooperation" -> "language" [color="#44BB44" style=dashed label="soft"];
+  "language" -> "counting" [color="#FF4444" style=solid label="hard"];
+  "language" -> "cooperation" [color="#4444FF" style=dotted label="catalyst"];
+  "language" -> "teaching" [color="#FF4444" style=solid label="hard"];
+  "cooperation" -> "teaching" [color="#FF4444" style=solid label="hard"];
+  "tool-making" -> "teaching" [color="#4444FF" style=dotted label="catalyst"];
+  "tool-making" -> "agriculture" [color="#FF4444" style=solid label="hard"];
+  "language" -> "writing-systems" [color="#FF4444" style=solid label="hard"];
+  "counting" -> "writing-systems" [color="#FF4444" style=solid label="hard"];
+  "mathematics" -> "writing-systems" [color="#FF8800" style=bold label="synergistic"];
+  "fire-control" -> "metallurgy" [color="#FF4444" style=solid label="hard"];
+  "counting" -> "mathematics" [color="#FF4444" style=solid label="hard"];
+  "writing-systems" -> "mathematics" [color="#FF4444" style=solid label="hard"];
+
+  // Legend
+  subgraph cluster_legend {
+    label="Legend";
+    style=filled;
+    fillcolor="#F0F0F0";
+    
+    "Material" [shape=box color="#8B4513" fillcolor="#8B451322" style=filled];
+    "Social" [shape=ellipse color="#9932CC" fillcolor="#9932CC22" style=filled];
+    "Knowledge" [shape=diamond color="#006400" fillcolor="#00640022" style=filled];
+    
+    "Hard" -> "Soft" [color="#FF4444" style=solid label="required"];
+    "Soft" -> "Catalyst" [color="#44BB44" style=dashed label="helpful"];
+    "Catalyst" -> "Synergistic" [color="#4444FF" style=dotted label="accelerates"];
+    "Synergistic" -> "End" [color="#FF8800" style=bold label="combines"];
+  }
+}
