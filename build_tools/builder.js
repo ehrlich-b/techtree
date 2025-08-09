@@ -17,8 +17,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import YAML parser from schema.js
-const { parseYAML } = require('./schema.js');
+// Import functions from schema.js
+const { loadDefinitions } = require('./schema.js');
 
 // README template for technologies
 function generateReadme(tech) {
@@ -150,9 +150,8 @@ function buildTree(definitionsPath, outputDir = 'tree/technologies') {
     try {
         console.log(`Building technology tree from ${definitionsPath}...`);
         
-        // Parse definitions
-        const content = fs.readFileSync(definitionsPath, 'utf8');
-        const data = parseYAML(content);
+        // Load definitions from directory
+        const data = loadDefinitions(definitionsPath);
         
         if (!data.technologies) {
             throw new Error('No technologies section found');
@@ -293,11 +292,11 @@ Each technology folder contains:
 
 // CLI interface
 if (require.main === module) {
-    const definitionsPath = process.argv[2] || 'tree/definitions.yml';
+    const definitionsPath = process.argv[2] || 'tree/definitions';
     const outputDir = process.argv[3] || 'tree/technologies';
     
     if (!fs.existsSync(definitionsPath)) {
-        console.error(`❌ Definitions file not found: ${definitionsPath}`);
+        console.error(`❌ Definitions directory not found: ${definitionsPath}`);
         process.exit(1);
     }
     

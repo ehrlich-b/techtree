@@ -1,0 +1,57 @@
+# Knowledge Technologies - Prehistoric Era  
+# Abstract systems for understanding and recording information
+
+technologies:
+  language:
+    id: language
+    name: "Language"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: []  # Emerged from biology/evolution
+      soft: [cooperation]
+      catalyst: []
+      synergistic: []
+    description: "Complex symbolic communication system"
+    unlocks:
+      technologies: [teaching, counting, oral-tradition]
+      capabilities: [abstract-thought, planning, cultural-transmission]
+    resources:
+      materials: []
+      knowledge: [symbolic-thinking]
+      social: [social-groups]
+    historical:
+      first_occurrence: "~100,000 years ago"
+      locations: ["Africa"]
+      key_figures: ["Homo sapiens"]
+      parallel_invention: false  # Evolved once
+    complexity: high
+    alternate_paths: []
+    alternate_solutions: ["sign-language", "pictographic-communication"]
+
+  counting:
+    id: counting
+    name: "Counting"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: [language]
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Basic enumeration and quantity tracking"
+    unlocks:
+      technologies: [mathematics, calendar, inventory-management]
+      capabilities: [quantity-comparison, resource-tracking]
+    resources:
+      materials: [tally-sticks, pebbles]
+      knowledge: [one-to-one-correspondence]
+      social: []
+    historical:
+      first_occurrence: "~30,000 BCE"
+      locations: ["Multiple independent origins"]
+      key_figures: ["Paleolithic peoples"]
+      parallel_invention: true
+    complexity: low
+    alternate_paths: []
+    alternate_solutions: ["body-counting", "knot-systems"]

@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Import YAML parser to read definitions
-const { parseYAML } = require('./schema.js');
+const { loadDefinitions } = require('./schema.js');
 
 function createSymlink(target, linkPath, linkType = 'hard') {
     try {
@@ -107,9 +107,8 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
     try {
         console.log(`🔗 Creating prerequisite symlinks...`);
         
-        // Read definitions to get prerequisites
-        const definitionsContent = fs.readFileSync(definitionsPath, 'utf8');
-        const data = parseYAML(definitionsContent);
+        // Load definitions to get prerequisites
+        const data = loadDefinitions(definitionsPath);
         
         if (!data.technologies) {
             throw new Error('No technologies section found in definitions');
@@ -283,7 +282,7 @@ function listLinks(technologiesDir, techId = null) {
 
 function main() {
     const technologiesDir = process.argv[2] || 'tree/technologies';
-    const definitionsPath = process.argv[3] || 'tree/definitions.yml';
+    const definitionsPath = process.argv[3] || 'tree/definitions';
     const command = process.argv[4] || 'create';
     
     if (!fs.existsSync(technologiesDir)) {
@@ -292,7 +291,7 @@ function main() {
     }
     
     if (!fs.existsSync(definitionsPath)) {
-        console.error(`❌ Definitions file not found: ${definitionsPath}`);
+        console.error(`❌ Definitions directory not found: ${definitionsPath}`);
         process.exit(1);
     }
     

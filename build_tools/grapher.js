@@ -15,8 +15,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import YAML parser from schema.js
-const { parseYAML } = require('./schema.js');
+// Import functions from schema.js
+const { loadDefinitions } = require('./schema.js');
 
 // Color schemes for visualization
 const COLORS = {
@@ -289,19 +289,18 @@ function analyzeGraph(technologies) {
 }
 
 function main() {
-    const definitionsPath = process.argv[2] || 'tree/definitions.yml';
+    const definitionsPath = process.argv[2] || 'tree/definitions';
     const outputPath = process.argv[3] || 'dependencies.dot';
     
     try {
         console.log(`📈 Generating dependency graph from ${definitionsPath}...`);
         
         if (!fs.existsSync(definitionsPath)) {
-            throw new Error(`Definitions file not found: ${definitionsPath}`);
+            throw new Error(`Definitions directory not found: ${definitionsPath}`);
         }
         
-        // Parse definitions
-        const content = fs.readFileSync(definitionsPath, 'utf8');
-        const data = parseYAML(content);
+        // Load definitions
+        const data = loadDefinitions(definitionsPath);
         
         if (!data.technologies) {
             throw new Error('No technologies section found');

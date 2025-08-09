@@ -1,0 +1,57 @@
+# Material Technologies - Prehistoric Era
+# Physical, reproducible methods from earliest human development
+
+technologies:
+  tool-making:
+    id: tool-making
+    name: "Tool Making"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: []  # First technology - no prerequisites
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Creation and use of implements to manipulate the environment"
+    unlocks:
+      technologies: [hunting-tools, fire-control, shelter-construction, agriculture]
+      capabilities: [environmental-manipulation, resource-extraction]
+    resources:
+      materials: [stones, wood, bone]
+      knowledge: [cause-effect-understanding]
+      social: []
+    historical:
+      first_occurrence: "~3.3 million years ago"
+      locations: ["East Africa"]
+      key_figures: ["Homo habilis", "Australopithecus"]
+      parallel_invention: false  # Single origin
+    complexity: low
+    alternate_paths: []
+    alternate_solutions: []
+
+  fire-control:
+    id: fire-control
+    name: "Fire Control"  
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [tool-making]  # Need tools to create fire
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "The ability to create, maintain, and control fire"
+    unlocks:
+      technologies: [cooking, metallurgy, ceramics, chemistry]
+      capabilities: [heat-generation, light-production, predator-deterrence]
+    resources:
+      materials: [wood, friction-tools, tinder]
+      knowledge: [combustion-understanding]
+      social: [group-coordination]
+    historical:
+      first_occurrence: "~1.5 million years ago"
+      locations: ["Africa", "Asia"]
+      key_figures: ["Homo erectus"]
+      parallel_invention: true  # Discovered multiple times
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["lightning-capture", "volcanic-fire"]

@@ -11,19 +11,20 @@
 ## Phase 1: Infrastructure & Tooling (COMPLETE ✅)
 - [x] Create build_tools/ directory
 - [x] **CRITICAL FIX**: Remove metadata.yml from technologies directories (ARCHITECTURAL ERROR FIXED)
+- [x] **CRITICAL FIX**: Organize definitions into tree/definitions/ directory structure (FIXED)
 - [x] Implement core JavaScript tools:
-  - [ ] schema.js - Validate YAML against schema (needs boolean parsing fix)
-  - [x] builder.js - Fixed to NOT generate metadata.yml files, added divergence warnings
+  - [ ] schema.js - Validate YAML against schema (needs boolean parsing fix, but directory loading works)
+  - [x] builder.js - Fixed to NOT generate metadata.yml files, loads from definitions/ directory
   - [x] validator.js - Check README completeness
-  - [x] grapher.js - Create dependency visualizations (with GraphViz DOT output)
-  - [x] linker.js - Manage symlink relationships (13 links created successfully)
-  - [x] analyzer.js - Statistics and complexity metrics (full analysis working)
-- [x] Create Makefile with orchestration commands
+  - [x] grapher.js - Create dependency visualizations (loads from definitions/ directory)
+  - [x] linker.js - Manage symlink relationships (loads from definitions/ directory)  
+  - [x] analyzer.js - Statistics and complexity metrics (loads from definitions/ directory)
+- [x] Create Makefile with orchestration commands (updated for directory structure)
 - [x] Set up tree/ directory structure:
-  - [x] tree/definitions/ - YAML files (definitions.yml created)
-  - [x] tree/technologies/ - Generated tech folders (10 technologies built)
+  - [x] tree/definitions/ - Organized YAML files by type/era (6 files, 10 technologies)
+  - [x] tree/technologies/ - Generated tech folders (10 technologies built, NO .yml files)
   - [x] tree/NAVIGATION.md - Tree exploration guide (auto-generated)
-- [x] Complete infrastructure with symlink network (6/6 tools complete)
+- [x] Complete infrastructure with symlink network (6/6 tools complete, correct architecture)
 
 ## Phase 2: Foundation Layer (Prehistoric Core)
 Focus on technologies that MUST exist first:
