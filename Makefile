@@ -2,7 +2,7 @@
 # JavaScript tools for managing the technology dependency graph
 
 # Default paths
-DEFINITIONS = tree/definitions.yml
+DEFINITIONS = tree/definitions
 TECHNOLOGIES = tree/technologies
 BUILD_TOOLS = build_tools
 
@@ -28,7 +28,7 @@ help:
 	@echo "  all         - Complete build: validate → build → links → check"
 	@echo ""
 	@echo "Options:"
-	@echo "  DEFINITIONS=path  - Path to definitions YAML (default: tree/definitions.yml)"
+	@echo "  DEFINITIONS=path  - Path to definitions directory (default: tree/definitions)"
 	@echo "  TECHNOLOGIES=path - Path to technologies directory (default: tree/technologies)"
 	@echo ""
 	@echo "Examples:"
@@ -141,10 +141,11 @@ status:
 	@echo "Definitions: $(DEFINITIONS)"
 	@echo "Technologies: $(TECHNOLOGIES)"
 	@echo ""
-	@if [ -f $(DEFINITIONS) ]; then \
-		echo "✅ Definitions file exists"; \
+	@if [ -d $(DEFINITIONS) ]; then \
+		def_count=$$(find $(DEFINITIONS) -name "*.yml" | wc -l | xargs); \
+		echo "✅ Definitions directory exists ($$def_count YAML files)"; \
 	else \
-		echo "❌ Definitions file missing"; \
+		echo "❌ Definitions directory missing"; \
 	fi
 	@if [ -d $(TECHNOLOGIES) ]; then \
 		tech_count=$$(find $(TECHNOLOGIES) -maxdepth 1 -type d | wc -l | xargs); \

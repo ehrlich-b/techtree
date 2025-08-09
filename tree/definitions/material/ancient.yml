@@ -1,0 +1,57 @@
+# Material Technologies - Ancient Era
+# Physical technologies that enabled early civilizations
+
+technologies:
+  agriculture:
+    id: agriculture
+    name: "Agriculture"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [tool-making]
+      soft: []
+      catalyst: []  # Climate change at end of Ice Age
+      synergistic: []
+    description: "Systematic cultivation of plants and crops"
+    unlocks:
+      technologies: [civilization, property, surplus-economy]
+      capabilities: [sedentary-lifestyle, population-growth, specialization]
+    resources:
+      materials: [seeds, tools, water, fertile-land]
+      knowledge: [plant-cycles, soil-management]
+      social: [land-tenure, labor-organization]
+    historical:
+      first_occurrence: "~12,000 years ago"
+      locations: ["Mesopotamia", "China", "Mesoamerica", "Andes", "Sub-Saharan Africa", "New Guinea"]
+      key_figures: ["Neolithic peoples"]
+      parallel_invention: true  # 12+ independent inventions
+    complexity: high
+    alternate_paths: [horticulture, pastoralism]
+    alternate_solutions: ["slash-and-burn", "terrace-farming", "chinampas"]
+
+  metallurgy:
+    id: metallurgy
+    name: "Metallurgy"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [fire-control]
+      soft: []  # Kilns help
+      catalyst: []  # Access to ores
+      synergistic: []
+    description: "Extraction and working of metals"
+    unlocks:
+      technologies: [bronze-age, iron-age, steel, machinery]
+      capabilities: [durable-tools, weapons, construction]
+    resources:
+      materials: [ore, charcoal, furnace, hammers]
+      knowledge: [smelting, alloying, forging]
+      social: [specialized-craftsmen, trade-networks]
+    historical:
+      first_occurrence: "~6500 BCE"
+      locations: ["Anatolia", "Balkans"]
+      key_figures: ["Chalcolithic peoples"]
+      parallel_invention: true  # Multiple independent discoveries
+    complexity: high
+    alternate_paths: [cold-working, native-metals]
+    alternate_solutions: ["obsidian-tools", "jade-working"]

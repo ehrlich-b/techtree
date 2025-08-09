@@ -1,0 +1,57 @@
+# Social Technologies - Prehistoric Era
+# Organizational methods that coordinate human effort
+
+technologies:
+  cooperation:
+    id: cooperation
+    name: "Cooperation"
+    type: social
+    era: prehistoric
+    prerequisites:
+      hard: []  # Emerges from evolution
+      soft: []
+      catalyst: [language]
+      synergistic: []
+    description: "Coordinated group action for mutual benefit"
+    unlocks:
+      technologies: [division-of-labor, trade, governance]
+      capabilities: [group-hunting, shared-child-rearing, collective-defense]
+    resources:
+      materials: []
+      knowledge: [reciprocity, trust]
+      social: [kin-groups]
+    historical:
+      first_occurrence: "~2 million years ago"
+      locations: ["Africa"]
+      key_figures: ["Early hominids"]
+      parallel_invention: false  # Evolutionary trait
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: []
+
+  teaching:
+    id: teaching
+    name: "Teaching"
+    type: social
+    era: prehistoric
+    prerequisites:
+      hard: [language, cooperation]
+      soft: []
+      catalyst: [tool-making]
+      synergistic: []
+    description: "Deliberate transmission of knowledge and skills"
+    unlocks:
+      technologies: [apprenticeship, education-systems, universities]
+      capabilities: [skill-transmission, cultural-continuity]
+    resources:
+      materials: []
+      knowledge: [demonstration, patience]
+      social: [master-student-relationship]
+    historical:
+      first_occurrence: "~100,000 years ago"
+      locations: ["Universal human trait"]
+      key_figures: ["Homo sapiens"]
+      parallel_invention: false
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["learning-by-observation", "trial-and-error"]

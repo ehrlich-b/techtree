@@ -1,0 +1,57 @@
+# Knowledge Technologies - Ancient Era
+# Abstract systems that enabled complex civilizations
+
+technologies:
+  writing-systems:
+    id: writing-systems
+    name: "Writing Systems"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [language, counting]
+      soft: [agriculture]  # Needed for complex society
+      catalyst: []
+      synergistic: [mathematics]
+    description: "Symbolic representation of language in permanent form"
+    unlocks:
+      technologies: [history, law, literature, science]
+      capabilities: [long-distance-communication, record-keeping, knowledge-accumulation]
+    resources:
+      materials: [writing-surface, marking-tools]
+      knowledge: [symbolic-representation, abstraction]
+      social: [scribal-class, education]
+    historical:
+      first_occurrence: "~3200 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "Mesoamerica"]
+      key_figures: ["Sumerians", "Ancient Egyptians", "Shang Dynasty", "Maya"]
+      parallel_invention: true  # 4+ independent systems
+    complexity: extreme
+    alternate_paths: [pictographs, logograms, syllabaries, alphabets]
+    alternate_solutions: ["quipu-knots", "wampum-belts", "oral-tradition"]
+
+  mathematics:
+    id: mathematics
+    name: "Mathematics"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [counting, writing-systems]
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Abstract study of quantity, structure, space, and change"
+    unlocks:
+      technologies: [engineering, physics, computer-science]
+      capabilities: [precise-calculation, prediction, optimization]
+    resources:
+      materials: [writing-materials, calculation-tools]
+      knowledge: [abstraction, logic, proof]
+      social: [mathematical-schools]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "India", "Greece"]
+      key_figures: ["Babylonians", "Pythagoras", "Euclid", "Aryabhata"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [geometric, algebraic, algorithmic]
+    alternate_solutions: ["abacus-calculation", "mental-arithmetic"]

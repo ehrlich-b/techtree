@@ -3,9 +3,9 @@
 /**
  * schema.js - Validates YAML technology definitions against schema
  * 
- * Usage: node schema.js [path-to-yaml-file]
+ * Usage: node schema.js [path-to-definitions-directory]
  * 
- * Validates:
+ * Validates all YAML files in tree/definitions/ and subdirectories:
  * - Required fields are present
  * - Technology types are valid (material|social|knowledge)
  * - Dependency references exist
@@ -125,6 +125,51 @@ function parseYAML(content) {
     }
 }
 
+// Load and merge all YAML files from definitions directory
+function loadDefinitions(definitionsDir = 'tree/definitions') {
+    const allTechnologies = {};
+    
+    if (!fs.existsSync(definitionsDir)) {
+        throw new Error(`Definitions directory not found: ${definitionsDir}`);
+    }
+    
+    // Recursively find all .yml files
+    function findYamlFiles(dir) {
+        const files = [];
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name);
+            if (entry.isDirectory()) {
+                files.push(...findYamlFiles(fullPath));
+            } else if (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml')) {
+                files.push(fullPath);
+            }
+        }
+        
+        return files;
+    }
+    
+    const yamlFiles = findYamlFiles(definitionsDir);
+    console.log(`Found ${yamlFiles.length} definition files`);
+    
+    for (const filePath of yamlFiles) {
+        try {
+            const content = fs.readFileSync(filePath, 'utf8');
+            const data = parseYAML(content);
+            
+            if (data.technologies) {
+                Object.assign(allTechnologies, data.technologies);
+                console.log(`  Loaded ${Object.keys(data.technologies).length} technologies from ${path.relative('.', filePath)}`);
+            }
+        } catch (error) {
+            throw new Error(`Failed to load ${filePath}: ${error.message}`);
+        }
+    }
+    
+    return { technologies: allTechnologies };
+}
+
 // Schema validation
 const VALID_TYPES = ['material', 'social', 'knowledge'];
 const VALID_ERAS = ['prehistoric', 'ancient', 'medieval', 'early-modern', 'industrial', 'information', 'contemporary', 'future'];
@@ -229,57 +274,47 @@ function validateTechnology(id, tech, allTechIds) {
     return errors;
 }
 
-function validateSchema(yamlPath) {
-    try {
-        console.log(`Validating ${yamlPath}...`);
+function validateTechnologies(technologies) {
+    const allTechIds = Object.keys(technologies);
+    let totalErrors = 0;
+    
+    for (const [id, tech] of Object.entries(technologies)) {
+        const errors = validateTechnology(id, tech, allTechIds);
         
-        const content = fs.readFileSync(yamlPath, 'utf8');
-        const data = parseYAML(content);
-        
-        if (!data.technologies) {
-            throw new Error('No technologies section found in YAML file');
-        }
-        
-        const allTechIds = Object.keys(data.technologies);
-        let totalErrors = 0;
-        
-        for (const [id, tech] of Object.entries(data.technologies)) {
-            const errors = validateTechnology(id, tech, allTechIds);
-            
-            if (errors.length > 0) {
-                console.error(`\n❌ ${id}:`);
-                for (const error of errors) {
-                    console.error(`  - ${error}`);
-                }
-                totalErrors += errors.length;
+        if (errors.length > 0) {
+            console.error(`\n❌ ${id}:`);
+            for (const error of errors) {
+                console.error(`  - ${error}`);
             }
+            totalErrors += errors.length;
         }
-        
-        if (totalErrors === 0) {
-            console.log(`\n✅ Schema validation passed for ${allTechIds.length} technologies`);
-            return true;
-        } else {
-            console.error(`\n❌ Schema validation failed with ${totalErrors} errors`);
-            return false;
-        }
-        
-    } catch (error) {
-        console.error(`❌ Schema validation failed: ${error.message}`);
+    }
+    
+    if (totalErrors === 0) {
+        console.log(`\n✅ Schema validation passed for ${allTechIds.length} technologies`);
+        return true;
+    } else {
+        console.error(`\n❌ Schema validation failed with ${totalErrors} errors`);
         return false;
     }
 }
 
 // CLI interface
 if (require.main === module) {
-    const yamlPath = process.argv[2] || 'tree/definitions.yml';
+    const definitionsPath = process.argv[2] || 'tree/definitions';
     
-    if (!fs.existsSync(yamlPath)) {
-        console.error(`❌ File not found: ${yamlPath}`);
+    console.log(`🔍 Validating technology definitions from ${definitionsPath}...`);
+    
+    try {
+        const data = loadDefinitions(definitionsPath);
+        console.log(`\nTotal technologies loaded: ${Object.keys(data.technologies).length}`);
+        
+        const success = validateTechnologies(data.technologies);
+        process.exit(success ? 0 : 1);
+    } catch (error) {
+        console.error(`❌ ${error.message}`);
         process.exit(1);
     }
-    
-    const success = validateSchema(yamlPath);
-    process.exit(success ? 0 : 1);
 }
 
-module.exports = { validateSchema, parseYAML };
+module.exports = { validateTechnologies, loadDefinitions, parseYAML };
