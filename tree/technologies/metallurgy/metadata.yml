@@ -1,0 +1,9 @@
+# Metadata for Metallurgy
+id: metallurgy
+name: "Metallurgy"
+type: material
+era: ancient
+complexity: high
+
+# Auto-generated on 2025-08-09T14:26:45.188Z
+# Do not edit manually - regenerate with builder.js

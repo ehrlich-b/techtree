@@ -1,0 +1,326 @@
+# Technology Tree Definitions
+# Enhanced schema based on Three-Layer Model and dependency types
+
+metadata:
+  version: "2.0.0"
+  last_updated: "2025-01-09"
+  description: "Reality-based technology progression system with Three-Layer Model"
+  schema_version: "2.0"
+
+# ============================================
+# SCHEMA DOCUMENTATION
+# ============================================
+# Each technology must specify:
+# - type: material|social|knowledge
+# - prerequisites with dependency types: hard|soft|catalyst|synergistic
+# - historical data including parallel inventions
+# - alternative paths and solutions
+# ============================================
+
+technologies:
+  # ============= PREHISTORIC ERA =============
+  # Foundation technologies that enabled all others
+  
+  # MATERIAL TECHNOLOGIES
+  tool-making:
+    id: tool-making
+    name: "Tool Making"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: []  # First technology - no prerequisites
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Creation and use of implements to manipulate the environment"
+    unlocks:
+      technologies: [hunting-tools, fire-control, shelter-construction, agriculture]
+      capabilities: [environmental-manipulation, resource-extraction]
+    resources:
+      materials: [stones, wood, bone]
+      knowledge: [cause-effect-understanding]
+      social: []
+    historical:
+      first_occurrence: "~3.3 million years ago"
+      locations: ["East Africa"]
+      key_figures: ["Homo habilis", "Australopithecus"]
+      parallel_invention: false  # Single origin
+    complexity: low
+    alternate_paths: []
+    alternate_solutions: []
+
+  fire-control:
+    id: fire-control
+    name: "Fire Control"  
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [tool-making]  # Need tools to create fire
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "The ability to create, maintain, and control fire"
+    unlocks:
+      technologies: [cooking, metallurgy, ceramics, chemistry]
+      capabilities: [heat-generation, light-production, predator-deterrence]
+    resources:
+      materials: [wood, friction-tools, tinder]
+      knowledge: [combustion-understanding]
+      social: [group-coordination]
+    historical:
+      first_occurrence: "~1.5 million years ago"
+      locations: ["Africa", "Asia"]
+      key_figures: ["Homo erectus"]
+      parallel_invention: true  # Discovered multiple times
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["lightning-capture", "volcanic-fire"]
+
+  # KNOWLEDGE TECHNOLOGIES
+  language:
+    id: language
+    name: "Language"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: []  # Emerged from biology/evolution
+      soft: [cooperation]
+      catalyst: []
+      synergistic: []
+    description: "Complex symbolic communication system"
+    unlocks:
+      technologies: [teaching, counting, oral-tradition]
+      capabilities: [abstract-thought, planning, cultural-transmission]
+    resources:
+      materials: []
+      knowledge: [symbolic-thinking]
+      social: [social-groups]
+    historical:
+      first_occurrence: "~100,000 years ago"
+      locations: ["Africa"]
+      key_figures: ["Homo sapiens"]
+      parallel_invention: false  # Evolved once
+    complexity: high
+    alternate_paths: []
+    alternate_solutions: ["sign-language", "pictographic-communication"]
+
+  counting:
+    id: counting
+    name: "Counting"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: [language]
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Basic enumeration and quantity tracking"
+    unlocks:
+      technologies: [mathematics, calendar, inventory-management]
+      capabilities: [quantity-comparison, resource-tracking]
+    resources:
+      materials: [tally-sticks, pebbles]
+      knowledge: [one-to-one-correspondence]
+      social: []
+    historical:
+      first_occurrence: "~30,000 BCE"
+      locations: ["Multiple independent origins"]
+      key_figures: ["Paleolithic peoples"]
+      parallel_invention: true
+    complexity: low
+    alternate_paths: []
+    alternate_solutions: ["body-counting", "knot-systems"]
+
+  # SOCIAL TECHNOLOGIES
+  cooperation:
+    id: cooperation
+    name: "Cooperation"
+    type: social
+    era: prehistoric
+    prerequisites:
+      hard: []  # Emerges from evolution
+      soft: []
+      catalyst: [language]
+      synergistic: []
+    description: "Coordinated group action for mutual benefit"
+    unlocks:
+      technologies: [division-of-labor, trade, governance]
+      capabilities: [group-hunting, shared-child-rearing, collective-defense]
+    resources:
+      materials: []
+      knowledge: [reciprocity, trust]
+      social: [kin-groups]
+    historical:
+      first_occurrence: "~2 million years ago"
+      locations: ["Africa"]
+      key_figures: ["Early hominids"]
+      parallel_invention: false  # Evolutionary trait
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: []
+
+  teaching:
+    id: teaching
+    name: "Teaching"
+    type: social
+    era: prehistoric
+    prerequisites:
+      hard: [language, cooperation]
+      soft: []
+      catalyst: [tool-making]
+      synergistic: []
+    description: "Deliberate transmission of knowledge and skills"
+    unlocks:
+      technologies: [apprenticeship, education-systems, universities]
+      capabilities: [skill-transmission, cultural-continuity]
+    resources:
+      materials: []
+      knowledge: [demonstration, patience]
+      social: [master-student-relationship]
+    historical:
+      first_occurrence: "~100,000 years ago"
+      locations: ["Universal human trait"]
+      key_figures: ["Homo sapiens"]
+      parallel_invention: false
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["learning-by-observation", "trial-and-error"]
+
+  # ============= ANCIENT ERA =============
+  # Technologies that enabled civilization
+
+  agriculture:
+    id: agriculture
+    name: "Agriculture"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [tool-making]
+      soft: []
+      catalyst: []  # End of Ice Age - removed unknown refs
+      synergistic: []
+    description: "Systematic cultivation of plants and crops"
+    unlocks:
+      technologies: [civilization, property, surplus-economy]
+      capabilities: [sedentary-lifestyle, population-growth, specialization]
+    resources:
+      materials: [seeds, tools, water, fertile-land]
+      knowledge: [plant-cycles, soil-management]
+      social: [land-tenure, labor-organization]
+    historical:
+      first_occurrence: "~12,000 years ago"
+      locations: ["Mesopotamia", "China", "Mesoamerica", "Andes", "Sub-Saharan Africa", "New Guinea"]
+      key_figures: ["Neolithic peoples"]
+      parallel_invention: true  # 12+ independent inventions
+    complexity: high
+    alternate_paths: [horticulture, pastoralism]
+    alternate_solutions: ["slash-and-burn", "terrace-farming", "chinampas"]
+
+  writing-systems:
+    id: writing-systems
+    name: "Writing Systems"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [language, counting]
+      soft: [agriculture]  # Needed for complex society
+      catalyst: []
+      synergistic: [mathematics]
+    description: "Symbolic representation of language in permanent form"
+    unlocks:
+      technologies: [history, law, literature, science]
+      capabilities: [long-distance-communication, record-keeping, knowledge-accumulation]
+    resources:
+      materials: [writing-surface, marking-tools]
+      knowledge: [symbolic-representation, abstraction]
+      social: [scribal-class, education]
+    historical:
+      first_occurrence: "~3200 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "Mesoamerica"]
+      key_figures: ["Sumerians", "Ancient Egyptians", "Shang Dynasty", "Maya"]
+      parallel_invention: true  # 4+ independent systems
+    complexity: extreme
+    alternate_paths: [pictographs, logograms, syllabaries, alphabets]
+    alternate_solutions: ["quipu-knots", "wampum-belts", "oral-tradition"]
+
+  metallurgy:
+    id: metallurgy
+    name: "Metallurgy"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [fire-control]
+      soft: []  # Kilns help
+      catalyst: []  # Access to ores
+      synergistic: []
+    description: "Extraction and working of metals"
+    unlocks:
+      technologies: [bronze-age, iron-age, steel, machinery]
+      capabilities: [durable-tools, weapons, construction]
+    resources:
+      materials: [ore, charcoal, furnace, hammers]
+      knowledge: [smelting, alloying, forging]
+      social: [specialized-craftsmen, trade-networks]
+    historical:
+      first_occurrence: "~6500 BCE"
+      locations: ["Anatolia", "Balkans"]
+      key_figures: ["Chalcolithic peoples"]
+      parallel_invention: true  # Multiple independent discoveries
+    complexity: high
+    alternate_paths: [cold-working, native-metals]
+    alternate_solutions: ["obsidian-tools", "jade-working"]
+
+  mathematics:
+    id: mathematics
+    name: "Mathematics"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [counting, writing-systems]
+      soft: []
+      catalyst: []
+      synergistic: []
+    description: "Abstract study of quantity, structure, space, and change"
+    unlocks:
+      technologies: [engineering, physics, computer-science]
+      capabilities: [precise-calculation, prediction, optimization]
+    resources:
+      materials: [writing-materials, calculation-tools]
+      knowledge: [abstraction, logic, proof]
+      social: [mathematical-schools]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "India", "Greece"]
+      key_figures: ["Babylonians", "Pythagoras", "Euclid", "Aryabhata"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [geometric, algebraic, algorithmic]
+    alternate_solutions: ["abacus-calculation", "mental-arithmetic"]
+
+  # ============= TEMPLATE FOR ADDITIONS =============
+  # technology-id:
+  #   id: technology-id
+  #   name: "Technology Name"
+  #   type: material|social|knowledge
+  #   era: prehistoric|ancient|medieval|early-modern|industrial|information|contemporary|future
+  #   prerequisites:
+  #     hard: [absolutely-required]
+  #     soft: [helpful-but-optional]
+  #     catalyst: [speeds-development]
+  #     synergistic: [combines-for-bonus]
+  #   description: "One-line description"
+  #   unlocks:
+  #     technologies: [directly-enabled]
+  #     capabilities: [new-abilities]
+  #   resources:
+  #     materials: [physical-requirements]
+  #     knowledge: [conceptual-requirements]
+  #     social: [organizational-requirements]
+  #   historical:
+  #     first_occurrence: "date/period"
+  #     locations: [places]
+  #     key_figures: [people/cultures]
+  #     parallel_invention: true|false
+  #   complexity: low|medium|high|extreme
+  #   alternate_paths: [different-prereq-combinations]
+  #   alternate_solutions: [different-approaches-to-same-problem]
