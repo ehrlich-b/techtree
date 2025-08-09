@@ -8,8 +8,10 @@
  * Creates:
  * - Technology folders in tree/technologies/
  * - README.md templates for each technology
- * - metadata.yml files
+ * - Prerequisites directory structure
  * - Basic directory structure
+ * 
+ * WARNING: Does NOT create metadata.yml files - all data comes from definitions!
  */
 
 const fs = require('fs');
@@ -108,18 +110,40 @@ ${tech.alternate_solutions?.length ? tech.alternate_solutions.map(s => `- **${s}
 `;
 }
 
-// Generate metadata.yml for each technology
-function generateMetadata(tech) {
-    return `# Metadata for ${tech.name}
-id: ${tech.id}
-name: "${tech.name}"
-type: ${tech.type}
-era: ${tech.era}
-complexity: ${tech.complexity}
-
-# Auto-generated on ${new Date().toISOString()}
-# Do not edit manually - regenerate with builder.js
-`;
+// Check for divergence between definitions and existing folder structure
+function checkDivergence(technologies, outputDir) {
+    if (!fs.existsSync(outputDir)) {
+        return; // No divergence if directory doesn't exist yet
+    }
+    
+    const existingFolders = fs.readdirSync(outputDir, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+    
+    const definedTechs = Object.keys(technologies);
+    
+    // Warn about folders not in definitions
+    const orphanFolders = existingFolders.filter(folder => !definedTechs.includes(folder));
+    if (orphanFolders.length > 0) {
+        console.warn(`⚠️  Found folders not in definitions: ${orphanFolders.join(', ')}`);
+        console.warn(`   Consider removing these or adding them to definitions.yml`);
+    }
+    
+    // Check for metadata.yml files (architectural error)
+    let metadataFound = [];
+    for (const folder of existingFolders) {
+        const metadataPath = path.join(outputDir, folder, 'metadata.yml');
+        if (fs.existsSync(metadataPath)) {
+            metadataFound.push(folder);
+        }
+    }
+    
+    if (metadataFound.length > 0) {
+        console.error(`❌ ARCHITECTURAL ERROR: Found metadata.yml files in:`);
+        console.error(`   ${metadataFound.join(', ')}`);
+        console.error(`   These should not exist - all data comes from definitions.yml`);
+        console.error(`   Run 'make clean' to remove them, then rebuild.`);
+    }
 }
 
 function buildTree(definitionsPath, outputDir = 'tree/technologies') {
@@ -142,11 +166,13 @@ function buildTree(definitionsPath, outputDir = 'tree/technologies') {
         let created = 0;
         let updated = 0;
         
+        // Check for divergence before building
+        checkDivergence(data.technologies, outputDir);
+        
         // Generate folders and files for each technology
         for (const [id, tech] of Object.entries(data.technologies)) {
             const techDir = path.join(outputDir, id);
             const readmePath = path.join(techDir, 'README.md');
-            const metadataPath = path.join(techDir, 'metadata.yml');
             const prereqDir = path.join(techDir, 'prerequisites');
             
             // Create technology directory
@@ -178,9 +204,7 @@ function buildTree(definitionsPath, outputDir = 'tree/technologies') {
                 console.log(`📄 ${forceRegenerate ? 'Updated' : 'Created'} ${readmePath}`);
             }
             
-            // Always update metadata (it's auto-generated)
-            const metadata = generateMetadata(tech);
-            fs.writeFileSync(metadataPath, metadata);
+            // No metadata files generated - all data comes from definitions.yml
             
             console.log(`✅ ${tech.name} (${tech.type}/${tech.era})`);
         }
@@ -247,8 +271,7 @@ ${byType.knowledge?.map(({id, tech}) => `- [${tech.name}](technologies/${id}/) -
 
 ## Dependency Network
 Each technology folder contains:
-- \`README.md\` - Full documentation
-- \`metadata.yml\` - Machine-readable data
+- \`README.md\` - Full documentation (template to be filled in)
 - \`prerequisites/\` - Symlinks to required technologies
   - \`hard/\` - Absolutely required
   - \`soft/\` - Helpful but optional
@@ -282,4 +305,4 @@ if (require.main === module) {
     process.exit(success ? 0 : 1);
 }
 
-module.exports = { buildTree, generateReadme, generateMetadata };
+module.exports = { buildTree, generateReadme };

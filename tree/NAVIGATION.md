@@ -44,8 +44,7 @@ Abstract systems for understanding and recording information.
 
 ## Dependency Network
 Each technology folder contains:
-- `README.md` - Full documentation
-- `metadata.yml` - Machine-readable data
+- `README.md` - Full documentation (template to be filled in)
 - `prerequisites/` - Symlinks to required technologies
   - `hard/` - Absolutely required
   - `soft/` - Helpful but optional
