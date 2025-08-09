@@ -99,10 +99,14 @@ function parseYAML(content) {
                 } else if (value.startsWith('[') && !value.endsWith(']')) {
                     // Multi-line array
                     result.technologies[currentTech][currentSection][key] = [];
-                } else if (value === 'true' || value === true) {
+                } else if (value === 'true' || value === true || value === 'True') {
                     result.technologies[currentTech][currentSection][key] = true;
-                } else if (value === 'false' || value === false) {
+                } else if (value === 'false' || value === false || value === 'False') {
                     result.technologies[currentTech][currentSection][key] = false;
+                } else if (key === 'parallel_invention') {
+                    // Handle boolean values with inline comments
+                    const boolValue = value.toString().toLowerCase().includes('true');
+                    result.technologies[currentTech][currentSection][key] = boolValue;
                 } else {
                     result.technologies[currentTech][currentSection][key] = value;
                 }
