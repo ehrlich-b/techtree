@@ -1,0 +1,51 @@
+# Social Technologies - Speculative Future Era
+# Advanced organizational and governance models
+
+technologies:
+  post-scarcity-economics:
+    id: post-scarcity-economics
+    name: "Post-Scarcity Economics"
+    type: social
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [fusion-power, molecular-assembly]
+      soft: [artificial-intelligence, universal-basic-income]
+      catalyst: [molecular-assembly]
+      synergistic: []
+    description: "Economic system where material abundance eliminates traditional scarcity"
+    unlocks:
+      technologies: []
+      capabilities: [abundance-economics, resource-elimination, work-transformation]
+
+  global-governance:
+    id: global-governance
+    name: "Global Governance"
+    type: social
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [digital-democracy, globalization]
+      soft: [artificial-intelligence]
+      catalyst: [digital-democracy]
+      synergistic: []
+    description: "Planetary-scale democratic governance system"
+    unlocks:
+      technologies: []
+      capabilities: [global-coordination, species-level-decisions, planetary-management]
+
+  interplanetary-society:
+    id: interplanetary-society
+    name: "Interplanetary Society"
+    type: social
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [space-elevator, fusion-power]
+      soft: [global-governance, post-scarcity-economics]
+      catalyst: [space-elevator]
+      synergistic: []
+    description: "Civilization spanning multiple planets and space habitats"
+    unlocks:
+      technologies: []
+      capabilities: [multi-planetary-civilization, space-colonization, species-backup]

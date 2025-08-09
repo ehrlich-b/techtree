@@ -1,0 +1,111 @@
+# Material Technologies - Early Modern Era
+# Setting the stage for industrialization
+
+technologies:
+  gunpowder-weapons:
+    id: gunpowder-weapons
+    name: "Gunpowder Weapons"
+    type: material
+    era: early-modern
+    prerequisites:
+      hard: [metallurgy, chemistry]
+      soft: [engineering, military-organization]
+      catalyst: [chemistry]
+      synergistic: []
+    description: "Weapons utilizing explosive chemical reactions for propulsion and destruction"
+    unlocks:
+      technologies: [artillery, firearms, military-revolution]
+      capabilities: [explosive-warfare, ranged-combat, siege-breaking]
+    resources:
+      materials: [gunpowder, metal-barrels, projectiles]
+      knowledge: [explosive-chemistry, ballistics, metallurgical-engineering]
+      social: [military-workshops, specialized-armament]
+    historical:
+      first_occurrence: "~1000 CE"
+      locations: ["China", "Islamic world", "Europe"]
+      key_figures: ["Chinese alchemists", "European gunners"]
+      parallel_invention: false
+    complexity: extreme
+    alternate_paths: [cannons, muskets, rockets]
+    alternate_solutions: ["siege-engines", "crossbows", "cavalry-charges"]
+
+  navigation-instruments:
+    id: navigation-instruments
+    name: "Navigation Instruments"
+    type: material
+    era: early-modern
+    prerequisites:
+      hard: [metallurgy, astronomy]
+      soft: [optics, mathematics, cartography]
+      catalyst: [astronomy]
+      synergistic: []
+    description: "Precision instruments for determining position and direction at sea"
+    unlocks:
+      technologies: [ocean-exploration, global-trade, maritime-empires]
+      capabilities: [accurate-navigation, oceanic-travel, position-finding]
+    resources:
+      materials: [precision-metals, magnetic-compass, measuring-devices]
+      knowledge: [celestial-navigation, magnetic-declination, instrument-making]
+      social: [navigational-schools, maritime-guilds]
+    historical:
+      first_occurrence: "~1400 CE"
+      locations: ["Portugal", "Spain", "Netherlands", "England"]
+      key_figures: ["Prince Henry the Navigator", "Portuguese navigators"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [astrolabe, sextant, chronometer]
+    alternate_solutions: ["dead-reckoning", "coastal-navigation", "star-charts"]
+
+  telescope:
+    id: telescope
+    name: "Telescope"
+    type: material
+    era: early-modern
+    prerequisites:
+      hard: [optics, glass-making]
+      soft: [astronomy, mathematics]
+      catalyst: [optics]
+      synergistic: []
+    description: "Optical instrument for magnifying distant objects"
+    unlocks:
+      technologies: [astronomical-observation, scientific-revolution, surveying]
+      capabilities: [distant-observation, celestial-study, precision-measurement]
+    resources:
+      materials: [optical-glass, lens-grinding, precision-mounting]
+      knowledge: [optical-theory, lens-design, astronomical-observation]
+      social: [optical-workshops, scientific-societies]
+    historical:
+      first_occurrence: "~1608 CE"
+      locations: ["Netherlands", "Italy"]
+      key_figures: ["Hans Lippershey", "Galileo Galilei"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [refracting-telescope, reflecting-telescope, compound-telescope]
+    alternate_solutions: ["naked-eye-astronomy", "quadrants", "armillary-spheres"]
+
+  microscope:
+    id: microscope
+    name: "Microscope"
+    type: material
+    era: early-modern
+    prerequisites:
+      hard: [optics, glass-making]
+      soft: [medicine, scientific-method]
+      catalyst: [optics]
+      synergistic: []
+    description: "Optical instrument for magnifying very small objects"
+    unlocks:
+      technologies: [microbiology, cellular-theory, precision-optics]
+      capabilities: [microscopic-observation, biological-study, material-analysis]
+    resources:
+      materials: [high-quality-lenses, precision-mechanics, illumination-systems]
+      knowledge: [optical-principles, specimen-preparation, microscopic-technique]
+      social: [scientific-instrument-makers, research-institutions]
+    historical:
+      first_occurrence: "~1590 CE"
+      locations: ["Netherlands", "England"]
+      key_figures: ["Zacharias Janssen", "Antonie van Leeuwenhoek"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [simple-microscope, compound-microscope, electron-microscope]
+    alternate_solutions: ["magnifying-glass", "visual-inspection", "anatomical-dissection"]

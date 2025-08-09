@@ -1,0 +1,165 @@
+# Material Technologies - Industrial Era
+# The second major transformation in human history
+
+technologies:
+  steam-engine:
+    id: steam-engine
+    name: "Steam Engine"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [metallurgy, physics]
+      soft: [mechanical-clock, engineering]
+      catalyst: [physics]
+      synergistic: []
+    description: "Heat engine that converts steam pressure into mechanical work"
+    unlocks:
+      technologies: [railroad, steamship, industrial-machinery]
+      capabilities: [mechanical-power, automated-production, transportation-revolution]
+    resources:
+      materials: [iron, coal, precision-machining, boilers]
+      knowledge: [thermodynamics, mechanical-engineering, pressure-systems]
+      social: [industrial-workshops, technical-education]
+    historical:
+      first_occurrence: "~1712 CE"
+      locations: ["England"]
+      key_figures: ["Thomas Newcomen", "James Watt", "Richard Trevithick"]
+      parallel_invention: false
+    complexity: extreme
+    alternate_paths: [atmospheric-engine, high-pressure-steam, condensing-engine]
+    alternate_solutions: ["water-wheels", "windmills", "animal-power"]
+
+  railroad:
+    id: railroad
+    name: "Railroad"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [steam-engine, metallurgy]
+      soft: [roads, engineering, capitalism]
+      catalyst: [steam-engine]
+      synergistic: []
+    description: "Rail-guided transportation system powered by steam locomotives"
+    unlocks:
+      technologies: [mass-transportation, industrial-logistics, continental-networks]
+      capabilities: [rapid-land-transport, bulk-cargo-movement, territorial-integration]
+    resources:
+      materials: [steel-rails, locomotives, railway-infrastructure]
+      knowledge: [locomotive-engineering, railway-construction, logistics-management]
+      social: [railway-companies, transportation-networks, industrial-coordination]
+    historical:
+      first_occurrence: "~1825 CE"
+      locations: ["England", "United States", "Europe"]
+      key_figures: ["George Stephenson", "Railway pioneers"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [passenger-railways, freight-railways, urban-transit]
+    alternate_solutions: ["canals", "turnpike-roads", "coastal-shipping"]
+
+  telegraph:
+    id: telegraph
+    name: "Telegraph"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [physics, metallurgy]
+      soft: [railroad, scientific-method]
+      catalyst: [physics]
+      synergistic: []
+    description: "Long-distance communication system using electrical signals"
+    unlocks:
+      technologies: [telecommunications, information-networks, global-communication]
+      capabilities: [instant-communication, coordinated-operations, information-transmission]
+    resources:
+      materials: [copper-wire, electrical-equipment, telegraph-infrastructure]
+      knowledge: [electrical-engineering, signal-transmission, communication-protocols]
+      social: [telegraph-companies, communication-networks, information-services]
+    historical:
+      first_occurrence: "~1844 CE"
+      locations: ["United States", "England", "Europe"]
+      key_figures: ["Samuel Morse", "Charles Wheatstone", "William Cooke"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [electrical-telegraph, optical-telegraph, wireless-telegraph]
+    alternate_solutions: ["postal-service", "messenger-systems", "signal-fires"]
+
+  electricity:
+    id: electricity
+    name: "Electricity"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [physics, metallurgy]
+      soft: [chemistry, scientific-method, telegraph]
+      catalyst: [physics]
+      synergistic: []
+    description: "Harnessing and distribution of electrical energy for practical use"
+    unlocks:
+      technologies: [electric-lighting, electric-motors, power-grids]
+      capabilities: [electrical-power, illumination-systems, energy-distribution]
+    resources:
+      materials: [generators, electrical-wiring, power-infrastructure]
+      knowledge: [electrical-engineering, power-generation, electrical-systems]
+      social: [electrical-utilities, power-companies, electrical-standards]
+    historical:
+      first_occurrence: "~1879 CE"
+      locations: ["United States", "England", "Germany"]
+      key_figures: ["Thomas Edison", "Nikola Tesla", "Michael Faraday"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [direct-current, alternating-current, electrical-distribution]
+    alternate_solutions: ["gas-lighting", "oil-lamps", "mechanical-power"]
+
+  internal-combustion:
+    id: internal-combustion
+    name: "Internal Combustion Engine"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [chemistry, metallurgy]
+      soft: [steam-engine, physics, engineering]
+      catalyst: [chemistry]
+      synergistic: []
+    description: "Engine that burns fuel internally to produce mechanical power"
+    unlocks:
+      technologies: [automobiles, aviation, portable-power]
+      capabilities: [mobile-power, personal-transportation, mechanical-mobility]
+    resources:
+      materials: [precision-machining, petroleum-products, ignition-systems]
+      knowledge: [combustion-chemistry, mechanical-engineering, fuel-systems]
+      social: [automotive-industry, petroleum-infrastructure, transportation-revolution]
+    historical:
+      first_occurrence: "~1860 CE"
+      locations: ["France", "Germany", "United States"]
+      key_figures: ["Nikolaus Otto", "Karl Benz", "Henry Ford"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [gasoline-engine, diesel-engine, rotary-engine]
+    alternate_solutions: ["steam-vehicles", "electric-vehicles", "horse-transport"]
+
+  mass-production:
+    id: mass-production
+    name: "Mass Production"
+    type: material
+    era: industrial
+    prerequisites:
+      hard: [steam-engine, metallurgy]
+      soft: [engineering, capitalism, division-of-labor]
+      catalyst: [steam-engine]
+      synergistic: []
+    description: "Manufacturing system for producing large quantities of standardized goods"
+    unlocks:
+      technologies: [assembly-lines, industrial-standardization, consumer-goods]
+      capabilities: [large-scale-manufacturing, cost-reduction, product-standardization]
+    resources:
+      materials: [industrial-machinery, factory-infrastructure, standardized-tools]
+      knowledge: [manufacturing-processes, quality-control, industrial-organization]
+      social: [factory-system, industrial-labor, mass-markets]
+    historical:
+      first_occurrence: "~1800 CE"
+      locations: ["England", "United States", "Europe"]
+      key_figures: ["Factory owners", "Industrial engineers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [textile-manufacturing, steel-production, consumer-manufacturing]
+    alternate_solutions: ["craft-production", "guild-manufacturing", "cottage-industry"]

@@ -1,0 +1,67 @@
+# Knowledge Technologies - Information Era
+# Abstract systems enabling the information revolution
+
+technologies:
+  information-theory:
+    id: information-theory
+    name: "Information Theory"
+    type: knowledge
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [mathematics]
+      soft: [logic]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Mathematical study of information transmission, storage, and processing"
+    unlocks:
+      technologies: []
+      capabilities: [data-encoding, signal-analysis, information-measurement]
+
+  computer-science:
+    id: computer-science
+    name: "Computer Science"
+    type: knowledge
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [mathematics, logic]
+      soft: [computer]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Study of computational systems, algorithms, and software design"
+    unlocks:
+      technologies: []
+      capabilities: [algorithm-design, software-development, computational-thinking]
+
+  genetics:
+    id: genetics
+    name: "Genetics"
+    type: knowledge
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [medicine]
+      soft: [microscope]
+      catalyst: [scientific-method]
+      synergistic: []
+    description: "Study of heredity and variation in living organisms"
+    unlocks:
+      technologies: []
+      capabilities: [heredity-understanding, genetic-analysis, biological-manipulation]
+
+  quantum-mechanics:
+    id: quantum-mechanics
+    name: "Quantum Mechanics"
+    type: knowledge
+    era: information
+    complexity: extreme
+    prerequisites:
+      hard: [physics, mathematics]
+      soft: [thermodynamics]
+      catalyst: [physics]
+      synergistic: []
+    description: "Physical theory describing behavior of matter and energy at atomic scale"
+    unlocks:
+      technologies: []
+      capabilities: [quantum-understanding, atomic-manipulation, quantum-effects]

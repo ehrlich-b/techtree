@@ -55,3 +55,273 @@ technologies:
     complexity: high
     alternate_paths: [cold-working, native-metals]
     alternate_solutions: ["obsidian-tools", "jade-working"]
+
+  irrigation:
+    id: irrigation
+    name: "Irrigation"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [agriculture, tool-making]
+      soft: [cooperation]
+      catalyst: [seasonal-patterns]
+      synergistic: []
+    description: "Controlled water delivery to agricultural fields"
+    unlocks:
+      technologies: [hydraulic-engineering, canal-systems]
+      capabilities: [desert-farming, water-management, large-scale-agriculture]
+    resources:
+      materials: [digging-tools, channels, water-sources]
+      knowledge: [water-flow, gradient-understanding]
+      social: [collective-labor, maintenance-coordination]
+    historical:
+      first_occurrence: "~7000 BCE"
+      locations: ["Mesopotamia", "Nile Valley", "Indus Valley", "China"]
+      key_figures: ["Early farmers"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [flood-farming, terracing]
+    alternate_solutions: ["qanat-systems", "shaduf", "noria"]
+
+  food-storage:
+    id: food-storage
+    name: "Food Storage"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [agriculture]
+      soft: [pottery, weaving]
+      catalyst: [seasonal-patterns]
+      synergistic: []
+    description: "Preservation and storage of surplus food"
+    unlocks:
+      technologies: [granaries, trade, surplus-economy]
+      capabilities: [year-round-nutrition, famine-resistance, population-growth]
+    resources:
+      materials: [containers, preservatives, storage-spaces]
+      knowledge: [preservation-techniques, pest-control]
+      social: [storage-management, surplus-distribution]
+    historical:
+      first_occurrence: "~10,000 BCE"
+      locations: ["Near East", "China", "Mesoamerica"]
+      key_figures: ["Early agriculturalists"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [drying, smoking, fermentation]
+    alternate_solutions: ["root-cellars", "elevated-granaries", "sealed-jars"]
+
+  pottery:
+    id: pottery
+    name: "Pottery"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [fire-control]
+      soft: [tool-making]
+      catalyst: [agriculture]
+      synergistic: []
+    description: "Fired clay vessels for storage and cooking"
+    unlocks:
+      technologies: [food-storage, fermentation, wheel]
+      capabilities: [liquid-storage, cooking-vessels, decorative-arts]
+    resources:
+      materials: [clay, fire, shaping-tools]
+      knowledge: [clay-properties, firing-temperatures]
+      social: [craft-specialization]
+    historical:
+      first_occurrence: "~29,000 BCE"
+      locations: ["China", "Japan", "Siberia"]
+      key_figures: ["Hunter-gatherer potters"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [basketry, gourd-vessels]
+    alternate_solutions: ["coil-pottery", "wheel-pottery", "mold-pottery"]
+
+  weaving:
+    id: weaving
+    name: "Weaving"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [tool-making]
+      soft: [agriculture, animal-domestication]
+      catalyst: [division-of-labor]
+      synergistic: []
+    description: "Interlacing fibers to create textiles"
+    unlocks:
+      technologies: [clothing-production, sails, nets]
+      capabilities: [textile-manufacturing, rope-making, fabric-arts]
+    resources:
+      materials: [plant-fibers, animal-hair, loom]
+      knowledge: [fiber-processing, pattern-creation]
+      social: [textile-specialization]
+    historical:
+      first_occurrence: "~34,000 BCE"
+      locations: ["Georgia", "Peru", "Turkey"]
+      key_figures: ["Textile workers"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [knitting, felting]
+    alternate_solutions: ["backstrap-loom", "ground-loom", "vertical-loom"]
+
+  animal-domestication:
+    id: animal-domestication
+    name: "Animal Domestication"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [hunting-tools, animal-behavior]
+      soft: [agriculture, cooperation]
+      catalyst: [agriculture]
+      synergistic: []
+    description: "Selective breeding and taming of wild animals"
+    unlocks:
+      technologies: [plowing, transportation, dairy]
+      capabilities: [animal-labor, meat-production, material-sources]
+    resources:
+      materials: [enclosures, feed, breeding-stock]
+      knowledge: [animal-husbandry, selective-breeding]
+      social: [herding-practices, ownership-systems]
+    historical:
+      first_occurrence: "~15,000 BCE"
+      locations: ["Near East", "China", "Andes", "Mesoamerica"]
+      key_figures: ["Early herders"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [semi-domestication, hunting-partnerships]
+    alternate_solutions: ["dog-sledding", "llama-packing", "horse-riding"]
+
+  architecture:
+    id: architecture
+    name: "Architecture"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [tool-making, mathematics]
+      soft: [metallurgy]
+      catalyst: [governance, religion]
+      synergistic: []
+    description: "Systematic design and construction of buildings and structures"
+    unlocks:
+      technologies: [engineering, urban-planning, monuments]
+      capabilities: [large-structures, complex-buildings, civic-spaces]
+    resources:
+      materials: [stone, wood, mortar, construction-tools]
+      knowledge: [structural-principles, geometric-design]
+      social: [specialized-builders, project-coordination]
+    historical:
+      first_occurrence: "~9000 BCE"
+      locations: ["Turkey", "Near East", "Egypt", "Indus Valley"]
+      key_figures: ["Imhotep", "Master builders"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [stone-architecture, wood-architecture, mud-brick]
+    alternate_solutions: ["post-and-lintel", "arch-construction", "dome-building"]
+
+  engineering:
+    id: engineering
+    name: "Engineering"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [mathematics, metallurgy]
+      soft: [architecture, irrigation]
+      catalyst: [architecture]
+      synergistic: []
+    description: "Application of scientific principles to design and build systems"
+    unlocks:
+      technologies: [aqueducts, bridges, siege-engines]
+      capabilities: [mechanical-systems, hydraulic-engineering, structural-design]
+    resources:
+      materials: [metals, tools, measuring-devices]
+      knowledge: [mechanical-principles, hydraulics]
+      social: [engineering-guilds, technical-education]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "Greece", "Rome", "China"]
+      key_figures: ["Archimedes", "Hero of Alexandria", "Roman engineers"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [civil-engineering, mechanical-engineering, hydraulic-engineering]
+    alternate_solutions: ["lever-systems", "pulley-systems", "gear-mechanisms"]
+
+  glass-making:
+    id: glass-making
+    name: "Glass Making"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [fire-control, metallurgy]
+      soft: [pottery, trade]
+      catalyst: [metallurgy]
+      synergistic: []
+    description: "Production of transparent materials from silica"
+    unlocks:
+      technologies: [optics, chemistry, windows]
+      capabilities: [transparent-containers, decorative-objects, optical-elements]
+    resources:
+      materials: [sand, alkali, lime, high-heat-furnaces]
+      knowledge: [temperature-control, glass-forming]
+      social: [glass-workshops, trade-networks]
+    historical:
+      first_occurrence: "~3500 BCE"
+      locations: ["Mesopotamia", "Egypt", "Phoenicia"]
+      key_figures: ["Phoenician glassmakers"]
+      parallel_invention: false
+    complexity: high
+    alternate_paths: [blown-glass, cast-glass, pressed-glass]
+    alternate_solutions: ["crystal-cutting", "obsidian-working", "mica-sheets"]
+
+  concrete:
+    id: concrete
+    name: "Concrete"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [architecture, fire-control]
+      soft: [metallurgy]
+      catalyst: [engineering]
+      synergistic: []
+    description: "Artificial stone created from cement, aggregates, and water"
+    unlocks:
+      technologies: [domes, vaults, massive-construction]
+      capabilities: [durable-construction, complex-shapes, waterproof-structures]
+    resources:
+      materials: [limestone, volcanic-ash, aggregates, water]
+      knowledge: [mixing-ratios, curing-processes]
+      social: [construction-teams, material-supply]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Egypt", "Greece", "Rome"]
+      key_figures: ["Roman engineers"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [lime-mortar, pozzolan-concrete, hydraulic-cement]
+    alternate_solutions: ["stone-fitting", "mud-brick", "wood-construction"]
+
+  roads:
+    id: roads
+    name: "Roads"
+    type: material
+    era: ancient
+    prerequisites:
+      hard: [engineering, governance]
+      soft: [trade, military-organization]
+      catalyst: [governance]
+      synergistic: []
+    description: "Constructed pathways for efficient transportation"
+    unlocks:
+      technologies: [logistics, postal-systems, commerce-networks]
+      capabilities: [rapid-transport, military-mobility, trade-facilitation]
+    resources:
+      materials: [stone, gravel, surveying-tools]
+      knowledge: [road-engineering, drainage-systems]
+      social: [road-maintenance, imperial-administration]
+    historical:
+      first_occurrence: "~4000 BCE"
+      locations: ["Mesopotamia", "Egypt", "Indus Valley", "Rome", "Inca"]
+      key_figures: ["Roman road engineers", "Inca road builders"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [stone-roads, dirt-roads, elevated-causeways]
+    alternate_solutions: ["river-transport", "pack-trails", "coastal-shipping"]

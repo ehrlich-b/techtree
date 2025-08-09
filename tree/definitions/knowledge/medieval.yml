@@ -1,0 +1,111 @@
+# Knowledge Technologies - Medieval Era
+# Abstract systems for understanding and recording
+
+technologies:
+  algebra:
+    id: algebra
+    name: "Algebra"
+    type: knowledge
+    era: medieval
+    prerequisites:
+      hard: [mathematics, writing-systems]
+      soft: [geometry, philosophy]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Mathematical system using symbols to represent unknown quantities"
+    unlocks:
+      technologies: [advanced-mathematics, physics, engineering-calculations]
+      capabilities: [abstract-problem-solving, equation-manipulation, mathematical-modeling]
+    resources:
+      materials: [writing-materials, calculation-aids]
+      knowledge: [symbolic-thinking, mathematical-abstraction, logical-reasoning]
+      social: [mathematical-schools, scholarly-tradition]
+    historical:
+      first_occurrence: "~820 CE"
+      locations: ["Islamic world", "India", "China"]
+      key_figures: ["Al-Khwarizmi", "Brahmagupta", "Omar Khayyam"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [symbolic-algebra, geometric-algebra, numerical-methods]
+    alternate_solutions: ["geometric-constructions", "arithmetic-methods", "abacus-calculation"]
+
+  chemistry:
+    id: chemistry
+    name: "Chemistry"
+    type: knowledge
+    era: medieval
+    prerequisites:
+      hard: [mathematics, metallurgy]
+      soft: [glass-making, medicine, philosophy]
+      catalyst: [metallurgy]
+      synergistic: []
+    description: "Systematic study of matter and its transformations"
+    unlocks:
+      technologies: [experimental-chemistry, chemical-industry, pharmacology]
+      capabilities: [material-transformation, chemical-analysis, substance-synthesis]
+    resources:
+      materials: [laboratory-equipment, chemical-substances, measuring-instruments]
+      knowledge: [substance-properties, transformation-processes, experimental-methods]
+      social: [alchemical-tradition, experimental-workshops]
+    historical:
+      first_occurrence: "~800 CE"
+      locations: ["Islamic world", "China", "Europe"]
+      key_figures: ["Jabir ibn Hayyan", "Al-Razi", "Roger Bacon"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [alchemical-tradition, experimental-chemistry, theoretical-chemistry]
+    alternate_solutions: ["metallurgical-knowledge", "herbal-medicine", "craft-traditions"]
+
+  scientific-method:
+    id: scientific-method
+    name: "Scientific Method"
+    type: knowledge
+    era: medieval
+    prerequisites:
+      hard: [philosophy, mathematics]
+      soft: [logic, writing-systems, optics]
+      catalyst: [philosophy]
+      synergistic: []
+    description: "Systematic approach to investigating natural phenomena through observation and experiment"
+    unlocks:
+      technologies: [experimental-science, physics, chemistry, biology]
+      capabilities: [empirical-investigation, hypothesis-testing, knowledge-validation]
+    resources:
+      materials: [experimental-apparatus, recording-materials, measuring-instruments]
+      knowledge: [logical-reasoning, experimental-design, data-analysis]
+      social: [scientific-institutions, peer-review, scholarly-communication]
+    historical:
+      first_occurrence: "~1000 CE"
+      locations: ["Islamic world", "Europe"]
+      key_figures: ["Ibn al-Haytham", "Roger Bacon", "Robert Grosseteste"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [empirical-method, mathematical-method, experimental-method]
+    alternate_solutions: ["philosophical-inquiry", "religious-revelation", "traditional-knowledge"]
+
+  universities:
+    id: universities
+    name: "Universities"
+    type: knowledge
+    era: medieval
+    prerequisites:
+      hard: [education-systems, writing-systems]
+      soft: [philosophy, law, mathematics]
+      catalyst: [education-systems]
+      synergistic: []
+    description: "Formal institutions for higher learning and knowledge preservation"
+    unlocks:
+      technologies: [advanced-education, research-institutions, professional-training]
+      capabilities: [knowledge-systematization, scholarly-research, professional-education]
+    resources:
+      materials: [buildings, books, teaching-materials]
+      knowledge: [curriculum-development, pedagogical-methods, scholarly-disciplines]
+      social: [academic-guilds, student-communities, institutional-governance]
+    historical:
+      first_occurrence: "~1088 CE"
+      locations: ["Europe", "Islamic world", "China"]
+      key_figures: ["Medieval scholars", "University founders"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [cathedral-schools, madrasas, scholarly-academies]
+    alternate_solutions: ["monastery-schools", "court-schools", "apprenticeship-systems"]

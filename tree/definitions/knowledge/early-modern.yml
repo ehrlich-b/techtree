@@ -1,0 +1,111 @@
+# Knowledge Technologies - Early Modern Era
+# Abstract systems for understanding and recording
+
+technologies:
+  calculus:
+    id: calculus
+    name: "Calculus"
+    type: knowledge
+    era: early-modern
+    prerequisites:
+      hard: [algebra, geometry]
+      soft: [physics, astronomy, philosophy]
+      catalyst: [algebra]
+      synergistic: []
+    description: "Mathematical system for analyzing continuous change and motion"
+    unlocks:
+      technologies: [advanced-physics, engineering-mathematics, scientific-modeling]
+      capabilities: [motion-analysis, rate-calculation, optimization-problems]
+    resources:
+      materials: [mathematical-notation, calculation-aids]
+      knowledge: [infinite-series, differential-equations, mathematical-proof]
+      social: [mathematical-societies, academic-institutions]
+    historical:
+      first_occurrence: "~1665 CE"
+      locations: ["England", "Germany"]
+      key_figures: ["Isaac Newton", "Gottfried Leibniz"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [differential-calculus, integral-calculus, analytical-geometry]
+    alternate_solutions: ["geometric-methods", "algebraic-approximation", "numerical-methods"]
+
+  physics:
+    id: physics
+    name: "Physics"
+    type: knowledge
+    era: early-modern
+    prerequisites:
+      hard: [mathematics, scientific-method]
+      soft: [astronomy, engineering, optics]
+      catalyst: [scientific-method]
+      synergistic: []
+    description: "Systematic study of matter, energy, and their interactions"
+    unlocks:
+      technologies: [mechanical-engineering, thermodynamics, electromagnetism]
+      capabilities: [natural-law-understanding, predictive-modeling, technological-application]
+    resources:
+      materials: [experimental-apparatus, measuring-instruments, laboratory-equipment]
+      knowledge: [mathematical-modeling, experimental-design, theoretical-frameworks]
+      social: [scientific-academies, research-institutions, peer-review]
+    historical:
+      first_occurrence: "~1600 CE"
+      locations: ["Italy", "England", "France", "Germany"]
+      key_figures: ["Galileo Galilei", "Isaac Newton", "Johannes Kepler"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [experimental-physics, theoretical-physics, applied-physics]
+    alternate_solutions: ["natural-philosophy", "aristotelian-physics", "alchemical-theory"]
+
+  scientific-revolution:
+    id: scientific-revolution
+    name: "Scientific Revolution"
+    type: knowledge
+    era: early-modern
+    prerequisites:
+      hard: [scientific-method, mathematics]
+      soft: [printing-press, universities, telescope]
+      catalyst: [printing-press]
+      synergistic: []
+    description: "Transformation in scientific thinking emphasizing observation and experiment"
+    unlocks:
+      technologies: [modern-science, technological-revolution, enlightenment]
+      capabilities: [empirical-investigation, systematic-knowledge, scientific-progress]
+    resources:
+      materials: [scientific-instruments, printing-technology, communication-networks]
+      knowledge: [experimental-methodology, mathematical-analysis, theoretical-frameworks]
+      social: [scientific-societies, academic-institutions, intellectual-networks]
+    historical:
+      first_occurrence: "~1543 CE"
+      locations: ["Europe"]
+      key_figures: ["Copernicus", "Galileo", "Newton", "Kepler", "Harvey"]
+      parallel_invention: false
+    complexity: extreme
+    alternate_paths: [copernican-revolution, newtonian-synthesis, experimental-philosophy]
+    alternate_solutions: ["scholastic-method", "aristotelian-natural-philosophy", "hermetic-tradition"]
+
+  peer-review:
+    id: peer-review
+    name: "Peer Review"
+    type: knowledge
+    era: early-modern
+    prerequisites:
+      hard: [scientific-method, printing-press]
+      soft: [universities, scientific-revolution]
+      catalyst: [printing-press]
+      synergistic: []
+    description: "System of scholarly evaluation and validation of research"
+    unlocks:
+      technologies: [quality-control, scientific-journals, research-standards]
+      capabilities: [knowledge-validation, error-detection, scholarly-communication]
+    resources:
+      materials: [printing-facilities, communication-systems, institutional-networks]
+      knowledge: [evaluation-criteria, scholarly-standards, critical-analysis]
+      social: [scientific-societies, editorial-systems, academic-networks]
+    historical:
+      first_occurrence: "~1665 CE"
+      locations: ["England", "France"]
+      key_figures: ["Royal Society", "Henry Oldenburg"]
+      parallel_invention: false
+    complexity: high
+    alternate_paths: [journal-publication, society-review, institutional-validation]
+    alternate_solutions: ["patronage-system", "guild-approval", "religious-authority"]

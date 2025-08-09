@@ -1,0 +1,138 @@
+# Social Technologies - Medieval Era
+# Organizational structures that coordinate human effort
+
+technologies:
+  banking:
+    id: banking
+    name: "Banking"
+    type: social
+    era: medieval
+    prerequisites:
+      hard: [currency, writing-systems]
+      soft: [mathematics, law, trade]
+      catalyst: [currency]
+      synergistic: []
+    description: "Financial institutions for lending, borrowing, and storing wealth"
+    unlocks:
+      technologies: [credit-systems, international-finance, investment-banking]
+      capabilities: [capital-formation, risk-management, economic-development]
+    resources:
+      materials: [secure-storage, accounting-records, communication-networks]
+      knowledge: [financial-mathematics, risk-assessment, market-analysis]
+      social: [trust-networks, legal-frameworks, regulatory-systems]
+    historical:
+      first_occurrence: "~1150 CE"
+      locations: ["Italy", "Islamic world", "China"]
+      key_figures: ["Medici family", "Templar knights", "Islamic bankers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [merchant-banking, temple-banking, state-banking]
+    alternate_solutions: ["money-changers", "trade-partnerships", "barter-systems"]
+
+  guilds:
+    id: guilds
+    name: "Guilds"
+    type: social
+    era: medieval
+    prerequisites:
+      hard: [trade, education-systems]
+      soft: [currency, law, markets]
+      catalyst: [trade]
+      synergistic: []
+    description: "Professional associations controlling crafts and trades"
+    unlocks:
+      technologies: [standardization, quality-control, professional-training]
+      capabilities: [skill-development, market-regulation, professional-standards]
+    resources:
+      materials: [guild-halls, workshop-equipment, training-materials]
+      knowledge: [craft-techniques, quality-standards, trade-secrets]
+      social: [membership-systems, apprenticeship-programs, collective-bargaining]
+    historical:
+      first_occurrence: "~1000 CE"
+      locations: ["Europe", "Islamic world", "China", "India"]
+      key_figures: ["Master craftsmen", "Guild leaders"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [craft-guilds, merchant-guilds, professional-associations]
+    alternate_solutions: ["family-workshops", "court-artisans", "monastery-crafts"]
+
+  patents:
+    id: patents
+    name: "Patents"
+    type: social
+    era: medieval
+    prerequisites:
+      hard: [law, writing-systems]
+      soft: [trade, guilds]
+      catalyst: [guilds]
+      synergistic: []
+    description: "Legal protection for inventors' rights to their innovations"
+    unlocks:
+      technologies: [innovation-incentives, technology-transfer, intellectual-property]
+      capabilities: [invention-protection, knowledge-dissemination, innovation-reward]
+    resources:
+      materials: [legal-documents, record-keeping-systems]
+      knowledge: [legal-frameworks, innovation-assessment, documentation-standards]
+      social: [legal-institutions, patent-offices, enforcement-mechanisms]
+    historical:
+      first_occurrence: "~1421 CE"
+      locations: ["Venice", "England", "Holy Roman Empire"]
+      key_figures: ["Venetian Senate", "English monarchy"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [monopoly-grants, guild-protections, trade-secrets]
+    alternate_solutions: ["guild-monopolies", "royal-privileges", "craft-secrets"]
+
+  insurance:
+    id: insurance
+    name: "Insurance"
+    type: social
+    era: medieval
+    prerequisites:
+      hard: [banking, mathematics]
+      soft: [trade, law, currency]
+      catalyst: [banking]
+      synergistic: []
+    description: "Risk-sharing mechanisms for protecting against losses"
+    unlocks:
+      technologies: [actuarial-science, risk-management, financial-markets]
+      capabilities: [risk-mitigation, capital-protection, economic-stability]
+    resources:
+      materials: [financial-records, communication-networks, legal-contracts]
+      knowledge: [probability-assessment, risk-calculation, market-analysis]
+      social: [insurance-companies, regulatory-frameworks, trust-networks]
+    historical:
+      first_occurrence: "~1347 CE"
+      locations: ["Italy", "Northern Europe", "Mediterranean"]
+      key_figures: ["Venetian merchants", "Lombard bankers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [marine-insurance, fire-insurance, life-insurance]
+    alternate_solutions: ["mutual-aid", "family-support", "religious-charity"]
+
+  printing-press:
+    id: printing-press
+    name: "Printing Press"
+    type: social
+    era: medieval
+    prerequisites:
+      hard: [metallurgy, writing-systems]
+      soft: [engineering]
+      catalyst: [universities]
+      synergistic: []
+    description: "Mechanical device for mass reproduction of written texts"
+    unlocks:
+      technologies: [mass-literacy, knowledge-dissemination, information-revolution]
+      capabilities: [text-reproduction, knowledge-preservation, communication-amplification]
+    resources:
+      materials: [metal-type, printing-press, paper, ink]
+      knowledge: [typesetting, printing-techniques, text-formatting]
+      social: [printing-workshops, publishing-industry, literacy-expansion]
+    historical:
+      first_occurrence: "~1440 CE"
+      locations: ["Germany", "China", "Korea"]
+      key_figures: ["Johannes Gutenberg", "Bi Sheng"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [movable-type, woodblock-printing, lithography]
+    alternate_solutions: ["manuscript-copying", "oral-tradition", "scribal-schools"]

@@ -55,3 +55,111 @@ technologies:
     complexity: medium
     alternate_paths: []
     alternate_solutions: ["lightning-capture", "volcanic-fire"]
+
+  shelter-construction:
+    id: shelter-construction
+    name: "Shelter Construction"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [tool-making]
+      soft: [cooperation]
+      catalyst: []
+      synergistic: []
+    description: "Building structures for protection from weather and predators"
+    unlocks:
+      technologies: [architecture, settlement-planning, insulation]
+      capabilities: [weather-protection, security, privacy]
+    resources:
+      materials: [wood, stones, animal-hides, vegetation]
+      knowledge: [structural-engineering, weatherproofing]
+      social: [group-coordination]
+    historical:
+      first_occurrence: "~500,000 years ago"
+      locations: ["Africa", "Europe", "Asia"]
+      key_figures: ["Homo erectus", "Neanderthals"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["cave-dwelling", "tree-platforms", "underground-shelters"]
+
+  hunting-tools:
+    id: hunting-tools
+    name: "Hunting Tools"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [tool-making]
+      soft: [cooperation]
+      catalyst: []
+      synergistic: []
+    description: "Specialized implements for capturing and killing animals"
+    unlocks:
+      technologies: [projectile-weapons, traps, nets]
+      capabilities: [ranged-hunting, large-game-hunting, efficient-killing]
+    resources:
+      materials: [wood, stone, bone, sinew]
+      knowledge: [animal-behavior, ballistics, leverage]
+      social: [group-hunting-strategies]
+    historical:
+      first_occurrence: "~400,000 years ago"
+      locations: ["Africa", "Europe"]
+      key_figures: ["Homo heidelbergensis"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["persistence-hunting", "trapping", "scavenging"]
+
+  cooking:
+    id: cooking
+    name: "Cooking"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [fire-control]
+      soft: [tool-making]
+      catalyst: []
+      synergistic: []
+    description: "Applying heat to transform and preserve food"
+    unlocks:
+      technologies: [food-preservation, brewing, metallurgy]
+      capabilities: [improved-nutrition, food-safety, taste-enhancement]
+    resources:
+      materials: [fire, containers, food]
+      knowledge: [heat-effects, timing, temperature-control]
+      social: [food-sharing]
+    historical:
+      first_occurrence: "~1.9 million years ago"
+      locations: ["Africa"]
+      key_figures: ["Homo erectus"]
+      parallel_invention: false
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["sun-drying", "fermentation", "smoking"]
+
+  clothing:
+    id: clothing
+    name: "Clothing"
+    type: material
+    era: prehistoric
+    prerequisites:
+      hard: [tool-making, hunting-tools]
+      soft: [fire-control]
+      catalyst: []
+      synergistic: []
+    description: "Artificial coverings for protection and thermoregulation"
+    unlocks:
+      technologies: [weaving, leather-working, fashion]
+      capabilities: [climate-adaptation, protection, social-signaling]
+    resources:
+      materials: [animal-hides, plant-fibers, bone-needles]
+      knowledge: [body-coverage, material-properties]
+      social: [skill-sharing]
+    historical:
+      first_occurrence: "~170,000 BCE"
+      locations: ["Africa", "Europe", "Asia"]
+      key_figures: ["Early Homo sapiens"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["body-painting", "shelter-reliance", "fat-layer-adaptation"]

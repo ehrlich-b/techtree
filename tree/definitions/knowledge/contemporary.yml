@@ -1,0 +1,67 @@
+# Knowledge Technologies - Contemporary Era
+# Advanced theoretical frameworks and methodologies
+
+technologies:
+  machine-learning:
+    id: machine-learning
+    name: "Machine Learning"
+    type: knowledge
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [computer-science, mathematics]
+      soft: [artificial-intelligence]
+      catalyst: [computer-science]
+      synergistic: []
+    description: "Methods for enabling computers to learn and improve from experience"
+    unlocks:
+      technologies: []
+      capabilities: [predictive-modeling, pattern-discovery, automated-decision-making]
+
+  complexity-science:
+    id: complexity-science
+    name: "Complexity Science"
+    type: knowledge
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [mathematics, physics]
+      soft: [computer-science]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Study of complex systems and emergent behaviors"
+    unlocks:
+      technologies: []
+      capabilities: [system-modeling, emergence-understanding, network-analysis]
+
+  synthetic-biology:
+    id: synthetic-biology
+    name: "Synthetic Biology"
+    type: knowledge
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [genetics, engineering]
+      soft: [computer-science]
+      catalyst: [genetics]
+      synergistic: []
+    description: "Engineering biological systems and organisms for useful purposes"
+    unlocks:
+      technologies: []
+      capabilities: [biological-design, engineered-organisms, biotechnology-applications]
+
+  neuroscience:
+    id: neuroscience
+    name: "Neuroscience"
+    type: knowledge
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [medicine]
+      soft: [computer-science]
+      catalyst: [scientific-method]
+      synergistic: []
+    description: "Scientific study of the nervous system and brain function"
+    unlocks:
+      technologies: []
+      capabilities: [brain-understanding, neural-interfaces, cognitive-enhancement]

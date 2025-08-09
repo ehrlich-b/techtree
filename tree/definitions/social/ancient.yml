@@ -6,4 +6,272 @@
 # Future additions might include governance, property systems, law, etc.
 
 technologies:
-  # Future: governance, property, law, markets, religion, bureaucracy
+  property:
+    id: property
+    name: "Property"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [agriculture, kinship-systems]
+      soft: [trade, food-storage]
+      catalyst: [food-storage]
+      synergistic: []
+    description: "Private or communal ownership of land and resources"
+    unlocks:
+      technologies: [law, governance, markets]
+      capabilities: [wealth-accumulation, inheritance-systems, land-management]
+    resources:
+      materials: [boundary-markers, storage-facilities]
+      knowledge: [ownership-concepts, inheritance-rules]
+      social: [property-enforcement, dispute-resolution]
+    historical:
+      first_occurrence: "~10,000 BCE"
+      locations: ["Near East", "China", "Mesoamerica"]
+      key_figures: ["Early agriculturalists"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [communal-property, private-property, state-property]
+    alternate_solutions: ["clan-territories", "seasonal-use-rights", "usufruct-systems"]
+
+  governance:
+    id: governance
+    name: "Governance"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [kinship-systems, cooperation]
+      soft: [property, trade]
+      catalyst: [agriculture]
+      synergistic: []
+    description: "Formal systems of political authority and decision-making"
+    unlocks:
+      technologies: [law, bureaucracy, military-organization]
+      capabilities: [collective-decision-making, conflict-resolution, resource-allocation]
+    resources:
+      materials: [meeting-spaces, administrative-records]
+      knowledge: [political-theory, leadership-skills]
+      social: [authority-structures, legitimacy-systems]
+    historical:
+      first_occurrence: "~7000 BCE"
+      locations: ["Mesopotamia", "Egypt", "Indus Valley", "China"]
+      key_figures: ["Early rulers", "Tribal councils"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [chieftains, councils, kings]
+    alternate_solutions: ["tribal-democracy", "theocracy", "city-states"]
+
+  law:
+    id: law
+    name: "Law"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [governance, language]
+      soft: [writing-systems, property]
+      catalyst: [trade]
+      synergistic: []
+    description: "Formal rules and procedures for social behavior"
+    unlocks:
+      technologies: [courts, contracts, legal-systems]
+      capabilities: [predictable-justice, conflict-resolution, social-order]
+    resources:
+      materials: [legal-records, enforcement-tools]
+      knowledge: [legal-principles, precedent-systems]
+      social: [judicial-authority, law-enforcement]
+    historical:
+      first_occurrence: "~3500 BCE"
+      locations: ["Mesopotamia", "Egypt", "India"]
+      key_figures: ["Hammurabi", "Ancient lawmakers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [customary-law, written-codes, religious-law]
+    alternate_solutions: ["trial-by-ordeal", "compensation-systems", "exile-punishment"]
+
+  markets:
+    id: markets
+    name: "Markets"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [trade, counting]
+      soft: [property, governance]
+      catalyst: [agriculture]
+      synergistic: []
+    description: "Organized systems for exchange of goods and services"
+    unlocks:
+      technologies: [currency, banking, commerce]
+      capabilities: [price-discovery, economic-efficiency, wealth-creation]
+    resources:
+      materials: [market-spaces, transport-systems]
+      knowledge: [value-assessment, exchange-rates]
+      social: [market-regulation, trader-networks]
+    historical:
+      first_occurrence: "~8000 BCE"
+      locations: ["Near East", "Indus Valley", "China"]
+      key_figures: ["Early merchants"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [barter-markets, currency-markets, credit-systems]
+    alternate_solutions: ["traveling-merchants", "periodic-markets", "temple-commerce"]
+
+  religion:
+    id: religion
+    name: "Religion"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [language, cooperation]
+      soft: [seasonal-patterns]
+      catalyst: [language]
+      synergistic: []
+    description: "Organized systems of spiritual beliefs and practices"
+    unlocks:
+      technologies: [temples, priest-classes, moral-systems]
+      capabilities: [social-cohesion, meaning-making, behavioral-coordination]
+    resources:
+      materials: [ritual-objects, sacred-spaces]
+      knowledge: [mythological-narratives, ritual-procedures]
+      social: [religious-authority, community-ceremonies]
+    historical:
+      first_occurrence: "~100,000 BCE"
+      locations: ["Universal human trait"]
+      key_figures: ["Shamans", "Priests", "Religious founders"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [shamanism, polytheism, monotheism]
+    alternate_solutions: ["ancestor-worship", "nature-spirits", "cosmic-deities"]
+
+  bureaucracy:
+    id: bureaucracy
+    name: "Bureaucracy"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [governance, writing-systems]
+      soft: [mathematics, law]
+      catalyst: [governance]
+      synergistic: []
+    description: "Formal administrative systems with specialized roles and procedures"
+    unlocks:
+      technologies: [taxation, record-keeping, imperial-administration]
+      capabilities: [systematic-administration, policy-implementation, institutional-memory]
+    resources:
+      materials: [administrative-records, offices, communication-systems]
+      knowledge: [administrative-procedures, record-keeping]
+      social: [administrative-hierarchy, professional-administrators]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "Indus Valley"]
+      key_figures: ["Sumerian administrators", "Egyptian scribes", "Chinese mandarins"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [centralized-bureaucracy, decentralized-administration, merit-based-selection]
+    alternate_solutions: ["tribal-councils", "personal-rule", "religious-administration"]
+
+  education-systems:
+    id: education-systems
+    name: "Education Systems"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [writing-systems, teaching]
+      soft: [philosophy, mathematics]
+      catalyst: [philosophy]
+      synergistic: []
+    description: "Formal institutions and methods for knowledge transmission"
+    unlocks:
+      technologies: [schools, universities, professional-training]
+      capabilities: [systematic-learning, knowledge-preservation, skilled-workforce]
+    resources:
+      materials: [educational-materials, learning-spaces, texts]
+      knowledge: [curriculum-design, pedagogical-methods]
+      social: [teachers, educational-institutions, student-selection]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "India", "China", "Greece"]
+      key_figures: ["Sumerian schools", "Egyptian scribal schools", "Greek academies"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [scribal-schools, philosophical-schools, technical-training]
+    alternate_solutions: ["apprenticeship", "oral-tradition", "family-teaching"]
+
+  military-organization:
+    id: military-organization
+    name: "Military Organization"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [cooperation, governance]
+      soft: [metallurgy, property]
+      catalyst: [property]
+      synergistic: []
+    description: "Systematic structures for organizing and coordinating armed forces"
+    unlocks:
+      technologies: [professional-armies, military-engineering, warfare-tactics]
+      capabilities: [organized-warfare, territorial-expansion, defense-systems]
+    resources:
+      materials: [weapons, armor, fortifications]
+      knowledge: [military-tactics, strategy, logistics]
+      social: [military-hierarchy, warrior-training, command-structure]
+    historical:
+      first_occurrence: "~3500 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "Greece", "Rome"]
+      key_figures: ["Sargon of Akkad", "Alexander the Great", "Roman legions"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [citizen-militias, professional-armies, mercenary-forces]
+    alternate_solutions: ["tribal-warriors", "feudal-levies", "standing-armies"]
+
+  currency:
+    id: currency
+    name: "Currency"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [markets, metallurgy]
+      soft: [mathematics, governance]
+      catalyst: [trade]
+      synergistic: []
+    description: "Standardized medium of exchange for goods and services"
+    unlocks:
+      technologies: [banking, taxation, accounting]
+      capabilities: [economic-efficiency, wealth-storage, complex-transactions]
+    resources:
+      materials: [precious-metals, minting-tools, standardization-systems]
+      knowledge: [value-systems, exchange-rates]
+      social: [monetary-authorities, merchant-networks, trust-systems]
+    historical:
+      first_occurrence: "~700 BCE"
+      locations: ["Lydia", "Greece", "China", "India"]
+      key_figures: ["Lydian kings", "Chinese emperors", "Greek city-states"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [commodity-money, coined-money, paper-money]
+    alternate_solutions: ["barter-systems", "gift-economies", "tribute-systems"]
+
+  contracts:
+    id: contracts
+    name: "Contracts"
+    type: social
+    era: ancient
+    prerequisites:
+      hard: [law, writing-systems]
+      soft: [property, markets]
+      catalyst: [markets]
+      synergistic: []
+    description: "Formal agreements defining mutual obligations and rights"
+    unlocks:
+      technologies: [commercial-law, banking, insurance]
+      capabilities: [binding-agreements, risk-management, complex-transactions]
+    resources:
+      materials: [legal-documents, recording-systems]
+      knowledge: [legal-principles, contract-terms]
+      social: [legal-enforcement, commercial-trust, dispute-resolution]
+    historical:
+      first_occurrence: "~2000 BCE"
+      locations: ["Mesopotamia", "Egypt", "Rome", "China"]
+      key_figures: ["Babylonian merchants", "Roman jurists"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [verbal-contracts, written-contracts, witnessed-agreements]
+    alternate_solutions: ["handshake-deals", "oath-taking", "kinship-obligations"]

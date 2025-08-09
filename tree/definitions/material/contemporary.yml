@@ -1,0 +1,99 @@
+# Material Technologies - Contemporary Era
+# Current frontiers and emerging technologies
+
+technologies:
+  artificial-intelligence:
+    id: artificial-intelligence
+    name: "Artificial Intelligence"
+    type: material
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [computer, computer-science]
+      soft: [mathematics]
+      catalyst: [computer-science]
+      synergistic: []
+    description: "Systems capable of performing tasks that typically require human intelligence"
+    unlocks:
+      technologies: []
+      capabilities: [machine-learning, pattern-recognition, autonomous-decision-making]
+
+  quantum-computing:
+    id: quantum-computing
+    name: "Quantum Computing"
+    type: material
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [quantum-mechanics, computer]
+      soft: [physics, mathematics]
+      catalyst: [quantum-mechanics]
+      synergistic: []
+    description: "Computing systems that harness quantum mechanical phenomena for processing"
+    unlocks:
+      technologies: []
+      capabilities: [quantum-algorithms, cryptography-breaking, parallel-computation]
+
+  gene-editing:
+    id: gene-editing
+    name: "Gene Editing"
+    type: material
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [genetics, medicine]
+      soft: [computer]
+      catalyst: [genetics]
+      synergistic: []
+    description: "Technologies for precise modification of DNA sequences"
+    unlocks:
+      technologies: []
+      capabilities: [genetic-modification, disease-treatment, biological-engineering]
+
+  nanotechnology:
+    id: nanotechnology
+    name: "Nanotechnology"
+    type: material
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [physics, chemistry-periodic-table]
+      soft: [engineering, mass-production]
+      catalyst: [physics]
+      synergistic: []
+    description: "Manipulation of matter on atomic and molecular scale"
+    unlocks:
+      technologies: []
+      capabilities: [molecular-assembly, advanced-materials, precision-medicine]
+
+  3d-printing:
+    id: 3d-printing
+    name: "3D Printing"
+    type: material
+    era: contemporary
+    complexity: high
+    prerequisites:
+      hard: [computer, mass-production]
+      soft: [engineering]
+      catalyst: [computer]
+      synergistic: []
+    description: "Additive manufacturing technology creating objects layer by layer"
+    unlocks:
+      technologies: []
+      capabilities: [rapid-prototyping, customized-manufacturing, distributed-production]
+
+  autonomous-systems:
+    id: autonomous-systems
+    name: "Autonomous Systems"
+    type: material
+    era: contemporary
+    complexity: extreme
+    prerequisites:
+      hard: [artificial-intelligence, electronics]
+      soft: [navigation-instruments]
+      catalyst: [artificial-intelligence]
+      synergistic: []
+    description: "Self-operating systems capable of performing tasks without human intervention"
+    unlocks:
+      technologies: []
+      capabilities: [autonomous-vehicles, robotic-automation, unmanned-operations]
