@@ -1,0 +1,99 @@
+# Material Technologies - Information Era
+# The third major transformation in human history
+
+technologies:
+  electronics:
+    id: electronics
+    name: "Electronics"
+    type: material
+    era: information
+    complexity: medium
+    prerequisites:
+      hard: [electricity, physics]
+      soft: [mathematics]
+      catalyst: [physics]
+      synergistic: []
+    description: "Technology for controlling electric current through circuits and components"
+    unlocks:
+      technologies: [transistor, computer]
+      capabilities: [signal-processing, information-storage, automation]
+
+  transistor:
+    id: transistor
+    name: "Transistor"
+    type: material
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [electronics, physics]
+      soft: [chemistry-periodic-table]
+      catalyst: [electromagnetism]
+      synergistic: []
+    description: "Semiconductor device for switching and amplifying electrical signals"
+    unlocks:
+      technologies: [computer]
+      capabilities: [miniaturization, reliable-switching, electronic-computation]
+
+  computer:
+    id: computer
+    name: "Computer"
+    type: material
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [transistor, mathematics]
+      soft: [logic, electromagnetism]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Programmable electronic device for processing and storing information"
+    unlocks:
+      technologies: [internet]
+      capabilities: [data-processing, computation, information-storage]
+
+  internet:
+    id: internet
+    name: "Internet"
+    type: material
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [computer, telegraph]
+      soft: []
+      catalyst: [computer]
+      synergistic: []
+    description: "Global network connecting computers and enabling information exchange"
+    unlocks:
+      technologies: []
+      capabilities: [global-communication, information-sharing, distributed-computing]
+
+  mobile-devices:
+    id: mobile-devices
+    name: "Mobile Devices"
+    type: material
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [transistor, telegraph]
+      soft: [computer]
+      catalyst: [electronics]
+      synergistic: []
+    description: "Portable electronic devices for communication and computing"
+    unlocks:
+      technologies: []
+      capabilities: [portable-communication, location-independence, personal-computing]
+
+  renewable-energy:
+    id: renewable-energy
+    name: "Renewable Energy"
+    type: material
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [electricity, physics]
+      soft: [engineering]
+      catalyst: [electromagnetism]
+      synergistic: []
+    description: "Technologies for generating power from renewable sources"
+    unlocks:
+      technologies: []
+      capabilities: [sustainable-power, energy-independence, clean-electricity]

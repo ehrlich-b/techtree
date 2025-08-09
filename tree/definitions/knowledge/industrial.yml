@@ -1,0 +1,111 @@
+# Knowledge Technologies - Industrial Era
+# Abstract systems for understanding and recording
+
+technologies:
+  thermodynamics:
+    id: thermodynamics
+    name: "Thermodynamics"
+    type: knowledge
+    era: industrial
+    prerequisites:
+      hard: [physics, calculus]
+      soft: [steam-engine, chemistry]
+      catalyst: [steam-engine]
+      synergistic: []
+    description: "Study of heat, energy, and their relationship to work and entropy"
+    unlocks:
+      technologies: [heat-engines, refrigeration, energy-efficiency]
+      capabilities: [energy-optimization, heat-management, efficiency-analysis]
+    resources:
+      materials: [scientific-instruments, thermometers, calorimeters]
+      knowledge: [mathematical-analysis, experimental-methods, energy-concepts]
+      social: [scientific-institutions, engineering-education, industrial-research]
+    historical:
+      first_occurrence: "~1824 CE"
+      locations: ["France", "Germany", "England"]
+      key_figures: ["Sadi Carnot", "Rudolf Clausius", "James Joule"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [classical-thermodynamics, statistical-mechanics, chemical-thermodynamics]
+    alternate_solutions: ["empirical-engineering", "trial-and-error", "craft-knowledge"]
+
+  electromagnetism:
+    id: electromagnetism
+    name: "Electromagnetism"
+    type: knowledge
+    era: industrial
+    prerequisites:
+      hard: [physics, calculus]
+      soft: [electricity, chemistry, scientific-method]
+      catalyst: [electricity]
+      synergistic: []
+    description: "Unified theory of electric and magnetic phenomena"
+    unlocks:
+      technologies: [electric-motors, generators, electromagnetic-induction]
+      capabilities: [electrical-engineering, power-generation, electromagnetic-applications]
+    resources:
+      materials: [electrical-apparatus, magnetic-materials, measuring-instruments]
+      knowledge: [mathematical-physics, field-theory, experimental-techniques]
+      social: [physics-laboratories, electrical-engineering, scientific-societies]
+    historical:
+      first_occurrence: "~1831 CE"
+      locations: ["England", "Germany", "France"]
+      key_figures: ["Michael Faraday", "James Clerk Maxwell", "André-Marie Ampère"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [experimental-electromagnetism, theoretical-electromagnetism, applied-electromagnetism]
+    alternate_solutions: ["empirical-electricity", "mechanical-systems", "chemical-batteries"]
+
+  chemistry-periodic-table:
+    id: chemistry-periodic-table
+    name: "Chemistry - Periodic Table"
+    type: knowledge
+    era: industrial
+    prerequisites:
+      hard: [chemistry, scientific-method]
+      soft: [mathematics, physics]
+      catalyst: [chemistry]
+      synergistic: []
+    description: "Systematic organization of chemical elements by atomic properties"
+    unlocks:
+      technologies: [synthetic-chemistry, materials-science, chemical-industry]
+      capabilities: [element-prediction, chemical-synthesis, material-design]
+    resources:
+      materials: [laboratory-equipment, chemical-samples, analytical-instruments]
+      knowledge: [atomic-theory, chemical-analysis, systematic-classification]
+      social: [chemical-laboratories, industrial-chemistry, scientific-publications]
+    historical:
+      first_occurrence: "~1869 CE"
+      locations: ["Russia", "Germany", "England"]
+      key_figures: ["Dmitri Mendeleev", "Lothar Meyer", "John Newlands"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [atomic-weight-ordering, atomic-number-ordering, chemical-families]
+    alternate_solutions: ["alchemical-classification", "empirical-chemistry", "practical-recipes"]
+
+  evolution:
+    id: evolution
+    name: "Evolution"
+    type: knowledge
+    era: industrial
+    prerequisites:
+      hard: [scientific-method, medicine]
+      soft: [peer-review]
+      catalyst: [scientific-method]
+      synergistic: []
+    description: "Theory explaining the development and diversity of life through natural selection"
+    unlocks:
+      technologies: [modern-biology, genetics, medicine-advances]
+      capabilities: [biological-understanding, species-relationships, adaptation-mechanisms]
+    resources:
+      materials: [specimen-collections, microscopes, field-equipment]
+      knowledge: [biological-observation, comparative-anatomy, geological-time]
+      social: [natural-history-societies, scientific-expeditions, biological-research]
+    historical:
+      first_occurrence: "~1859 CE"
+      locations: ["England"]
+      key_figures: ["Charles Darwin", "Alfred Russel Wallace"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [natural-selection, genetic-variation, speciation]
+    alternate_solutions: ["special-creation", "lamarckian-evolution", "vitalism"]

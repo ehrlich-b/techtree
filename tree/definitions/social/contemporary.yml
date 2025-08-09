@@ -1,0 +1,67 @@
+# Social Technologies - Contemporary Era
+# New organizational and economic models
+
+technologies:
+  platform-economy:
+    id: platform-economy
+    name: "Platform Economy"
+    type: social
+    era: contemporary
+    complexity: high
+    prerequisites:
+      hard: [internet, social-media]
+      soft: [capitalism]
+      catalyst: [internet]
+      synergistic: []
+    description: "Economic model based on digital platforms connecting users and providers"
+    unlocks:
+      technologies: []
+      capabilities: [network-effects, digital-marketplaces, sharing-economy]
+
+  blockchain:
+    id: blockchain
+    name: "Blockchain"
+    type: social
+    era: contemporary
+    complexity: high
+    prerequisites:
+      hard: [computer-science, internet]
+      soft: [mathematics]
+      catalyst: [computer-science]
+      synergistic: []
+    description: "Distributed ledger technology enabling decentralized transactions"
+    unlocks:
+      technologies: []
+      capabilities: [decentralized-trust, digital-currencies, smart-contracts]
+
+  universal-basic-income:
+    id: universal-basic-income
+    name: "Universal Basic Income"
+    type: social
+    era: contemporary
+    complexity: high
+    prerequisites:
+      hard: [welfare-state, mass-production]
+      soft: [artificial-intelligence]
+      catalyst: [artificial-intelligence]
+      synergistic: []
+    description: "Unconditional income provided to all citizens by government"
+    unlocks:
+      technologies: []
+      capabilities: [economic-security, poverty-reduction, work-flexibility]
+
+  digital-democracy:
+    id: digital-democracy
+    name: "Digital Democracy"
+    type: social
+    era: contemporary
+    complexity: high
+    prerequisites:
+      hard: [internet, democracy]
+      soft: [computer-science]
+      catalyst: [internet]
+      synergistic: []
+    description: "Use of digital technologies to enhance democratic participation"
+    unlocks:
+      technologies: []
+      capabilities: [online-voting, digital-participation, transparent-governance]

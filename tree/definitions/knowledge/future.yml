@@ -1,0 +1,51 @@
+# Knowledge Technologies - Speculative Future Era
+# Theoretical breakthroughs that could reshape understanding
+
+technologies:
+  artificial-general-intelligence:
+    id: artificial-general-intelligence
+    name: "Artificial General Intelligence"
+    type: knowledge
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [artificial-intelligence, machine-learning]
+      soft: [neuroscience]
+      catalyst: [machine-learning]
+      synergistic: []
+    description: "AI systems with human-level intelligence across all cognitive tasks"
+    unlocks:
+      technologies: []
+      capabilities: [general-problem-solving, scientific-acceleration, technological-singularity]
+
+  theory-of-consciousness:
+    id: theory-of-consciousness
+    name: "Theory of Consciousness"
+    type: knowledge
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [neuroscience, philosophy]
+      soft: [artificial-intelligence, quantum-mechanics]
+      catalyst: [neuroscience]
+      synergistic: []
+    description: "Scientific understanding of consciousness and subjective experience"
+    unlocks:
+      technologies: []
+      capabilities: [consciousness-engineering, artificial-consciousness, mind-uploading]
+
+  unified-field-theory:
+    id: unified-field-theory
+    name: "Unified Field Theory"
+    type: knowledge
+    era: future
+    complexity: extreme
+    prerequisites:
+      hard: [physics, quantum-mechanics]
+      soft: [mathematics]
+      catalyst: [quantum-mechanics]
+      synergistic: []
+    description: "Theory unifying all fundamental forces and particles"
+    unlocks:
+      technologies: []
+      capabilities: [fundamental-understanding, reality-manipulation, dimension-travel]

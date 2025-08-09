@@ -1,0 +1,67 @@
+# Social Technologies - Information Era
+# Organizational innovations of the information age
+
+technologies:
+  globalization:
+    id: globalization
+    name: "Globalization"
+    type: social
+    era: information
+    complexity: high
+    prerequisites:
+      hard: [telegraph, railroad]
+      soft: [markets]
+      catalyst: [internet]
+      synergistic: []
+    description: "Integration of economies, cultures, and societies worldwide"
+    unlocks:
+      technologies: []
+      capabilities: [worldwide-coordination, cultural-exchange, global-markets]
+
+  social-media:
+    id: social-media
+    name: "Social Media"
+    type: social
+    era: information
+    complexity: medium
+    prerequisites:
+      hard: [internet, computer]
+      soft: []
+      catalyst: [internet]
+      synergistic: []
+    description: "Digital platforms for social interaction and content sharing"
+    unlocks:
+      technologies: []
+      capabilities: [mass-communication, social-networking, information-dissemination]
+
+  open-source:
+    id: open-source
+    name: "Open Source"
+    type: social
+    era: information
+    complexity: medium
+    prerequisites:
+      hard: [computer, internet]
+      soft: []
+      catalyst: [computer-science]
+      synergistic: []
+    description: "Collaborative development model for freely sharing source code"
+    unlocks:
+      technologies: []
+      capabilities: [collaborative-creation, knowledge-sharing, decentralized-innovation]
+
+  crowdsourcing:
+    id: crowdsourcing
+    name: "Crowdsourcing"
+    type: social
+    era: information
+    complexity: medium
+    prerequisites:
+      hard: [internet, social-media]
+      soft: []
+      catalyst: [social-media]
+      synergistic: []
+    description: "Using large groups of people to solve problems or create content"
+    unlocks:
+      technologies: []
+      capabilities: [crowd-coordination, distributed-work, collective-creation]

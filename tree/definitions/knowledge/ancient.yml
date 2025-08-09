@@ -55,3 +55,192 @@ technologies:
     complexity: extreme
     alternate_paths: [geometric, algebraic, algorithmic]
     alternate_solutions: ["abacus-calculation", "mental-arithmetic"]
+
+  calendar:
+    id: calendar
+    name: "Calendar"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [seasonal-patterns, counting]
+      soft: [astronomy, agriculture]
+      catalyst: [writing-systems]
+      synergistic: []
+    description: "Systematic division of time into recurring periods"
+    unlocks:
+      technologies: [astronomy, timekeeping, record-keeping]
+      capabilities: [agricultural-planning, religious-scheduling, historical-dating]
+    resources:
+      materials: []
+      knowledge: [celestial-cycles, mathematical-counting]
+      social: [communal-timekeeping, ritual-coordination]
+    historical:
+      first_occurrence: "~8000 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "Mesoamerica"]
+      key_figures: ["Babylonian astronomers", "Maya mathematicians"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [lunar-calendar, solar-calendar, lunisolar-calendar]
+    alternate_solutions: ["stone-circles", "shadow-clocks", "water-clocks"]
+
+  astronomy:
+    id: astronomy
+    name: "Astronomy"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [seasonal-patterns, counting]
+      soft: [calendar, mathematics]
+      catalyst: [writing-systems]
+      synergistic: []
+    description: "Systematic observation and understanding of celestial phenomena"
+    unlocks:
+      technologies: [navigation, calendar-refinement, astrology]
+      capabilities: [celestial-navigation, time-measurement, cosmic-understanding]
+    resources:
+      materials: [observation-tools, recording-materials]
+      knowledge: [pattern-recognition, geometric-concepts]
+      social: [priest-astronomers, observatory-maintenance]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Mesopotamia", "Egypt", "China", "India", "Mesoamerica"]
+      key_figures: ["Babylonian astronomers", "Hipparchus", "Chinese astronomers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [naked-eye-observation, instrument-assisted]
+    alternate_solutions: ["armillary-sphere", "astrolabe", "observatory-architecture"]
+
+  geometry:
+    id: geometry
+    name: "Geometry"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [mathematics, writing-systems]
+      soft: [architecture, astronomy]
+      catalyst: [architecture]
+      synergistic: []
+    description: "Mathematical study of shapes, sizes, and spatial relationships"
+    unlocks:
+      technologies: [engineering, architecture, optics]
+      capabilities: [precise-construction, area-calculation, geometric-proof]
+    resources:
+      materials: [geometric-instruments, drawing-surfaces]
+      knowledge: [spatial-reasoning, mathematical-proof]
+      social: [mathematical-schools, geometric-tradition]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Egypt", "Babylon", "Greece", "India"]
+      key_figures: ["Euclid", "Pythagoras", "Thales"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [practical-geometry, theoretical-geometry, applied-geometry]
+    alternate_solutions: ["rope-geometry", "compass-construction", "geometric-algebra"]
+
+  philosophy:
+    id: philosophy
+    name: "Philosophy"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [language, writing-systems]
+      soft: [mathematics, astronomy]
+      catalyst: [mathematics]
+      synergistic: []
+    description: "Systematic inquiry into fundamental questions of existence and knowledge"
+    unlocks:
+      technologies: [logic, ethics, scientific-method]
+      capabilities: [abstract-reasoning, systematic-thinking, critical-analysis]
+    resources:
+      materials: [writing-materials, libraries]
+      knowledge: [logical-reasoning, conceptual-analysis]
+      social: [philosophical-schools, intellectual-debate]
+    historical:
+      first_occurrence: "~600 BCE"
+      locations: ["Greece", "China", "India", "Persia"]
+      key_figures: ["Socrates", "Confucius", "Buddha", "Zoroaster"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [natural-philosophy, moral-philosophy, metaphysics]
+    alternate_solutions: ["oral-wisdom", "religious-doctrine", "practical-ethics"]
+
+  logic:
+    id: logic
+    name: "Logic"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [philosophy, mathematics]
+      soft: [writing-systems]
+      catalyst: [philosophy]
+      synergistic: []
+    description: "Systematic study of valid reasoning and inference"
+    unlocks:
+      technologies: [scientific-method, formal-systems, computation]
+      capabilities: [valid-reasoning, proof-construction, argument-analysis]
+    resources:
+      materials: [logical-texts, symbolic-notation]
+      knowledge: [inference-rules, proof-methods]
+      social: [logical-education, formal-debate]
+    historical:
+      first_occurrence: "~350 BCE"
+      locations: ["Greece", "India", "China"]
+      key_figures: ["Aristotle", "Indian logicians", "Mohist school"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [syllogistic-logic, propositional-logic, dialectical-logic]
+    alternate_solutions: ["rhetorical-persuasion", "intuitive-reasoning", "traditional-wisdom"]
+
+  medicine:
+    id: medicine
+    name: "Medicine"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [botanical-knowledge, animal-behavior]
+      soft: [writing-systems]
+      catalyst: [cooperation]
+      synergistic: []
+    description: "Systematic knowledge and practice of healing and health maintenance"
+    unlocks:
+      technologies: [surgery, pharmacy, medical-education]
+      capabilities: [disease-treatment, injury-healing, health-preservation]
+    resources:
+      materials: [medicinal-plants, surgical-tools, medical-texts]
+      knowledge: [anatomy, physiology, pharmacology]
+      social: [medical-practitioners, healing-institutions]
+    historical:
+      first_occurrence: "~3000 BCE"
+      locations: ["Egypt", "Mesopotamia", "India", "China", "Greece"]
+      key_figures: ["Imhotep", "Hippocrates", "Charaka", "Yellow Emperor"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [herbal-medicine, surgical-medicine, holistic-medicine]
+    alternate_solutions: ["shamanic-healing", "religious-healing", "folk-remedies"]
+
+  cartography:
+    id: cartography
+    name: "Cartography"
+    type: knowledge
+    era: ancient
+    prerequisites:
+      hard: [writing-systems, geometry]
+      soft: [astronomy]
+      catalyst: [trade]
+      synergistic: []
+    description: "Science and art of making maps and charts"
+    unlocks:
+      technologies: [navigation, geography, exploration]
+      capabilities: [spatial-representation, route-planning, territorial-knowledge]
+    resources:
+      materials: [mapping-materials, surveying-instruments]
+      knowledge: [geographic-observation, spatial-scaling]
+      social: [explorers, geographic-knowledge]
+    historical:
+      first_occurrence: "~2500 BCE"
+      locations: ["Babylon", "Egypt", "Greece", "China"]
+      key_figures: ["Ptolemy", "Chinese cartographers", "Arab geographers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [celestial-cartography, terrestrial-cartography, maritime-charts]
+    alternate_solutions: ["oral-directions", "landmark-navigation", "star-navigation"]

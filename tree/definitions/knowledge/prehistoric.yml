@@ -55,3 +55,84 @@ technologies:
     complexity: low
     alternate_paths: []
     alternate_solutions: ["body-counting", "knot-systems"]
+
+  seasonal-patterns:
+    id: seasonal-patterns
+    name: "Seasonal Patterns"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: [language]
+      soft: [counting]
+      catalyst: []
+      synergistic: []
+    description: "Understanding and predicting cyclical environmental changes"
+    unlocks:
+      technologies: [calendar, agriculture, navigation]
+      capabilities: [long-term-planning, resource-prediction, migration-timing]
+    resources:
+      materials: [observation-markers, recording-materials]
+      knowledge: [pattern-recognition, memory-systems]
+      social: [knowledge-sharing]
+    historical:
+      first_occurrence: "~40,000 BCE"
+      locations: ["Global phenomenon"]
+      key_figures: ["Paleolithic peoples"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: []
+    alternate_solutions: ["lunar-tracking", "star-navigation", "animal-behavior-cues"]
+
+  botanical-knowledge:
+    id: botanical-knowledge
+    name: "Botanical Knowledge"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: [language]
+      soft: [teaching, seasonal-patterns]
+      catalyst: []
+      synergistic: []
+    description: "Understanding plant properties, growth cycles, and uses"
+    unlocks:
+      technologies: [agriculture, medicine, food-preservation]
+      capabilities: [plant-identification, medicinal-preparation, poison-detection]
+    resources:
+      materials: [plant-specimens, testing-materials]
+      knowledge: [observation-skills, classification-systems]
+      social: [knowledge-transmission]
+    historical:
+      first_occurrence: "~100,000 BCE"
+      locations: ["Universal human knowledge"]
+      key_figures: ["Gatherer communities"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: []
+    alternate_solutions: ["trial-and-error", "animal-behavior-mimicry"]
+
+  animal-behavior:
+    id: animal-behavior
+    name: "Animal Behavior Understanding"
+    type: knowledge
+    era: prehistoric
+    prerequisites:
+      hard: [language]
+      soft: [cooperation, seasonal-patterns]
+      catalyst: []
+      synergistic: []
+    description: "Knowledge of animal habits, migration patterns, and predictable behaviors"
+    unlocks:
+      technologies: [hunting-strategies, animal-domestication, tracking]
+      capabilities: [hunt-prediction, danger-avoidance, resource-location]
+    resources:
+      materials: [tracking-tools, observation-aids]
+      knowledge: [behavioral-patterns, ecological-relationships]
+      social: [hunting-groups]
+    historical:
+      first_occurrence: "~200,000 BCE"
+      locations: ["Universal human knowledge"]
+      key_figures: ["Hunter communities"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: []
+    alternate_solutions: ["persistence-tracking", "trap-setting", "scavenging-following"]

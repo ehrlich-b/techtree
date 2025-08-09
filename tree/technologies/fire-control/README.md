@@ -99,6 +99,18 @@ This technology was invented independently in multiple locations.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 Fire control represents humanity's first great technological leap - the moment we stopped being victims of our environment and became its masters. This is not merely the ability to use fire, but to create it on demand, maintain it, and direct its power toward human purposes. Fire control transformed every aspect of human existence: what we ate, where we lived, how we worked, and ultimately who we became as a species.
 
 Unlike other animals that flee from fire, humans learned to harness this elemental force, turning a destroyer into a creator. Fire control represents the birth of technology itself - the first time our ancestors realized they could improve upon nature.

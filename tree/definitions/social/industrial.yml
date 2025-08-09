@@ -1,0 +1,111 @@
+# Social Technologies - Industrial Era
+# Organizational structures that coordinate human effort
+
+technologies:
+  factory-system:
+    id: factory-system
+    name: "Factory System"
+    type: social
+    era: industrial
+    prerequisites:
+      hard: [mass-production, capitalism]
+      soft: [steam-engine, division-of-labor, currency]
+      catalyst: [mass-production]
+      synergistic: []
+    description: "Centralized production system concentrating workers and machinery"
+    unlocks:
+      technologies: [industrial-labor, assembly-lines, industrial-management]
+      capabilities: [large-scale-production, labor-coordination, manufacturing-efficiency]
+    resources:
+      materials: [factory-buildings, industrial-machinery, transportation-systems]
+      knowledge: [production-management, quality-control, labor-organization]
+      social: [industrial-workforce, managerial-hierarchy, labor-discipline]
+    historical:
+      first_occurrence: "~1760 CE"
+      locations: ["England", "United States", "Europe"]
+      key_figures: ["Factory owners", "Industrial managers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [textile-factories, steel-mills, assembly-plants]
+    alternate_solutions: ["cottage-industry", "craft-workshops", "putting-out-system"]
+
+  labor-unions:
+    id: labor-unions
+    name: "Labor Unions"
+    type: social
+    era: industrial
+    prerequisites:
+      hard: [factory-system, law]
+      soft: [democracy, education-systems, printing-press]
+      catalyst: [factory-system]
+      synergistic: []
+    description: "Worker organizations for collective bargaining and labor protection"
+    unlocks:
+      technologies: [labor-rights, collective-bargaining, worker-protection]
+      capabilities: [labor-solidarity, wage-negotiation, working-conditions-improvement]
+    resources:
+      materials: [meeting-halls, communication-systems, organizational-infrastructure]
+      knowledge: [labor-organization, collective-action, negotiation-strategies]
+      social: [worker-solidarity, union-leadership, labor-movement]
+    historical:
+      first_occurrence: "~1800 CE"
+      locations: ["England", "United States", "Europe"]
+      key_figures: ["Labor leaders", "Union organizers"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [craft-unions, industrial-unions, general-unions]
+    alternate_solutions: ["individual-bargaining", "paternalistic-management", "government-regulation"]
+
+  public-education:
+    id: public-education
+    name: "Public Education"
+    type: social
+    era: industrial
+    prerequisites:
+      hard: [education-systems, democracy]
+      soft: [printing-press, bureaucracy, factory-system]
+      catalyst: [democracy]
+      synergistic: []
+    description: "Government-funded mass education system for all citizens"
+    unlocks:
+      technologies: [mass-literacy, technical-education, skilled-workforce]
+      capabilities: [population-education, literacy-expansion, workforce-development]
+    resources:
+      materials: [school-buildings, educational-materials, transportation-systems]
+      knowledge: [pedagogy, curriculum-development, educational-administration]
+      social: [teaching-profession, educational-bureaucracy, standardized-systems]
+    historical:
+      first_occurrence: "~1800 CE"
+      locations: ["Prussia", "United States", "France"]
+      key_figures: ["Horace Mann", "Johann Pestalozzi"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [elementary-education, secondary-education, compulsory-education]
+    alternate_solutions: ["private-tutoring", "religious-education", "apprenticeship-learning"]
+
+  welfare-state:
+    id: welfare-state
+    name: "Welfare State"
+    type: social
+    era: industrial
+    prerequisites:
+      hard: [democracy, bureaucracy]
+      soft: [public-education, labor-unions, factory-system]
+      catalyst: [democracy]
+      synergistic: []
+    description: "Government system providing social safety nets and public services"
+    unlocks:
+      technologies: [social-insurance, public-health, economic-stabilization]
+      capabilities: [social-protection, poverty-reduction, economic-security]
+    resources:
+      materials: [administrative-infrastructure, public-facilities, service-delivery]
+      knowledge: [social-policy, public-administration, welfare-economics]
+      social: [social-services, public-sector, redistributive-systems]
+    historical:
+      first_occurrence: "~1880 CE"
+      locations: ["Germany", "Scandinavia", "United Kingdom"]
+      key_figures: ["Otto von Bismarck", "Social reformers"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [social-insurance, public-assistance, universal-services]
+    alternate_solutions: ["private-charity", "family-support", "religious-welfare"]

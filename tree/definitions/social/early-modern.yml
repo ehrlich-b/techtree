@@ -1,0 +1,111 @@
+# Social Technologies - Early Modern Era
+# Organizational structures that coordinate human effort
+
+technologies:
+  capitalism:
+    id: capitalism
+    name: "Capitalism"
+    type: social
+    era: early-modern
+    prerequisites:
+      hard: [banking, markets]
+      soft: [law, property, currency]
+      catalyst: [banking]
+      synergistic: []
+    description: "Economic system based on private ownership and market competition"
+    unlocks:
+      technologies: [industrial-revolution, global-trade, financial-markets]
+      capabilities: [capital-accumulation, market-efficiency, economic-growth]
+    resources:
+      materials: [financial-infrastructure, legal-frameworks, market-institutions]
+      knowledge: [economic-theory, accounting-methods, risk-assessment]
+      social: [property-rights, contract-law, competitive-markets]
+    historical:
+      first_occurrence: "~1500 CE"
+      locations: ["Northern Italy", "Netherlands", "England"]
+      key_figures: ["Merchant families", "Dutch traders", "English merchants"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [mercantile-capitalism, industrial-capitalism, financial-capitalism]
+    alternate_solutions: ["feudalism", "guild-system", "command-economy"]
+
+  joint-stock-company:
+    id: joint-stock-company
+    name: "Joint Stock Company"
+    type: social
+    era: early-modern
+    prerequisites:
+      hard: [capitalism, law]
+      soft: [banking, insurance, currency]
+      catalyst: [capitalism]
+      synergistic: []
+    description: "Business organization with shared ownership through tradeable shares"
+    unlocks:
+      technologies: [corporate-finance, stock-markets, limited-liability]
+      capabilities: [capital-pooling, risk-sharing, investment-scaling]
+    resources:
+      materials: [legal-documentation, share-certificates, financial-records]
+      knowledge: [corporate-law, financial-management, investment-principles]
+      social: [shareholder-rights, corporate-governance, regulatory-frameworks]
+    historical:
+      first_occurrence: "~1602 CE"
+      locations: ["Netherlands", "England"]
+      key_figures: ["Dutch East India Company", "Virginia Company"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [trading-companies, colonial-companies, industrial-corporations]
+    alternate_solutions: ["partnerships", "sole-proprietorship", "guild-cooperatives"]
+
+  democracy:
+    id: democracy
+    name: "Democracy"
+    type: social
+    era: early-modern
+    prerequisites:
+      hard: [governance, law]
+      soft: [education-systems, printing-press, philosophy]
+      catalyst: [printing-press]
+      synergistic: []
+    description: "System of government based on popular sovereignty and representation"
+    unlocks:
+      technologies: [constitutional-government, civil-rights, political-parties]
+      capabilities: [popular-participation, representative-government, political-accountability]
+    resources:
+      materials: [voting-systems, legislative-buildings, communication-networks]
+      knowledge: [political-theory, constitutional-law, electoral-systems]
+      social: [civic-participation, representative-institutions, rule-of-law]
+    historical:
+      first_occurrence: "~1600 CE"
+      locations: ["England", "Netherlands", "Switzerland"]
+      key_figures: ["English Parliament", "Dutch Republic"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [parliamentary-democracy, republican-democracy, direct-democracy]
+    alternate_solutions: ["monarchy", "aristocracy", "theocracy"]
+
+  colonialism:
+    id: colonialism
+    name: "Colonialism"
+    type: social
+    era: early-modern
+    prerequisites:
+      hard: [navigation-instruments, gunpowder-weapons]
+      soft: [joint-stock-company, military-organization, capitalism]
+      catalyst: [navigation-instruments]
+      synergistic: []
+    description: "System of territorial control and resource extraction by external powers"
+    unlocks:
+      technologies: [global-trade-networks, plantation-economy, imperial-administration]
+      capabilities: [territorial-expansion, resource-extraction, cultural-dominance]
+    resources:
+      materials: [naval-technology, military-equipment, administrative-systems]
+      knowledge: [navigation-techniques, military-strategy, colonial-administration]
+      social: [imperial-bureaucracy, settler-societies, trade-monopolies]
+    historical:
+      first_occurrence: "~1500 CE"
+      locations: ["Europe", "Americas", "Asia", "Africa"]
+      key_figures: ["European colonial powers", "Colonial administrators"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [settler-colonialism, extraction-colonialism, trade-colonialism]
+    alternate_solutions: ["tributary-systems", "trading-posts", "diplomatic-alliances"]

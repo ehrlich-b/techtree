@@ -1,0 +1,165 @@
+# Material Technologies - Medieval Era
+# Often overlooked but crucial physical innovations
+
+technologies:
+  optics:
+    id: optics
+    name: "Optics"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [glass-making, mathematics]
+      soft: [geometry, philosophy]
+      catalyst: [geometry]
+      synergistic: []
+    description: "Study and manipulation of light through lenses and mirrors"
+    unlocks:
+      technologies: [telescope, microscope, scientific-instruments]
+      capabilities: [vision-correction, light-manipulation, precision-observation]
+    resources:
+      materials: [glass, polishing-tools, precision-grinding]
+      knowledge: [light-behavior, geometric-optics, lens-properties]
+      social: [optical-workshops, scholarly-institutions]
+    historical:
+      first_occurrence: "~1000 CE"
+      locations: ["Islamic world", "Europe", "China"]
+      key_figures: ["Ibn al-Haytham", "Roger Bacon", "Robert Grosseteste"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [grinding-lenses, polishing-mirrors, crystal-optics]
+    alternate_solutions: ["water-lenses", "crystal-balls", "camera-obscura"]
+
+  mechanical-clock:
+    id: mechanical-clock
+    name: "Mechanical Clock"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [metallurgy, engineering]
+      soft: [mathematics, astronomy]
+      catalyst: [engineering]
+      synergistic: []
+    description: "Mechanical device for measuring time using escapement mechanisms"
+    unlocks:
+      technologies: [precision-manufacturing, navigation-instruments, industrial-timing]
+      capabilities: [precise-timekeeping, synchronized-activities, temporal-coordination]
+    resources:
+      materials: [metal-gears, springs, escapement-mechanism]
+      knowledge: [mechanical-principles, gear-ratios, precision-manufacturing]
+      social: [clockmaking-guilds, temporal-coordination]
+    historical:
+      first_occurrence: "~1280 CE"
+      locations: ["Europe", "China"]
+      key_figures: ["European clockmakers", "Chinese engineers"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [water-clocks, sundials, candle-clocks]
+    alternate_solutions: ["astronomical-clocks", "tower-clocks", "portable-clocks"]
+
+  windmill:
+    id: windmill
+    name: "Windmill"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [engineering, metallurgy]
+      soft: [agriculture, trade]
+      catalyst: [agriculture]
+      synergistic: []
+    description: "Wind-powered machine for grinding grain and pumping water"
+    unlocks:
+      technologies: [industrial-machinery, power-transmission, manufacturing]
+      capabilities: [automated-processing, renewable-energy, industrial-power]
+    resources:
+      materials: [wood, metal-components, millstones, sails]
+      knowledge: [wind-mechanics, gear-systems, mill-construction]
+      social: [miller-guilds, rural-industry]
+    historical:
+      first_occurrence: "~900 CE"
+      locations: ["Europe", "Middle East", "China"]
+      key_figures: ["Medieval millwrights"]
+      parallel_invention: true
+    complexity: high
+    alternate_paths: [horizontal-windmills, vertical-windmills, post-mills]
+    alternate_solutions: ["water-mills", "animal-mills", "hand-grinding"]
+
+  heavy-plow:
+    id: heavy-plow
+    name: "Heavy Plow"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [metallurgy, animal-domestication]
+      soft: [agriculture, engineering]
+      catalyst: [animal-domestication]
+      synergistic: []
+    description: "Iron plow capable of turning heavy clay soils"
+    unlocks:
+      technologies: [intensive-agriculture, three-field-system, agricultural-revolution]
+      capabilities: [heavy-soil-cultivation, increased-productivity, agricultural-expansion]
+    resources:
+      materials: [iron-plowshare, wooden-frame, draft-animals]
+      knowledge: [soil-management, animal-training, plow-design]
+      social: [agricultural-teams, feudal-organization]
+    historical:
+      first_occurrence: "~600 CE"
+      locations: ["Northern Europe", "China"]
+      key_figures: ["Medieval farmers"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [moldboard-plow, steel-plow, wheeled-plow]
+    alternate_solutions: ["scratch-plow", "digging-stick", "hoe-cultivation"]
+
+  horse-collar:
+    id: horse-collar
+    name: "Horse Collar"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [animal-domestication, weaving]
+      soft: [agriculture, trade]
+      catalyst: [heavy-plow]
+      synergistic: []
+    description: "Padded collar allowing horses to pull heavy loads efficiently"
+    unlocks:
+      technologies: [efficient-transportation, agricultural-mechanization, heavy-hauling]
+      capabilities: [horse-powered-work, improved-transportation, agricultural-efficiency]
+    resources:
+      materials: [leather, padding, metal-fittings]
+      knowledge: [animal-anatomy, harness-design, load-distribution]
+      social: [horse-breeding, transportation-systems]
+    historical:
+      first_occurrence: "~900 CE"
+      locations: ["China", "Europe"]
+      key_figures: ["Medieval harness makers"]
+      parallel_invention: true
+    complexity: medium
+    alternate_paths: [breast-strap, yoke-harness, padded-collar]
+    alternate_solutions: ["ox-yoke", "human-labor", "donkey-pack"]
+
+  blast-furnace:
+    id: blast-furnace
+    name: "Blast Furnace"
+    type: material
+    era: medieval
+    prerequisites:
+      hard: [metallurgy, engineering]
+      soft: [windmill]
+      catalyst: [engineering]
+      synergistic: []
+    description: "High-temperature furnace for smelting iron ore and producing cast iron"
+    unlocks:
+      technologies: [cast-iron, steel-production, industrial-metallurgy]
+      capabilities: [high-temperature-smelting, mass-iron-production, superior-metals]
+    resources:
+      materials: [iron-ore, coke, limestone, water-power]
+      knowledge: [high-temperature-metallurgy, furnace-design, smelting-chemistry]
+      social: [iron-industry, mining-operations]
+    historical:
+      first_occurrence: "~1150 CE"
+      locations: ["China", "Europe"]
+      key_figures: ["Chinese metallurgists", "European ironmasters"]
+      parallel_invention: true
+    complexity: extreme
+    alternate_paths: [water-powered-bellows, charcoal-furnaces, coke-smelting]
+    alternate_solutions: ["bloomery-furnaces", "direct-reduction", "crucible-steel"]
