@@ -20,7 +20,7 @@ help:
 	@echo "  build       - Generate technology folders from definitions"
 	@echo "  check       - Validate README completeness"
 	@echo "  graph       - Generate dependency visualization (requires GraphViz)"
-	@echo "  links       - Create prerequisite symlinks"
+	@echo "  links       - Create prerequisite markdown links"
 	@echo "  analyze     - Show tree statistics and metrics"
 	@echo "  test        - Run all validations"
 	@echo "  clean       - Remove generated files"
@@ -33,6 +33,7 @@ help:
 	@echo ""
 	@echo "Examples:"
 	@echo "  make build                    # Build from default definitions"
+	@echo "  make all                      # Complete build with validation"
 	@echo "  make validate DEFINITIONS=my.yml  # Validate custom file"
 	@echo "  make build --force           # Force rebuild all READMEs"
 
@@ -72,11 +73,11 @@ graph:
 		exit 1; \
 	fi
 
-# Create symlinks for prerequisites (requires linker.js)
+# Create prerequisite links (requires linker.js)
 links:
 	@if [ -f $(BUILD_TOOLS)/linker.js ]; then \
-		echo "🔗 Creating prerequisite symlinks..."; \
-		$(NODE) $(BUILD_TOOLS)/linker.js $(TECHNOLOGIES); \
+		echo "🔗 Creating prerequisite links..."; \
+		$(NODE) $(BUILD_TOOLS)/linker.js $(TECHNOLOGIES) $(DEFINITIONS); \
 	else \
 		echo "❌ linker.js not implemented yet"; \
 		exit 1; \

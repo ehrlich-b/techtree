@@ -20,25 +20,36 @@ const path = require('path');
 // Import YAML parser to read definitions
 const { loadDefinitions } = require('./schema.js');
 
-function createSymlink(target, linkPath, linkType = 'hard') {
-    try {
-        // Remove existing symlink if it exists
-        if (fs.lstatSync(linkPath).isSymbolicLink()) {
-            fs.unlinkSync(linkPath);
-        }
-    } catch (err) {
-        // File doesn't exist, which is fine
-    }
+function createMarkdownLink(targetTech, linkPath, depType, techName) {
+    // Calculate relative path to target README
+    const linkDir = path.dirname(linkPath);
+    const relativePath = path.relative(linkDir, `tree/technologies/${targetTech}/README.md`);
     
+    const content = `# ${targetTech} → ${techName}
+
+**Prerequisite Type**: ${depType}
+
+## Navigate to Technology
+
+**[View ${targetTech}](${relativePath})**
+
+---
+
+This ${depType} prerequisite is required for **${techName}**.
+
+- **Hard**: Absolutely required - cannot proceed without this technology
+- **Soft**: Helpful but optional - provides benefits but not essential  
+- **Catalyst**: Accelerates development - speeds up progress
+- **Synergistic**: Combines for greater effect - multiplies capabilities
+
+Return to [${techName}](../../README.md) or explore the [full technology tree](../../../../README.md).
+`;
+
     try {
-        // Calculate relative path from link to target
-        const linkDir = path.dirname(linkPath);
-        const relativePath = path.relative(linkDir, target);
-        
-        fs.symlinkSync(relativePath, linkPath);
-        return { success: true, type: linkType };
+        fs.writeFileSync(linkPath, content);
+        return { success: true, type: depType };
     } catch (error) {
-        return { success: false, error: error.message, type: linkType };
+        return { success: false, error: error.message, type: depType };
     }
 }
 
@@ -68,7 +79,7 @@ function validateSymlink(linkPath, expectedTarget) {
     }
 }
 
-function cleanBrokenLinks(prereqDir) {
+function cleanOldLinks(prereqDir) {
     const depTypes = ['hard', 'soft', 'catalyst', 'synergistic'];
     let cleaned = 0;
     
@@ -76,26 +87,18 @@ function cleanBrokenLinks(prereqDir) {
         const depDir = path.join(prereqDir, depType);
         if (!fs.existsSync(depDir)) continue;
         
-        const links = fs.readdirSync(depDir);
-        for (const link of links) {
-            const linkPath = path.join(depDir, link);
+        const items = fs.readdirSync(depDir);
+        for (const item of items) {
+            const itemPath = path.join(depDir, item);
             try {
-                const stats = fs.lstatSync(linkPath);
-                if (stats.isSymbolicLink()) {
-                    const target = fs.readlinkSync(linkPath);
-                    const resolvedTarget = path.resolve(path.dirname(linkPath), target);
-                    
-                    if (!fs.existsSync(resolvedTarget)) {
-                        fs.unlinkSync(linkPath);
-                        console.log(`🧹 Removed broken link: ${linkPath}`);
-                        cleaned++;
-                    }
+                const stats = fs.lstatSync(itemPath);
+                // Remove both symlinks and old markdown files
+                if (stats.isSymbolicLink() || (stats.isFile() && item.endsWith('.md'))) {
+                    fs.unlinkSync(itemPath);
+                    cleaned++;
                 }
             } catch (error) {
-                // Link is broken, remove it
-                fs.unlinkSync(linkPath);
-                console.log(`🧹 Removed broken link: ${linkPath}`);
-                cleaned++;
+                // File might not exist, continue
             }
         }
     }
@@ -105,7 +108,7 @@ function cleanBrokenLinks(prereqDir) {
 
 function createPrerequisiteLinks(technologiesDir, definitionsPath) {
     try {
-        console.log(`🔗 Creating prerequisite symlinks...`);
+        console.log(`🔗 Creating prerequisite links...`);
         
         // Load definitions to get prerequisites
         const data = loadDefinitions(definitionsPath);
@@ -136,10 +139,10 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
             
             results[techId] = { created: 0, validated: 0, errors: [] };
             
-            // Clean broken links first
-            const cleaned = cleanBrokenLinks(prereqDir);
+            // Clean old links first
+            const cleaned = cleanOldLinks(prereqDir);
             if (cleaned > 0) {
-                console.log(`🧹 Cleaned ${cleaned} broken links from ${techId}`);
+                console.log(`🧹 Cleaned ${cleaned} old links from ${techId}`);
             }
             
             // Process each dependency type
@@ -154,7 +157,7 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
                     
                     for (const depId of deps) {
                         const targetDir = path.join(technologiesDir, depId);
-                        const linkPath = path.join(depDir, depId);
+                        const linkPath = path.join(depDir, `${depId}.md`);
                         
                         // Check if target exists
                         if (!fs.existsSync(targetDir)) {
@@ -165,39 +168,16 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
                             continue;
                         }
                         
-                        // Create or validate symlink
-                        if (fs.existsSync(linkPath)) {
-                            // Validate existing symlink
-                            const validation = validateSymlink(linkPath, targetDir);
-                            if (validation.valid) {
-                                results[techId].validated++;
-                                totalValidated++;
-                                console.log(`✅ ${techId} -> ${depId} (${depType}) - validated`);
-                            } else {
-                                // Recreate invalid symlink
-                                const result = createSymlink(targetDir, linkPath, depType);
-                                if (result.success) {
-                                    results[techId].created++;
-                                    totalCreated++;
-                                    console.log(`🔗 ${techId} -> ${depId} (${depType}) - recreated`);
-                                } else {
-                                    results[techId].errors.push(result.error);
-                                    console.error(`❌ ${techId} -> ${depId}: ${result.error}`);
-                                    totalErrors++;
-                                }
-                            }
+                        // Create markdown link file
+                        const result = createMarkdownLink(depId, linkPath, depType, tech.name || techId);
+                        if (result.success) {
+                            results[techId].created++;
+                            totalCreated++;
+                            console.log(`📝 ${techId} -> ${depId} (${depType}) - created markdown link`);
                         } else {
-                            // Create new symlink
-                            const result = createSymlink(targetDir, linkPath, depType);
-                            if (result.success) {
-                                results[techId].created++;
-                                totalCreated++;
-                                console.log(`🔗 ${techId} -> ${depId} (${depType}) - created`);
-                            } else {
-                                results[techId].errors.push(result.error);
-                                console.error(`❌ ${techId} -> ${depId}: ${result.error}`);
-                                totalErrors++;
-                            }
+                            results[techId].errors.push(result.error);
+                            console.error(`❌ ${techId} -> ${depId}: ${result.error}`);
+                            totalErrors++;
                         }
                     }
                 }
@@ -205,8 +185,7 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
         }
         
         console.log(`\n🎉 Linking complete!`);
-        console.log(`   Created: ${totalCreated} new links`);
-        console.log(`   Validated: ${totalValidated} existing links`);
+        console.log(`   Created: ${totalCreated} markdown links`);
         if (totalErrors > 0) {
             console.log(`   Errors: ${totalErrors} failed links`);
         }
@@ -226,7 +205,7 @@ function createPrerequisiteLinks(technologiesDir, definitionsPath) {
             }
         }
         
-        return { totalCreated, totalValidated, totalErrors, results };
+        return { totalCreated, totalErrors, results };
         
     } catch (error) {
         console.error(`❌ Linking failed: ${error.message}`);
@@ -327,8 +306,7 @@ if (require.main === module) {
 
 module.exports = { 
     createPrerequisiteLinks, 
-    createSymlink, 
-    validateSymlink, 
+    createMarkdownLink, 
     listLinks,
-    cleanBrokenLinks 
+    cleanOldLinks 
 };

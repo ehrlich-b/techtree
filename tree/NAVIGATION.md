@@ -7,28 +7,28 @@ This technology tree contains 10 technologies spanning human history from the fi
 
 ### By Historical Era
 
+#### Ancient (4 technologies)
+- [Writing Systems](technologies/writing-systems/) - Symbolic representation of language in permanent form
+- [Mathematics](technologies/mathematics/) - Abstract study of quantity, structure, space, and change
+- [Agriculture](technologies/agriculture/) - Systematic cultivation of plants and crops
+- [Metallurgy](technologies/metallurgy/) - Extraction and working of metals
+
 #### Prehistoric (6 technologies)
-- [Tool Making](technologies/tool-making/) - Creation and use of implements to manipulate the environment
-- [Fire Control](technologies/fire-control/) - The ability to create, maintain, and control fire
 - [Language](technologies/language/) - Complex symbolic communication system
 - [Counting](technologies/counting/) - Basic enumeration and quantity tracking
+- [Tool Making](technologies/tool-making/) - Creation and use of implements to manipulate the environment
+- [Fire Control](technologies/fire-control/) - The ability to create, maintain, and control fire
 - [Cooperation](technologies/cooperation/) - Coordinated group action for mutual benefit
 - [Teaching](technologies/teaching/) - Deliberate transmission of knowledge and skills
-
-#### Ancient (4 technologies)
-- [Agriculture](technologies/agriculture/) - Systematic cultivation of plants and crops
-- [Writing Systems](technologies/writing-systems/) - Symbolic representation of language in permanent form
-- [Metallurgy](technologies/metallurgy/) - Extraction and working of metals
-- [Mathematics](technologies/mathematics/) - Abstract study of quantity, structure, space, and change
 
 ### By Technology Type
 
 #### Material Technologies (4)
 Physical, reproducible methods for manipulating the world.
-- [Tool Making](technologies/tool-making/) - Creation and use of implements to manipulate the environment
-- [Fire Control](technologies/fire-control/) - The ability to create, maintain, and control fire
 - [Agriculture](technologies/agriculture/) - Systematic cultivation of plants and crops
 - [Metallurgy](technologies/metallurgy/) - Extraction and working of metals
+- [Tool Making](technologies/tool-making/) - Creation and use of implements to manipulate the environment
+- [Fire Control](technologies/fire-control/) - The ability to create, maintain, and control fire
 
 #### Social Technologies (2)
 Organizational methods that coordinate human effort.
@@ -37,10 +37,10 @@ Organizational methods that coordinate human effort.
 
 #### Knowledge Technologies (4)
 Abstract systems for understanding and recording information.
-- [Language](technologies/language/) - Complex symbolic communication system
-- [Counting](technologies/counting/) - Basic enumeration and quantity tracking
 - [Writing Systems](technologies/writing-systems/) - Symbolic representation of language in permanent form
 - [Mathematics](technologies/mathematics/) - Abstract study of quantity, structure, space, and change
+- [Language](technologies/language/) - Complex symbolic communication system
+- [Counting](technologies/counting/) - Basic enumeration and quantity tracking
 
 ## Dependency Network
 Each technology folder contains:
