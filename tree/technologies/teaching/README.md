@@ -9,14 +9,14 @@ Social Technology
 ## Prerequisites
 
 ### Hard Requirements
-- **language**: [Why absolutely necessary]
-- **cooperation**: [Why absolutely necessary]
+- **[language](../language/README.md)**: [Why absolutely necessary]
+- **[cooperation](../cooperation/README.md)**: [Why absolutely necessary]
 
 ### Soft Requirements
 - None
 
 ### Catalysts
-- **tool-making**: [How it accelerates development]
+- **[tool-making](../tool-making/README.md)**: [How it accelerates development]
 
 ### Synergistic
 - None
@@ -91,5 +91,11 @@ This technology appears to have a single point of origin.
 ## Implementation Notes
 [For someone trying to recreate this technology]
 
+## Description
+
+
+
+[This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
+
 ---
-*Generated from definitions.yml - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-09*

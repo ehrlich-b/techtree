@@ -15,7 +15,7 @@ Social Technology
 - None
 
 ### Catalysts
-- **language**: [How it accelerates development]
+- **[language](../language/README.md)**: [How it accelerates development]
 
 ### Synergistic
 - None
@@ -32,7 +32,7 @@ First appeared ~2 million years ago
 - Early hominids
 
 ### Parallel Invention
-[If developed independently multiple times]
+This technology appears to have a single point of origin.
 
 ### Evolution
 [How the technology changed over time]
@@ -90,5 +90,11 @@ First appeared ~2 million years ago
 ## Implementation Notes
 [For someone trying to recreate this technology]
 
+## Description
+
+
+
+[This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
+
 ---
-*Generated from definitions.yml - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-09*
