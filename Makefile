@@ -17,15 +17,14 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@echo "  validate    - Validate YAML definitions against schema"
-	@echo "  build       - Generate technology folders from definitions"
+	@echo "  build       - Generate technology folders with embedded prerequisites"
 	@echo "  check       - Validate README completeness"
 	@echo "  graph       - Generate dependency visualization (requires GraphViz)"
-	@echo "  links       - Create prerequisite markdown links"
 	@echo "  analyze     - Show tree statistics and metrics"
 	@echo "  test        - Run all validations"
 	@echo "  clean       - Remove generated files"
 	@echo "  clean-metadata - Remove metadata.yml files (architectural fix)"
-	@echo "  all         - Complete build: validate → build → links → check"
+	@echo "  all         - Complete build: validate → build → check"
 	@echo ""
 	@echo "Options:"
 	@echo "  DEFINITIONS=path  - Path to definitions directory (default: tree/definitions)"
@@ -73,15 +72,6 @@ graph:
 		exit 1; \
 	fi
 
-# Create prerequisite links (requires linker.js)
-links:
-	@if [ -f $(BUILD_TOOLS)/linker.js ]; then \
-		echo "🔗 Creating prerequisite links..."; \
-		$(NODE) $(BUILD_TOOLS)/linker.js $(TECHNOLOGIES) $(DEFINITIONS); \
-	else \
-		echo "❌ linker.js not implemented yet"; \
-		exit 1; \
-	fi
 
 # Show tree statistics (requires analyzer.js)
 analyze:
@@ -98,7 +88,7 @@ test: validate check
 	@echo "✅ All validations passed!"
 
 # Complete build pipeline
-all: validate build links check
+all: validate build check
 	@echo "🎉 Complete build successful!"
 
 # Clean generated files
@@ -157,7 +147,7 @@ status:
 	fi
 	@echo ""
 	@echo "Available tools:"
-	@for tool in schema.js builder.js validator.js grapher.js linker.js analyzer.js; do \
+	@for tool in schema.js builder.js validator.js grapher.js analyzer.js; do \
 		if [ -f $(BUILD_TOOLS)/$$tool ]; then \
 			echo "  ✅ $$tool"; \
 		else \

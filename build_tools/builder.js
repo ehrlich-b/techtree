@@ -20,9 +20,9 @@ const path = require('path');
 // Import functions from schema.js
 const { loadDefinitions } = require('./schema.js');
 
-// README template for technologies
-function generateReadme(tech) {
-    return `# ${tech.name}
+// README template for technologies with embedded prerequisites and content preservation
+function generateReadme(tech, preservedContent = null) {
+    const header = `# ${tech.name}
 
 ## Overview
 ${tech.description}
@@ -32,17 +32,7 @@ ${tech.type.charAt(0).toUpperCase() + tech.type.slice(1)} Technology
 
 ## Prerequisites
 
-### Hard Requirements
-${tech.prerequisites?.hard?.length ? tech.prerequisites.hard.map(p => `- **${p}**: [Why absolutely necessary]`).join('\n') : '- None'}
-
-### Soft Requirements
-${tech.prerequisites?.soft?.length ? tech.prerequisites.soft.map(p => `- **${p}**: [How it helps but isn't essential]`).join('\n') : '- None'}
-
-### Catalysts
-${tech.prerequisites?.catalyst?.length ? tech.prerequisites.catalyst.map(p => `- **${p}**: [How it accelerates development]`).join('\n') : '- None'}
-
-### Synergistic
-${tech.prerequisites?.synergistic?.length ? tech.prerequisites.synergistic.map(p => `- **${p}**: [How they combine for greater effect]`).join('\n') : '- None'}
+${generatePrerequisitesSection(tech.prerequisites)}
 
 ## Historical Development
 
@@ -105,9 +95,110 @@ ${tech.alternate_solutions?.length ? tech.alternate_solutions.map(s => `- **${s}
 ## Implementation Notes
 [For someone trying to recreate this technology]
 
+## Description
+
+${preservedContent || `[This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]`}
+
 ---
-*Generated from definitions.yml - Last updated: ${new Date().toISOString().split('T')[0]}*
+*Generated from technical definitions - Last updated: ${new Date().toISOString().split('T')[0]}*
 `;
+
+    return header;
+}
+
+// Generate prerequisites section with embedded markdown links
+function generatePrerequisitesSection(prerequisites) {
+    if (!prerequisites) {
+        return `### Hard Requirements
+- None
+
+### Soft Requirements  
+- None
+
+### Catalysts
+- None
+
+### Synergistic
+- None`;
+    }
+
+    const sections = [];
+    
+    // Hard Requirements
+    sections.push('### Hard Requirements');
+    if (prerequisites.hard?.length) {
+        sections.push(prerequisites.hard.map(p => `- **[${p}](../${p}/README.md)**: [Why absolutely necessary]`).join('\n'));
+    } else {
+        sections.push('- None');
+    }
+    
+    // Soft Requirements
+    sections.push('\n### Soft Requirements');
+    if (prerequisites.soft?.length) {
+        sections.push(prerequisites.soft.map(p => `- **[${p}](../${p}/README.md)**: [How it helps but isn\'t essential]`).join('\n'));
+    } else {
+        sections.push('- None');
+    }
+    
+    // Catalysts
+    sections.push('\n### Catalysts');
+    if (prerequisites.catalyst?.length) {
+        sections.push(prerequisites.catalyst.map(p => `- **[${p}](../${p}/README.md)**: [How it accelerates development]`).join('\n'));
+    } else {
+        sections.push('- None');
+    }
+    
+    // Synergistic
+    sections.push('\n### Synergistic');
+    if (prerequisites.synergistic?.length) {
+        sections.push(prerequisites.synergistic.map(p => `- **[${p}](../${p}/README.md)**: [How they combine for greater effect]`).join('\n'));
+    } else {
+        sections.push('- None');
+    }
+    
+    return sections.join('\n');
+}
+
+// Extract content after "## Description" marker for preservation
+function extractPreservedContent(readmePath) {
+    if (!fs.existsSync(readmePath)) {
+        return null;
+    }
+    
+    try {
+        const content = fs.readFileSync(readmePath, 'utf8');
+        const descriptionIndex = content.indexOf('## Description');
+        
+        if (descriptionIndex === -1) {
+            return null; // No description marker found
+        }
+        
+        // Find the start of content after "## Description"
+        const afterDescription = content.substring(descriptionIndex);
+        const firstNewlineIndex = afterDescription.indexOf('\n');
+        
+        if (firstNewlineIndex === -1) {
+            return null;
+        }
+        
+        // Get everything after the "## Description" line
+        let preservedContent = afterDescription.substring(firstNewlineIndex + 1);
+        
+        // Remove the generation timestamp footer if it exists
+        const footerIndex = preservedContent.lastIndexOf('\n---\n*Generated from');
+        if (footerIndex !== -1) {
+            preservedContent = preservedContent.substring(0, footerIndex);
+        }
+        
+        // Trim trailing whitespace but preserve internal formatting
+        preservedContent = preservedContent.replace(/\s+$/, '');
+        
+        return preservedContent.length > 0 ? preservedContent : null;
+        
+    } catch (error) {
+        console.warn(`⚠️  Could not read ${readmePath}: ${error.message}`);
+        return null;
+    }
 }
 
 // Check for divergence between definitions and existing folder structure
@@ -172,10 +263,10 @@ function buildTree(definitionsPath, outputDir = 'tree/technologies') {
         for (const [id, tech] of Object.entries(data.technologies)) {
             const techDir = path.join(outputDir, id);
             const readmePath = path.join(techDir, 'README.md');
-            const prereqDir = path.join(techDir, 'prerequisites');
             
             // Create technology directory
-            if (!fs.existsSync(techDir)) {
+            const isNewTech = !fs.existsSync(techDir);
+            if (isNewTech) {
                 fs.mkdirSync(techDir, { recursive: true });
                 console.log(`📁 Created ${techDir}`);
                 created++;
@@ -183,27 +274,16 @@ function buildTree(definitionsPath, outputDir = 'tree/technologies') {
                 updated++;
             }
             
-            // Create prerequisites directory structure
-            if (!fs.existsSync(prereqDir)) {
-                fs.mkdirSync(prereqDir, { recursive: true });
-                
-                // Create subdirectories for each dependency type
-                const depTypes = ['hard', 'soft', 'catalyst', 'synergistic'];
-                for (const depType of depTypes) {
-                    const depDir = path.join(prereqDir, depType);
-                    fs.mkdirSync(depDir, { recursive: true });
-                }
-            }
+            // Extract preserved content if README exists
+            const preservedContent = extractPreservedContent(readmePath);
             
-            // Generate README if it doesn't exist or if --force flag is used
-            const forceRegenerate = process.argv.includes('--force');
-            if (!fs.existsSync(readmePath) || forceRegenerate) {
-                const readme = generateReadme(tech);
-                fs.writeFileSync(readmePath, readme);
-                console.log(`📄 ${forceRegenerate ? 'Updated' : 'Created'} ${readmePath}`);
-            }
+            // Generate README (always regenerate to update prerequisites and metadata)
+            const readme = generateReadme(tech, preservedContent);
+            fs.writeFileSync(readmePath, readme);
             
-            // No metadata files generated - all data comes from definitions.yml
+            const status = isNewTech ? 'Created' :
+                          preservedContent ? 'Updated (content preserved)' : 'Regenerated';
+            console.log(`📄 ${status} ${readmePath}`);
             
             console.log(`✅ ${tech.name} (${tech.type}/${tech.era})`);
         }

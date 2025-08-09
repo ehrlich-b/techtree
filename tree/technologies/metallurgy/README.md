@@ -9,7 +9,7 @@ Material Technology
 ## Prerequisites
 
 ### Hard Requirements
-- **fire-control**: [Why absolutely necessary]
+- **[fire-control](../fire-control/README.md)**: [Why absolutely necessary]
 
 ### Soft Requirements
 - None
@@ -33,7 +33,7 @@ First appeared ~6500 BCE
 - Chalcolithic peoples
 
 ### Parallel Invention
-[If developed independently multiple times]
+This technology was invented independently in multiple locations.
 
 ### Evolution
 [How the technology changed over time]
@@ -99,5 +99,11 @@ First appeared ~6500 BCE
 ## Implementation Notes
 [For someone trying to recreate this technology]
 
+## Description
+
+
+
+[This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
+
 ---
-*Generated from definitions.yml - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-09*
