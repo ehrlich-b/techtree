@@ -9,9 +9,9 @@ technologies:
     era: early-modern
     prerequisites:
       hard: [metallurgy, chemistry]
-      soft: [engineering, military-organization]
-      catalyst: [chemistry]
-      synergistic: []
+      soft: [engineering, military-organization, blast-furnace]  # Better metallurgy needed
+      catalyst: [chemistry, trade]  # Trade spread gunpowder knowledge from China
+      synergistic: [printing-press]  # Military manuals spread tactics
     description: "Weapons utilizing explosive chemical reactions for propulsion and destruction"
     unlocks:
       technologies: [artillery, firearms, military-revolution]
@@ -36,9 +36,9 @@ technologies:
     era: early-modern
     prerequisites:
       hard: [metallurgy, astronomy]
-      soft: [optics, mathematics, cartography]
-      catalyst: [astronomy]
-      synergistic: []
+      soft: [optics, mathematics, cartography, mechanical-clock]  # Timekeeping crucial
+      catalyst: [astronomy, trade]  # Trade motivated exploration
+      synergistic: [telescope, cartography]  # Combined for better mapping
     description: "Precision instruments for determining position and direction at sea"
     unlocks:
       technologies: [ocean-exploration, global-trade, maritime-empires]
@@ -63,9 +63,9 @@ technologies:
     era: early-modern
     prerequisites:
       hard: [optics, glass-making]
-      soft: [astronomy, mathematics]
-      catalyst: [optics]
-      synergistic: []
+      soft: [astronomy, mathematics, mechanical-clock]  # Precision instruments
+      catalyst: [optics, scientific-method]  # Scientific method drove improvements
+      synergistic: [scientific-revolution, physics]  # Enabled new physics
     description: "Optical instrument for magnifying distant objects"
     unlocks:
       technologies: [astronomical-observation, scientific-revolution, surveying]
@@ -90,9 +90,9 @@ technologies:
     era: early-modern
     prerequisites:
       hard: [optics, glass-making]
-      soft: [medicine, scientific-method]
-      catalyst: [optics]
-      synergistic: []
+      soft: [medicine, scientific-method, printing-press]  # For sharing discoveries
+      catalyst: [optics, scientific-revolution]
+      synergistic: [medicine, scientific-method]  # Revolutionized medical science
     description: "Optical instrument for magnifying very small objects"
     unlocks:
       technologies: [microbiology, cellular-theory, precision-optics]

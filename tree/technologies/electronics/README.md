@@ -13,10 +13,10 @@ Material Technology
 - **[physics](../physics/README.md)**: [Why absolutely necessary]
 
 ### Soft Requirements
-- **[mathematics](../mathematics/README.md)**: [How it helps but isn't essential]
+- None
 
 ### Catalysts
-- **[physics](../physics/README.md)**: [How it accelerates development]
+- None
 
 ### Synergistic
 - None
@@ -87,7 +87,9 @@ Material Technology
 
 
 
+
+
 [This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

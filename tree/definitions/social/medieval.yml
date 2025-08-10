@@ -117,9 +117,9 @@ technologies:
     era: medieval
     prerequisites:
       hard: [metallurgy, writing-systems]
-      soft: [engineering]
-      catalyst: [universities]
-      synergistic: []
+      soft: [engineering, optics, chemistry]  # Optics for precision, chemistry for ink
+      catalyst: [universities, trade]  # Trade spread the innovation rapidly
+      synergistic: [universities, democracy]  # Combined to create knowledge revolution
     description: "Mechanical device for mass reproduction of written texts"
     unlocks:
       technologies: [mass-literacy, knowledge-dissemination, information-revolution]

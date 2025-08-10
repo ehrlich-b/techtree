@@ -9,9 +9,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [metallurgy, physics]
-      soft: [mechanical-clock, engineering]
-      catalyst: [physics]
-      synergistic: []
+      soft: [mechanical-clock, engineering, blast-furnace]  # Quality iron crucial
+      catalyst: [physics, capitalism]  # Capital needed for development
+      synergistic: [railroad, factory-system]  # Created industrial revolution
     description: "Heat engine that converts steam pressure into mechanical work"
     unlocks:
       technologies: [railroad, steamship, industrial-machinery]
@@ -36,9 +36,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [steam-engine, metallurgy]
-      soft: [roads, engineering, capitalism]
-      catalyst: [steam-engine]
-      synergistic: []
+      soft: [roads, engineering, capitalism, banking]  # Financing was crucial
+      catalyst: [steam-engine, capitalism]  # Capital drove expansion
+      synergistic: [telegraph, mass-production]  # Enabled coordination and distribution
     description: "Rail-guided transportation system powered by steam locomotives"
     unlocks:
       technologies: [mass-transportation, industrial-logistics, continental-networks]
@@ -63,9 +63,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [physics, metallurgy]
-      soft: [railroad, scientific-method]
-      catalyst: [physics]
-      synergistic: []
+      soft: [railroad, scientific-method, electromagnetism]  # Electromagnetic theory
+      catalyst: [physics, railroad]  # Railroads needed coordination
+      synergistic: [railroad, capitalism]  # Enabled modern business
     description: "Long-distance communication system using electrical signals"
     unlocks:
       technologies: [telecommunications, information-networks, global-communication]
@@ -90,9 +90,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [physics, metallurgy]
-      soft: [chemistry, scientific-method, telegraph]
-      catalyst: [physics]
-      synergistic: []
+      soft: [chemistry, scientific-method, telegraph, steam-engine]  # Generators
+      catalyst: [physics, electromagnetism]  # Theory enabled practice
+      synergistic: [mass-production, telecommunications]  # Powered modern industry
     description: "Harnessing and distribution of electrical energy for practical use"
     unlocks:
       technologies: [electric-lighting, electric-motors, power-grids]
@@ -117,9 +117,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [chemistry, metallurgy]
-      soft: [steam-engine, physics, engineering]
-      catalyst: [chemistry]
-      synergistic: []
+      soft: [steam-engine, physics, engineering, electricity]  # Ignition systems
+      catalyst: [chemistry, mass-production]  # Mass production made viable
+      synergistic: [electricity, mass-production]  # Created automobile age
     description: "Engine that burns fuel internally to produce mechanical power"
     unlocks:
       technologies: [automobiles, aviation, portable-power]
@@ -144,9 +144,9 @@ technologies:
     era: industrial
     prerequisites:
       hard: [steam-engine, metallurgy]
-      soft: [engineering, capitalism, division-of-labor]
-      catalyst: [steam-engine]
-      synergistic: []
+      soft: [engineering, capitalism, division-of-labor, railroad]  # Distribution
+      catalyst: [steam-engine, capitalism]  # Capital and power together
+      synergistic: [electricity, internal-combustion]  # Modern manufacturing
     description: "Manufacturing system for producing large quantities of standardized goods"
     unlocks:
       technologies: [assembly-lines, industrial-standardization, consumer-goods]

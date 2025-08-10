@@ -106,6 +106,8 @@ This technology was invented independently in multiple locations.
 
 
 
+
+
 Botanical knowledge represents humanity's first systematic understanding of the living world - the painstaking discovery that plants are not just green background scenery, but complex organisms with specific properties, uses, and behaviors that can be understood and exploited. Emerging around 100,000 BCE among gatherer communities worldwide, this knowledge transformed humans from opportunistic foragers into sophisticated naturalists.
 
 Developing botanical expertise required extraordinary observational skills and memory. Our ancestors had to learn to distinguish between hundreds of plant species, understand their growth cycles, recognize their various parts and uses, and crucially - identify which were nourishing, which were medicinal, and which were deadly. A single mistake could kill an entire family; accurate knowledge meant survival and health.
@@ -117,4 +119,4 @@ Botanical knowledge enabled the first herbal medicine, the earliest agriculture,
 More profoundly, botanical knowledge represented humanity's first attempt at biological science - the systematic observation, classification, and testing of living systems. Every modern botanical garden, every pharmaceutical laboratory, every agricultural research station continues this ancient tradition of carefully observing plants to understand their secrets and harness their power.
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

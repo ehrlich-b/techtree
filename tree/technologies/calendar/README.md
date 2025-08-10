@@ -13,11 +13,10 @@ Knowledge Technology
 - **[counting](../counting/README.md)**: [Why absolutely necessary]
 
 ### Soft Requirements
-- **[astronomy](../astronomy/README.md)**: [How it helps but isn't essential]
-- **[agriculture](../agriculture/README.md)**: [How it helps but isn't essential]
+- None
 
 ### Catalysts
-- **[writing-systems](../writing-systems/README.md)**: [How it accelerates development]
+- None
 
 ### Synergistic
 - None
@@ -111,7 +110,9 @@ This technology was invented independently in multiple locations.
 
 
 
+
+
 [This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

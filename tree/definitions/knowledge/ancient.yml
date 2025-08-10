@@ -9,9 +9,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [language, counting]
-      soft: [agriculture]  # Needed for complex society
-      catalyst: []
-      synergistic: [mathematics]
+      soft: [agriculture, trade]  # Trade drove record-keeping needs
+      catalyst: [trade, governance]  # Administration needed records
+      synergistic: [mathematics, law]  # Enabled complex civilization
     description: "Symbolic representation of language in permanent form"
     unlocks:
       technologies: [history, law, literature, science]
@@ -36,9 +36,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [counting, writing-systems]
-      soft: []
-      catalyst: []
-      synergistic: []
+      soft: [trade, astronomy]  # Commerce and celestial observation drove development
+      catalyst: [architecture, engineering]  # Construction needed calculations
+      synergistic: [physics, engineering]  # Enabled precise sciences
     description: "Abstract study of quantity, structure, space, and change"
     unlocks:
       technologies: [engineering, physics, computer-science]
@@ -63,9 +63,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [seasonal-patterns, counting]
-      soft: [astronomy, agriculture]
-      catalyst: [writing-systems]
-      synergistic: []
+      soft: [astronomy, agriculture, religion]  # Religious festivals needed timing
+      catalyst: [writing-systems, agriculture]  # Agriculture drove need
+      synergistic: [astronomy, navigation]  # Enabled time-based navigation
     description: "Systematic division of time into recurring periods"
     unlocks:
       technologies: [astronomy, timekeeping, record-keeping]
@@ -90,9 +90,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [seasonal-patterns, counting]
-      soft: [calendar, mathematics]
-      catalyst: [writing-systems]
-      synergistic: []
+      soft: [calendar, mathematics, religion]  # Religious significance
+      catalyst: [writing-systems, agriculture]  # Recording observations
+      synergistic: [navigation-instruments, telescope]  # Enhanced observation
     description: "Systematic observation and understanding of celestial phenomena"
     unlocks:
       technologies: [navigation, calendar-refinement, astrology]
@@ -117,9 +117,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [mathematics, writing-systems]
-      soft: [architecture, astronomy]
-      catalyst: [architecture]
-      synergistic: []
+      soft: [architecture, astronomy, irrigation]  # Land surveying needs
+      catalyst: [architecture, engineering]  # Building drove theory
+      synergistic: [optics, physics]  # Enabled precise sciences
     description: "Mathematical study of shapes, sizes, and spatial relationships"
     unlocks:
       technologies: [engineering, architecture, optics]
@@ -144,9 +144,9 @@ technologies:
     era: ancient
     prerequisites:
       hard: [language, writing-systems]
-      soft: [mathematics, astronomy]
-      catalyst: [mathematics]
-      synergistic: []
+      soft: [mathematics, astronomy, governance]  # Political philosophy
+      catalyst: [mathematics, democracy]  # Logic and discourse
+      synergistic: [scientific-method, logic]  # Enabled systematic inquiry
     description: "Systematic inquiry into fundamental questions of existence and knowledge"
     unlocks:
       technologies: [logic, ethics, scientific-method]
