@@ -63,64 +63,136 @@ function generateDOT(technologies, options = {}) {
         includeCapabilities = false
     } = options;
     
+    const eraOrder = ['prehistoric', 'ancient', 'medieval', 'early-modern', 'industrial', 'information', 'contemporary', 'future'];
+    
     let dot = 'digraph TechTree {\n';
     dot += '  rankdir=LR;\n';
-    dot += '  ranksep=1.0;\n';
-    dot += '  nodesep=0.2;\n';
-    dot += '  node [fontsize=7 width=0.8 height=0.5];\n';
-    dot += '  edge [arrowsize=0.5];\n';
+    dot += '  ranksep=1.2;\n';  // Good horizontal spacing
+    dot += '  nodesep=0.02;\n';  // ULTRA MINIMAL vertical spacing 
+    dot += '  node [fontsize=7 width=1.0 height=0.15 margin="0.01,0.01"];\n';  // Very flat nodes
+    dot += '  edge [arrowsize=0.3];\n';
     dot += '  concentrate=true;\n';
-    dot += '  overlap=false;\n\n';
+    dot += '  overlap=false;\n';
+    dot += '  splines=polyline;\n\n';  // Polyline for more compact routing
     
-    // Simple approach - just nodes with era-based ranks
+    // Smart approach - spread technologies horizontally by grouping them
     if (showEras) {
         const byEra = {};
-        const eraOrder = ['prehistoric', 'ancient', 'medieval', 'early-modern', 'industrial', 'information', 'contemporary', 'future'];
         
+        // Group technologies by era
         for (const [id, tech] of Object.entries(technologies)) {
             if (!byEra[tech.era]) byEra[tech.era] = [];
             byEra[tech.era].push({ id, tech });
         }
         
-        // Add era headers as simple nodes
+        // Split each era into multiple columns to reduce height
+        const MAX_PER_COLUMN = 5; // Maximum technologies per vertical column
+        
+        // Function to calculate connectivity score for smart positioning
+        function getConnectivityScore(techId, allTechs, targetEra) {
+            let score = 0;
+            const tech = allTechs[techId];
+            
+            // Score based on incoming connections (what depends on this)
+            for (const [otherId, otherTech] of Object.entries(allTechs)) {
+                if (!otherTech.prerequisites) continue;
+                for (const deps of Object.values(otherTech.prerequisites)) {
+                    if (Array.isArray(deps) && deps.includes(techId)) {
+                        // Higher score if the dependent is in a later era
+                        const eraIndex = eraOrder.indexOf(otherTech.era);
+                        const targetIndex = eraOrder.indexOf(targetEra);
+                        if (eraIndex > targetIndex) {
+                            score += 10; // Cross-era dependency
+                        } else if (eraIndex === targetIndex) {
+                            score += 5;  // Same-era dependency
+                        }
+                    }
+                }
+            }
+            
+            // Score based on outgoing connections (what this depends on)
+            if (tech.prerequisites) {
+                for (const deps of Object.values(tech.prerequisites)) {
+                    if (Array.isArray(deps)) {
+                        score += deps.length * 2;
+                    }
+                }
+            }
+            
+            return score;
+        }
+        
+        for (const era of eraOrder) {
+            if (!byEra[era]) continue;
+            
+            const eraTechs = byEra[era];
+            
+            // Sort technologies by connectivity score for better positioning
+            eraTechs.sort((a, b) => {
+                const scoreA = getConnectivityScore(a.id, technologies, era);
+                const scoreB = getConnectivityScore(b.id, technologies, era);
+                return scoreB - scoreA; // Higher connectivity first
+            });
+            
+            // Group by type for even better organization
+            const byType = {
+                knowledge: [],
+                material: [],
+                social: []
+            };
+            
+            for (const item of eraTechs) {
+                byType[item.tech.type].push(item);
+            }
+            
+            // Interleave types for better distribution
+            const organized = [];
+            const types = ['knowledge', 'material', 'social'];
+            let maxLen = Math.max(...types.map(t => byType[t].length));
+            
+            for (let i = 0; i < maxLen; i++) {
+                for (const type of types) {
+                    if (i < byType[type].length) {
+                        organized.push(byType[type][i]);
+                    }
+                }
+            }
+            
+            const numColumns = Math.ceil(organized.length / MAX_PER_COLUMN);
+            
+            // Split technologies into columns
+            for (let col = 0; col < numColumns; col++) {
+                const startIdx = col * MAX_PER_COLUMN;
+                const endIdx = Math.min(startIdx + MAX_PER_COLUMN, organized.length);
+                const columnTechs = organized.slice(startIdx, endIdx).map(item => item.id);
+                
+                if (columnTechs.length > 0) {
+                    dot += `  { rank=same; ${columnTechs.map(id => `"${id}"`).join('; ')}; }\n`;
+                }
+            }
+        }
+        
+        // Add era headers in a clean bottom row
+        dot += '\n  // Era labels at bottom\n';
+        const eraLabelsRow = [];
         for (const era of eraOrder) {
             if (byEra[era]) {
                 const eraLabel = era.charAt(0).toUpperCase() + era.slice(1).replace(/-/g, ' ');
                 const color = COLORS.eras[era] || '#666666';
-                dot += `  "${era}_era" [label="${eraLabel}" shape=plaintext fontsize=12 fontcolor="${color}" fontweight=bold];\n`;
+                dot += `  "${era}_era" [label="${eraLabel}" shape=plaintext fontsize=10 fontcolor="${color}" fontweight=bold];\n`;
+                eraLabelsRow.push(`"${era}_era"`);
             }
         }
+        // Put all era labels in same bottom rank
+        dot += `  { rank=max; ${eraLabelsRow.join('; ')}; }\n`;
         
-        // Add all technology nodes (smaller labels)
+        // Add all technology nodes
         for (const [id, tech] of Object.entries(technologies)) {
             const shape = SHAPES[tech.type] || 'box';
             const color = COLORS.types[tech.type] || '#888888';
-            // Shorter labels
-            const shortName = tech.name.length > 12 ? tech.name.substring(0, 12) + '...' : tech.name;
+            const shortName = tech.name.length > 15 ? tech.name.substring(0, 15) + '...' : tech.name;
             dot += `  "${id}" [label="${shortName}" shape=${shape} color="${color}" fillcolor="${color}22" style=filled];\n`;
         }
-        
-        // Create rank constraints to keep eras in order
-        for (let i = 0; i < eraOrder.length; i++) {
-            const era = eraOrder[i];
-            if (byEra[era]) {
-                dot += `\n  { rank=same; "${era}_era";`;
-                for (const { id } of byEra[era]) {
-                    dot += ` "${id}";`;
-                }
-                dot += ' }\n';
-            }
-        }
-        
-        // Add invisible edges to maintain era order
-        for (let i = 0; i < eraOrder.length - 1; i++) {
-            const currentEra = eraOrder[i];
-            const nextEra = eraOrder[i + 1];
-            if (byEra[currentEra] && byEra[nextEra]) {
-                dot += `  "${currentEra}_era" -> "${nextEra}_era" [style=invis];\n`;
-            }
-        }
-        
     } else {
         // Simple node definitions without era organization
         for (const [id, tech] of Object.entries(technologies)) {
@@ -130,22 +202,35 @@ function generateDOT(technologies, options = {}) {
         }
     }
     
-    dot += '\n  // Dependencies\n';
+    dot += '\n  // Dependencies (hard only for clarity)\n';
     
-    // Add dependency edges
+    // Add dependency edges with smart weighting
     for (const [id, tech] of Object.entries(technologies)) {
         if (!tech.prerequisites) continue;
         
-        for (const [depType, deps] of Object.entries(tech.prerequisites)) {
-            if (!deps || !Array.isArray(deps)) continue;
-            
-            const color = COLORS.dependencies[depType] || '#888888';
-            const style = depType === 'hard' ? 'solid' : 
-                         depType === 'soft' ? 'dashed' :
-                         depType === 'catalyst' ? 'dotted' : 'bold';
-            
-            for (const dep of deps) {
-                dot += `  "${dep}" -> "${id}" [color="${color}" style=${style}];\n`;
+        const targetEra = tech.era;
+        
+        // Hard dependencies with weight based on era distance
+        const hardDeps = tech.prerequisites.hard;
+        if (hardDeps && Array.isArray(hardDeps)) {
+            for (const dep of hardDeps) {
+                const depTech = technologies[dep];
+                if (depTech) {
+                    const sourceEra = depTech.era;
+                    const eraDistance = Math.abs(eraOrder.indexOf(targetEra) - eraOrder.indexOf(sourceEra));
+                    
+                    // Closer era connections get higher weight (shorter edges)
+                    const weight = eraDistance === 0 ? 10 : Math.max(1, 5 - eraDistance);
+                    dot += `  "${dep}" -> "${id}" [color="#FF4444" style=solid penwidth=1.5 weight=${weight}];\n`;
+                }
+            }
+        }
+        
+        // Soft dependencies - very subtle
+        const softDeps = tech.prerequisites.soft;
+        if (softDeps && Array.isArray(softDeps)) {
+            for (const dep of softDeps) {
+                dot += `  "${dep}" -> "${id}" [color="#CCCCCC" style=dashed penwidth=0.5 arrowsize=0.3 weight=0.5];\n`;
             }
         }
     }
@@ -166,10 +251,10 @@ function generateDOT(technologies, options = {}) {
         }
     }
     
-    // Simple legend
+    // Simple legend  
     dot += '\n  // Legend\n';
-    dot += '  legend [label="◆=Knowledge\\n◻=Material\\n◯=Social\\n\\nRed=Hard\\nGreen=Soft\\nBlue=Catalyst" shape=plaintext fontsize=8];\n';
-    dot += '  { rank=same; legend; prehistoric_era; }\n';
+    dot += '  legend [label="◆=Knowledge\\n◻=Material\\n◯=Social\\n\\nSolid Red=Required\\nDashed Gray=Helpful" shape=plaintext fontsize=8];\n';
+    dot += '  { rank=min; legend; }\n';
     
     dot += '}\n';
     return dot;
