@@ -39,68 +39,73 @@ First appeared ~900 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Windmills evolved from simple Persian vertical-axis mills to sophisticated European horizontal-axis designs with adjustable sails. Post mills (rotating entire structure) gave way to tower mills (rotating cap only). Modern wind turbines apply the same principles with advanced materials and computer control.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Windmills capture kinetic energy from moving air using angled sails or blades that create lift and drag forces, causing rotation. This rotational energy transfers through gear systems to drive millstones, pumps, or other machinery. The key innovation was converting irregular, intermittent wind energy into consistent mechanical power.
 
 ### Materials & Resources
 **Materials needed:**
-- wood
-- metal-components
-- millstones
-- sails
-
+- Structural timber: oak or other hardwood for main framework and rotating machinery
+- Canvas or wooden sails: adjustable surfaces for capturing wind energy
+- Stone millstones: specially dressed granite or composite stones for grinding
+- Iron reinforcement: gears, shafts, bearings, and mechanical components
 
 **Knowledge requirements:**
-- wind-mechanics
-- gear-systems
-- mill-construction
-
+- Aerodynamics: understanding wind flow, sail angles, and optimal blade design
+- Mechanical engineering: gear ratios, power transmission, and load management
+- Structural engineering: building frameworks to withstand variable wind loads
+- Materials science: wood working, stone dressing, and metal fabrication
 
 **Social requirements:**
-- miller-guilds
-- rural-industry
+- Specialized millwright guilds maintaining construction and repair expertise
+- Rural communities supporting distributed grain processing infrastructure
+- Economic systems enabling capital investment in expensive machinery
+- Legal frameworks governing wind rights and mill operations
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Windmills freed grain processing from dependence on water sources, enabling agriculture in areas without reliable streams. They provided mechanical power for various industrial processes including cloth production, oil pressing, and water pumping for drainage and irrigation.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Windmills enabled agricultural expansion into previously marginal lands and supported population growth through more efficient food processing. They represented humanity's first systematic harnessing of renewable energy and contributed to the development of precision mechanical engineering.
 
 ### Technologies Unlocked
-- **industrial-machinery**: [How this enables it]
-- **power-transmission**: [How this enables it]
-- **manufacturing**: [How this enables it]
+- **industrial-machinery**: Complex gear systems enable automated manufacturing processes
+- **power-transmission**: Mechanical linkages transfer energy across distances and applications
+- **manufacturing**: Consistent mechanical power enables specialized production facilities
 
 ### New Capabilities
-- **automated-processing**: [Description]
-- **renewable-energy**: [Description]
-- **industrial-power**: [Description]
+- **automated-processing**: Machines perform tasks previously requiring constant human labor
+- **renewable-energy**: Sustainable power source independent of fossil fuels or flowing water
+- **industrial-power**: Concentrated energy application for heavy manufacturing tasks
 
 ### Synergies
-[Technologies that combine well with this]
+Windmills combine powerfully with agriculture (grain processing), textiles (cloth fulling), and land reclamation (water pumping). They enable industrial clusters in areas with good wind resources but limited water power.
 
 ## Alternative Approaches
-- **water-mills**: Different solution to same problem
-- **animal-mills**: Different solution to same problem
-- **hand-grinding**: Different solution to same problem
+- **Dutch polder mills**: Specialized drainage windmills for land reclamation from sea
+- **Mediterranean tower mills**: Stone construction adapted to different wind patterns
+- **Persian vertical mills**: Simple vertical-axis designs for consistent wind directions
+- **Smock mills**: Wooden octagonal mills that could be easily relocated
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary wind turbines use aerodynamic blade design, electronic pitch control, and grid-tie inverters to generate electricity efficiently. Offshore wind farms capture stronger, more consistent winds while traditional windmills survive as heritage sites and artisan grain processors.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional millwright techniques disappeared with industrial automation. Knowledge of sail cloth adjustment for varying wind conditions, stone dressing patterns for optimal grinding, and traditional timber joining methods represents lost craftsmanship. Some regional windmill designs were uniquely adapted to local wind patterns.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Windmills of Europe* by Francine Prose - comprehensive European windmill development
+- *The English Windmill* by Rex Wailes - technical construction and operation details
+- *Wind Power* by Paul Gipe - connecting traditional windmills to modern wind energy
+- *Dutch Windmills* by Frederick Stokhuyzen - specialized applications for land reclamation
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that windmill efficiency depends on matching design to local wind conditions. Study prevailing wind patterns and seasonal variations before construction. Master gear ratio calculations to optimize power output for intended applications. Learn traditional sail management techniques for varying wind conditions. Design for maintenance access - windmills require regular adjustment and repair to maintain effectiveness.
 
 ## Description
 

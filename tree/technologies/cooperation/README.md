@@ -35,60 +35,73 @@ First appeared ~2 million years ago
 This technology appears to have a single point of origin.
 
 ### Evolution
-[How the technology changed over time]
+Cooperation evolved from simple reciprocal altruism to complex social institutions with formal rules, enforcement mechanisms, and large-scale coordination systems. Early cooperation expanded from family groups to tribes, cities, and eventually global organizations.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Cooperation creates mutual benefit through coordinated action, shared resources, and collective problem-solving. It relies on reciprocity, trust-building, and social enforcement mechanisms to maintain collaborative relationships that benefit all participants.
 
 ### Materials & Resources
-[What's physically needed to implement]
-
+**Materials needed:**
+- Communication systems: methods for coordinating activities and sharing information
+- Social markers: symbols, rituals, or objects identifying group membership and commitment
+- Resource sharing mechanisms: systems for distributing benefits and costs fairly
+- Conflict resolution tools: methods for addressing disputes and maintaining cooperation
 
 **Knowledge requirements:**
-- reciprocity
-- trust
-
+- Reciprocity principles: understanding that helping others creates obligations and future benefits
+- Trust assessment: ability to evaluate reliability and commitment of potential partners
+- Social rules: knowledge of group norms, expectations, and consequences for violations
+- Conflict resolution: skills for managing disagreements and maintaining group cohesion
 
 **Social requirements:**
-- kin-groups
+- Group identity: shared sense of membership and common interests among participants
+- Communication channels: methods for coordinating activities and sharing information
+- Enforcement mechanisms: systems for encouraging cooperation and discouraging defection
+- Leadership structures: individuals or systems coordinating group activities and decisions
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Cooperation enabled group hunting, shared child care, collective defense, and resource pooling. It dramatically improved survival rates and allowed humans to tackle challenges impossible for individuals.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Cooperation became the foundation of all human social organization, enabling complex societies, specialized roles, and accumulated knowledge. It created the basis for civilization through coordinated large-scale activities.
 
 ### Technologies Unlocked
-- **division-of-labor**: [How this enables it]
-- **trade**: [How this enables it]
-- **governance**: [How this enables it]
+- **division-of-labor**: Specialization of roles and tasks requiring coordinated group organization
+- **collective-action**: Large-scale projects requiring coordination of many individuals
+- **social-institutions**: Formal systems for organizing cooperation across extended groups
 
 ### New Capabilities
-- **group-hunting**: [Description]
-- **shared-child-rearing**: [Description]
-- **collective-defense**: [Description]
+- **group-problem-solving**: Combining individual knowledge and skills for complex challenges
+- **resource-amplification**: Achieving results greater than the sum of individual efforts
+- **risk-sharing**: Distributing dangers and uncertainties across group members
 
 ### Synergies
-[Technologies that combine well with this]
+Cooperation combines powerfully with language (communication), teaching (skill sharing), and leadership (coordination). It enables all subsequent social technologies and complex human achievements.
 
 ## Alternative Approaches
-[Different solutions to the same problem]
+- **Individualistic survival**: Self-reliance without group coordination or resource sharing
+- **Hierarchical dominance**: Social organization based on power rather than mutual benefit
+- **Market exchange**: Coordination through trading relationships rather than cooperative agreements
+- **Competitive systems**: Organization based on competition rather than collaboration
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary cooperation uses formal institutions, legal systems, and global organizations while maintaining fundamental principles of reciprocity, trust, and mutual benefit. Digital technologies enable new forms of large-scale cooperation.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional cooperation systems and conflict resolution methods disappeared with social change. Indigenous governance systems, customary law, and traditional reciprocity networks represent lost social technologies.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Evolution of Cooperation* by Robert Axelrod - game theory analysis of cooperative behavior
+- *Governing the Commons* by Elinor Ostrom - principles of successful collective action
+- *The Better Angels of Our Nature* by Steven Pinker - historical development of human cooperation
+- *Anthropological studies* - traditional cooperation systems and social organization
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that cooperation depends on trust, reciprocity, and shared benefits. Establish clear expectations and mutual obligations among participants. Develop communication systems for coordination and conflict resolution. Create fair systems for distributing benefits and costs. Build trust gradually through small-scale successful cooperation before attempting large-scale projects. Remember that cooperation requires ongoing maintenance and adaptation to changing circumstances.
 
 ## Description
 

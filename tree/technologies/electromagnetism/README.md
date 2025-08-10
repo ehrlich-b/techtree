@@ -42,12 +42,12 @@ First appeared ~1831 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Electromagnetism evolved from separate observations of electrical and magnetic phenomena to unified field theory. Development included Faraday's electromagnetic induction, Maxwell's equations, and electromagnetic wave theory creating modern electrical engineering.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Electromagnetism describes the unified relationship between electric and magnetic fields, showing how changing electric fields create magnetic fields and vice versa, enabling electromagnetic induction and wave propagation.
 
 ### Materials & Resources
 **Materials needed:**
@@ -70,10 +70,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Electromagnetism enabled electric generators and motors, provided theoretical foundation for electrical engineering, and unified previously separate physical phenomena into single mathematical framework.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Electromagnetism became fundamental to modern civilization, enabling power generation, electric motors, radio communication, and electronic technology while revolutionizing physics and leading to relativity theory.
 
 ### Technologies Unlocked
 - **electric-motors**: [How this enables it]
@@ -86,7 +86,7 @@ This technology was invented independently in multiple locations.
 - **electromagnetic-applications**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Electromagnetism combines powerfully with physics (field theory), calculus (mathematical analysis), and electricity (practical applications). It enables electrical engineering, wireless communication, and modern electronics.
 
 ## Alternative Approaches
 - **empirical-electricity**: Different solution to same problem
@@ -94,16 +94,19 @@ This technology was invented independently in multiple locations.
 - **chemical-batteries**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary electromagnetism uses quantum field theory, advanced materials, and computational modeling while maintaining Maxwell's fundamental equations governing electromagnetic phenomena in all modern electrical systems.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Some early experimental techniques and classical electromagnetic intuitions disappeared with modern quantum theory. Historical approaches to electromagnetic experimentation represent partially lost practical methods.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *A History of Electricity and Magnetism* by various authors - comprehensive development survey
+- *Maxwell's Equations* studies - mathematical foundations and applications
+- *Electromagnetic Theory* by physics historians - theoretical development and experimental verification
+- *Faraday and Maxwell* biographies - key figures in electromagnetic theory development
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that electromagnetism demands rigorous mathematical analysis and precise experimental technique. Master calculus and vector analysis before attempting field theory. Learn to design experiments measuring electromagnetic induction and field relationships. Develop skills in electrical measurements and magnetic field mapping. Keep detailed records of experimental observations and mathematical development. Remember that electromagnetic understanding requires both theoretical sophistication and experimental precision.
 
 ## Description
 

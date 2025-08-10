@@ -42,38 +42,41 @@ First appeared ~1000 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Guilds evolved from informal craft associations to formal professional organizations with legal recognition, regulatory powers, and sophisticated training systems. Development included merchant guilds, craft guilds, and eventually modern professional associations.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Guilds create professional associations that control craft training, quality standards, and market access through membership systems, apprenticeship programs, and collective regulation of trade practices.
 
 ### Materials & Resources
 **Materials needed:**
-- guild-halls
-- workshop-equipment
-- training-materials
+- Guild halls: meeting places and administrative centers for professional associations
+- Workshop equipment: tools and facilities for craft training and production
+- Training materials: instructional resources and examples for teaching craft skills
+- Regulatory documents: charters, rules, and standards governing guild operations
 
 
 **Knowledge requirements:**
-- craft-techniques
-- quality-standards
-- trade-secrets
+- Craft techniques: specialized skills and methods specific to each profession
+- Quality standards: criteria for evaluating workmanship and professional competence
+- Trade secrets: protected knowledge and techniques passed down within professional communities
+- Business practices: understanding of markets, pricing, and commercial relationships
 
 
 **Social requirements:**
-- membership-systems
-- apprenticeship-programs
-- collective-bargaining
+- Membership systems: formal procedures for joining and maintaining guild membership
+- Apprenticeship programs: structured training systems for developing professional skills
+- Collective bargaining: organized representation for professional interests and standards
+- Legal recognition: governmental support for guild authority and regulatory powers
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Guilds established professional standards, systematic skill development, and quality control for crafts and trades. They created organized markets, protected craft knowledge, and provided economic security for members.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Guilds shaped urban development, standardized professional training, and created foundations for modern professional associations and labor organizations. They influenced economic regulation and skilled labor development.
 
 ### Technologies Unlocked
 - **standardization**: [How this enables it]
@@ -86,7 +89,7 @@ This technology was invented independently in multiple locations.
 - **professional-standards**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Guilds combine powerfully with trade (market organization), education systems (skill training), and law (regulatory frameworks). They enable standardization, quality control, and professional development.
 
 ## Alternative Approaches
 - **family-workshops**: Different solution to same problem
@@ -94,16 +97,19 @@ This technology was invented independently in multiple locations.
 - **monastery-crafts**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary professional associations, trade unions, and certification bodies maintain guild principles through modern regulatory frameworks, professional standards, and organized training systems.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional craft techniques and guild practices disappeared with industrialization. Historical apprenticeship systems and traditional professional relationships represent lost approaches to skill development and quality control.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Guilds and Civil Society* by Sheilagh Ogilvie - comprehensive analysis of guild systems
+- *The European Guilds* by Stephan Epstein - comparative study of guild development
+- *Craft Guilds in the Early Modern Low Countries* by Maarten Prak - detailed regional analysis
+- *Medieval Guilds* studies - historical development of professional associations
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective guilds must balance professional standards with market access and innovation with tradition. Establish clear membership criteria and training programs. Create fair procedures for skill assessment and quality control. Develop sustainable funding through member contributions and service fees. Build relationships with authorities for legal recognition and enforcement. Remember that successful professional associations require ongoing adaptation to changing market conditions and technological developments.
 
 ## Description
 

@@ -36,67 +36,73 @@ First appeared ~400,000 years ago
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Hunting tools evolved from simple sharpened sticks to sophisticated projectile systems including spears, atlatls, bows, and composite weapons. Development included improved materials, better designs, and specialized tools for different prey and hunting conditions.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Hunting tools extend human capabilities by increasing force, range, and accuracy in capturing or killing prey. They use leverage, projectile physics, and sharp edges to overcome the physical limitations of human strength, speed, and natural weapons.
 
 ### Materials & Resources
 **Materials needed:**
-- wood
-- stone
-- bone
-- sinew
-
+- Shaft materials: wood, bone, or other straight, strong materials for spear and arrow shafts
+- Point materials: stone, bone, or metal for sharp, penetrating tips
+- Binding materials: sinew, plant fibers, or adhesives for securing components together
+- Specialized components: feathers, weights, or mechanical elements for advanced systems
 
 **Knowledge requirements:**
-- animal-behavior
-- ballistics
-- leverage
-
+- Ballistics principles: understanding trajectory, momentum, and energy transfer for effective use
+- Materials science: knowing properties of wood, stone, bone, and other construction materials
+- Animal anatomy: identifying vulnerable points and effective targeting strategies
+- Manufacturing techniques: methods for shaping, sharpening, and assembling tool components
 
 **Social requirements:**
-- group-hunting-strategies
+- Skill transmission: teaching toolmaking and hunting techniques across generations
+- Coordinated hunting: teams using tools together for complex hunting strategies
+- Resource sharing: communities pooling materials and specialized skills for tool production
+- Innovation networks: groups sharing improvements and new designs across communities
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Hunting tools dramatically increased hunting success rates and enabled pursuit of larger, more dangerous prey. They provided protein access that supported larger populations and improved nutrition.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Hunting technology transformed humans into apex predators, enabling global expansion and complex societies. It drove innovation in materials, design, and manufacturing that influenced all subsequent technology development.
 
 ### Technologies Unlocked
-- **projectile-weapons**: [How this enables it]
-- **traps**: [How this enables it]
-- **nets**: [How this enables it]
+- **projectile-systems**: Advanced ranged weapons including atlatls, bows, and eventually firearms
+- **trap-construction**: Passive hunting devices using mechanical principles and animal behavior
+- **weapon-specialization**: Diverse tools optimized for specific prey, conditions, and hunting strategies
 
 ### New Capabilities
-- **ranged-hunting**: [Description]
-- **large-game-hunting**: [Description]
-- **efficient-killing**: [Description]
+- **safe-distance-hunting**: Ability to kill dangerous animals without close physical contact
+- **large-game-access**: Capability to hunt animals much larger and stronger than humans
+- **hunting-efficiency**: Reduced time and energy required to obtain animal protein
 
 ### Synergies
-[Technologies that combine well with this]
+Hunting tools combine powerfully with animal behavior knowledge (targeting), cooperation (group hunts), and tool making (manufacturing). They enable complex hunting strategies and support larger human populations.
 
 ## Alternative Approaches
-- **persistence-hunting**: Different solution to same problem
-- **trapping**: Different solution to same problem
-- **scavenging**: Different solution to same problem
+- **Persistence hunting**: Using human endurance to exhaust prey without weapons
+- **Trapping systems**: Passive capture methods using environmental features and bait
+- **Scavenging strategies**: Opportunistic use of predator kills rather than active hunting
+- **Cooperative hunting**: Using coordinated group action without specialized tools
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary hunting uses firearms, compound bows, and advanced materials while traditional tools survive in subsistence hunting and recreational archery. Modern hunting emphasizes conservation and wildlife management.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional hunting tool designs and manufacturing techniques disappeared with cultural changes. Indigenous weapon-making skills, specialized materials processing, and hunting strategies represent irreplaceable technological knowledge.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Traditional Bowyer's Bible* series - comprehensive guide to traditional archery equipment
+- *Primitive Skills and Crafts* by Dick Baugh - traditional tool making and hunting methods
+- *The Hunting Apes* by Craig Stanford - evolution of human hunting behavior and tools
+- *Stone Age Spear and Arrow Points* by Noel Justice - archaeological analysis of hunting technology
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that hunting tools must be matched to specific prey, hunting conditions, and user capabilities. Learn basic materials processing before attempting complex tools. Master fundamental techniques like knapping, shaft straightening, and binding methods. Practice accuracy and maintenance skills regularly. Consider local materials and environmental conditions when designing tools. Remember that tool effectiveness depends as much on skill as on design quality.
 
 ## Description
 

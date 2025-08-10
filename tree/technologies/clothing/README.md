@@ -38,65 +38,73 @@ First appeared ~170,000 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Clothing evolved from simple animal hide wrappings to sophisticated textile systems including woven fabrics, tailored garments, and specialized protective gear. Development included advanced materials processing, decorative techniques, and climate-specific adaptations.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Clothing creates artificial protective layers around the human body to regulate temperature, provide protection, and enable social signaling. It uses natural materials modified through processing to create flexible, durable coverings that enhance human survival and comfort.
 
 ### Materials & Resources
 **Materials needed:**
-- animal-hides
-- plant-fibers
-- bone-needles
-
+- Animal materials: hides, furs, leather, and sinew for durable, protective clothing components
+- Plant fibers: grasses, tree bark, and other vegetation for woven and processed textile materials
+- Processing tools: scrapers, needles, awls for preparing and assembling clothing components
+- Fastening systems: bone pins, plant-fiber ties, or other methods for securing garments
 
 **Knowledge requirements:**
-- body-coverage
-- material-properties
-
+- Material properties: understanding how different materials respond to processing, wear, and weather
+- Human anatomy: knowing body proportions and movement requirements for effective garment design
+- Processing techniques: methods for tanning hides, preparing fibers, and creating durable materials
+- Climate adaptation: designing clothing appropriate for different environmental conditions
 
 **Social requirements:**
-- skill-sharing
+- Skill transmission: teaching complex material processing and garment construction techniques
+- Resource sharing: communities cooperating to obtain and process materials for clothing production
+- Cultural standards: establishing appropriate clothing styles and social signaling systems
+- Maintenance knowledge: ongoing repair, cleaning, and replacement of worn clothing items
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Clothing enabled human survival in diverse climates, providing protection from weather, insects, and environmental hazards. It expanded habitable environments and supported population expansion into previously uninhabitable regions.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Clothing technology enabled global human migration, permanent settlement in extreme climates, and eventually complex textile industries. It created systems for social signaling, cultural identity, and economic specialization through fashion and decoration.
 
 ### Technologies Unlocked
-- **weaving**: [How this enables it]
-- **leather-working**: [How this enables it]
-- **fashion**: [How this enables it]
+- **textile-production**: Advanced weaving, spinning, and fabric creation techniques
+- **leather-working**: Specialized hide processing and leather goods manufacturing
+- **fashion-systems**: Decorative clothing and social signaling through garment design
 
 ### New Capabilities
-- **climate-adaptation**: [Description]
-- **protection**: [Description]
-- **social-signaling**: [Description]
+- **climate-independence**: Ability to survive and work in environments beyond natural human tolerance
+- **environmental-protection**: Defense against weather, insects, thorns, and other environmental hazards
+- **social-communication**: Non-verbal signaling of status, identity, and cultural affiliation through clothing
 
 ### Synergies
-[Technologies that combine well with this]
+Clothing combines powerfully with hunting tools (material sources), tool making (processing equipment), and fire control (material treatment). It enables global migration, specialized crafts, and complex social organization.
 
 ## Alternative Approaches
-- **body-painting**: Different solution to same problem
-- **shelter-reliance**: Different solution to same problem
-- **fat-layer-adaptation**: Different solution to same problem
+- **Body modification**: Tattoos, scarification, or physical alterations for protection and signaling
+- **Shelter dependence**: Relying on built environments rather than portable protection
+- **Behavioral adaptation**: Lifestyle changes to avoid environmental challenges rather than technological solutions
+- **Natural materials**: Using unprocessed plant or animal materials for temporary protection
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary clothing uses synthetic materials, mass production, and global supply chains while maintaining fundamental functions of protection, comfort, and social signaling. Traditional clothing techniques survive in specialized applications and cultural contexts.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional textile techniques, natural material processing methods, and climate-specific clothing designs disappeared with industrialization. Indigenous clothing systems and specialized environmental adaptations represent irreplaceable technological knowledge.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Golden Thread* by Kassia St. Clair - comprehensive history of textiles and clothing
+- *Prehistoric Textiles* by Elizabeth Barber - archaeological evidence of early clothing technology
+- *The Material Book of Fashion* by various authors - materials science in clothing design
+- *Traditional Clothing* studies - indigenous textile techniques and cultural systems
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective clothing must balance protection, mobility, durability, and available materials. Learn basic hide processing and fiber preparation before attempting complex garments. Master simple construction techniques like cutting, piercing, and joining materials. Consider local climate and available resources when designing clothing systems. Practice maintenance and repair techniques to extend garment life and effectiveness.
 
 ## Description
 

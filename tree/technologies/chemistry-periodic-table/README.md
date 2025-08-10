@@ -41,12 +41,12 @@ First appeared ~1869 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Periodic table evolved from early element lists to systematic organization by atomic properties. Development included Mendeleev's periodic law, discovery of electron structure, and modern quantum mechanical understanding of atomic structure.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Periodic table organizes chemical elements by atomic number and electron configuration, revealing periodic patterns in chemical properties that enable prediction of element behavior and missing elements.
 
 ### Materials & Resources
 **Materials needed:**
@@ -69,10 +69,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Periodic table enabled prediction of undiscovered elements, systematic understanding of chemical relationships, and rational organization of chemical knowledge replacing empirical trial-and-error approaches.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Periodic table became foundation for modern chemistry and materials science, enabling synthetic chemistry, nuclear physics, and systematic approach to material design and chemical engineering.
 
 ### Technologies Unlocked
 - **synthetic-chemistry**: [How this enables it]
@@ -85,7 +85,7 @@ This technology was invented independently in multiple locations.
 - **material-design**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Periodic table combines powerfully with chemistry (systematic classification), scientific method (predictive testing), and mathematics (quantitative relationships). It enables materials science, chemical engineering, and atomic physics.
 
 ## Alternative Approaches
 - **alchemical-classification**: Different solution to same problem
@@ -93,16 +93,19 @@ This technology was invented independently in multiple locations.
 - **practical-recipes**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary periodic table uses quantum mechanical principles, includes synthetic elements, and extends to superheavy elements while maintaining Mendeleev's fundamental organizational principles.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Some early chemical classification systems and traditional approaches to element relationships disappeared with modern atomic theory. Historical chemical intuitions represent partially lost empirical knowledge.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Mendeleev's Dream* by Paul Strathern - development of periodic classification
+- *The Periodic Table* by various authors - comprehensive development survey
+- *A History of Chemical Elements* - discovery and systematic organization
+- *Atomic Structure and the Periodic Table* - quantum mechanical foundations
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that periodic organization demands systematic analysis of element properties and recognition of underlying patterns. Study chemical behavior of known elements systematically. Look for repeating patterns in properties like atomic weight, valence, and chemical reactivity. Develop mathematical relationships explaining periodic behavior. Use patterns to predict properties of unknown elements. Remember that periodic understanding emerges through combining empirical observation with theoretical frameworks explaining atomic structure.
 
 ## Description
 

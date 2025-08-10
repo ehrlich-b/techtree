@@ -39,67 +39,73 @@ First appeared ~1280 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Mechanical clocks evolved from water clocks to weight-driven tower clocks with escapements, then to spring-driven portable timepieces. Pendulum regulation (1656) improved accuracy dramatically, while modern mechanical watches achieve precision through jeweled bearings and temperature compensation.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Mechanical clocks regulate the release of stored energy (weights or springs) through an escapement mechanism that converts continuous motion into precise, counted intervals. The escapement alternately locks and releases a gear train, creating the characteristic tick-tock while maintaining steady timekeeping through oscillating regulators like pendulums or balance wheels.
 
 ### Materials & Resources
 **Materials needed:**
-- metal-gears
-- springs
-- escapement-mechanism
-
+- High-carbon steel for springs, escapements, and precise gear teeth
+- Brass for gear wheels, plates, and structural components
+- Hardened steel pivots and bearings for rotation points
+- Weight materials: lead, iron, or stone for gravity-driven mechanisms
 
 **Knowledge requirements:**
-- mechanical-principles
-- gear-ratios
-- precision-manufacturing
-
+- Mechanical engineering: understanding force transmission, friction, and energy storage
+- Metallurgy: heat treatment for hardness, spring tempering, and wear resistance
+- Mathematics: gear ratios, oscillation periods, and timing calculations
+- Precision measurement: techniques for achieving consistent mechanical tolerances
 
 **Social requirements:**
-- clockmaking-guilds
-- temporal-coordination
+- Specialized clockmaking guilds maintaining technical knowledge and standards
+- Urban societies requiring coordinated schedules and temporal organization
+- Economic systems supporting expensive, long-term craft specialization
+- Religious or civic institutions commissioning and maintaining public clocks
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Mechanical clocks enabled precise scheduling of daily activities, religious observances, and work shifts. They provided public time displays that synchronized community activities. Urban centers could coordinate markets, meetings, and services with unprecedented accuracy.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Mechanical clocks fundamentally altered human relationship with time, creating "clock time" that differed from natural rhythms. They enabled industrial work scheduling, transportation timetables, and scientific experiments requiring precise timing. The technology contributed to mechanical precision that enabled the Industrial Revolution.
 
 ### Technologies Unlocked
-- **precision-manufacturing**: [How this enables it]
-- **navigation-instruments**: [How this enables it]
-- **industrial-timing**: [How this enables it]
+- **precision-manufacturing**: Clock-making techniques enable accurate mechanical production
+- **navigation-instruments**: Precise timekeeping enables longitude calculation at sea
+- **industrial-timing**: Coordinated work schedules become possible with reliable timekeeping
 
 ### New Capabilities
-- **precise-timekeeping**: [Description]
-- **synchronized-activities**: [Description]
-- **temporal-coordination**: [Description]
+- **precise-timekeeping**: Accuracy within minutes per day rather than hours
+- **synchronized-activities**: Multiple people can coordinate actions precisely
+- **temporal-coordination**: Complex scheduling becomes possible across large areas
 
 ### Synergies
-[Technologies that combine well with this]
+Mechanical clocks combine powerfully with navigation (longitude calculation), industrial organization (work scheduling), and scientific method (timed experiments). They enable railroad systems and coordinated manufacturing.
 
 ## Alternative Approaches
-- **astronomical-clocks**: Different solution to same problem
-- **tower-clocks**: Different solution to same problem
-- **portable-clocks**: Different solution to same problem
+- **Astronomical clocks**: Complex mechanisms showing celestial movements and calendar information
+- **Water clocks**: Flow-regulated timekeeping for regions without freezing temperatures
+- **Candle clocks**: Marked candles providing rough time measurement through burn rates
+- **Sundials**: Shadow-based timekeeping dependent on sunny weather and fixed location
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Modern mechanical clocks achieve extraordinary precision through temperature compensation, shock resistance, and synthetic lubricants. Luxury mechanical watches maintain traditional craftsmanship while atomic clocks provide ultimate accuracy for scientific and navigation applications.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional clockmaking techniques disappeared with mass production. Hand-filed gear teeth, traditional spring tempering methods, and complex astronomical clock mechanisms represent lost expertise. Some medieval clock movements achieved remarkable accuracy using techniques no longer fully understood.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Revolution in Time* by David S. Landes - comprehensive history of timekeeping technology
+- *The Clockwork Universe* by Edward Dolnick - mechanical clocks and scientific revolution
+- *Clockmaking in England and Wales* by George White - technical development and craftsmanship
+- *Chinese Clocks and Watches* - parallel development of mechanical timekeeping in Asia
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that mechanical clocks are systems of interdependent precision components. Master gear cutting and filing techniques for smooth power transmission. Develop consistent escapement timing through careful adjustment and regulation. Control friction through proper lubrication and bearing design. Test and adjust continuously - mechanical clocks require ongoing maintenance and calibration for accurate timekeeping.
 
 ## Description
 

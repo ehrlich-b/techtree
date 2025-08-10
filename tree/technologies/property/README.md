@@ -39,65 +39,73 @@ First appeared ~10,000 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Property systems evolved from simple territorial claims to complex legal frameworks with formal ownership, inheritance, and transfer mechanisms. Development included private property, communal ownership, and sophisticated land management systems.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Property systems establish exclusive rights to use, control, and transfer resources, land, and objects. They create legally enforceable boundaries and rules governing access, inheritance, and exchange of valuable assets.
 
 ### Materials & Resources
 **Materials needed:**
-- boundary-markers
-- storage-facilities
-
+- Boundary markers: physical indicators defining property limits and ownership boundaries
+- Documentation systems: records, maps, or other methods for establishing and proving ownership
+- Storage facilities: secure locations for protecting and controlling access to property
+- Enforcement tools: methods and authority for protecting property rights and resolving disputes
 
 **Knowledge requirements:**
-- ownership-concepts
-- inheritance-rules
-
+- Ownership concepts: understanding of exclusive rights, control, and transfer of resources
+- Legal frameworks: knowledge of rules governing property acquisition, use, and inheritance
+- Boundary recognition: ability to identify and respect property limits and territorial claims
+- Valuation methods: techniques for assessing property worth and managing exchanges
 
 **Social requirements:**
-- property-enforcement
-- dispute-resolution
+- Enforcement mechanisms: community or governmental systems protecting property rights
+- Dispute resolution: institutions for handling conflicts over ownership and boundaries
+- Legal recognition: social agreement on property concepts and legitimate ownership
+- Economic systems: markets and institutions enabling property transfer and development
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Property systems enabled long-term investment, agricultural development, and wealth accumulation. They provided incentives for resource improvement and facilitated economic exchange through ownership transfer.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Property became the foundation of complex economies, legal systems, and social stratification. It enabled capitalism, large-scale agriculture, and systematic economic development through secure investment incentives.
 
 ### Technologies Unlocked
-- **law**: [How this enables it]
-- **governance**: [How this enables it]
-- **markets**: [How this enables it]
+- **legal-frameworks**: Formal systems for defining, protecting, and transferring ownership rights
+- **investment-systems**: Long-term resource development based on secure property ownership
+- **inheritance-structures**: Systematic transfer of wealth and resources across generations
 
 ### New Capabilities
-- **wealth-accumulation**: [Description]
-- **inheritance-systems**: [Description]
-- **land-management**: [Description]
+- **wealth-accumulation**: Ability to build and transfer resources across time and generations
+- **resource-development**: Investment in land and property improvement for long-term benefit
+- **economic-security**: Protection of assets and ability to use property as collateral
 
 ### Synergies
-[Technologies that combine well with this]
+Property systems combine powerfully with agriculture (land ownership), law (enforcement), and markets (exchange). They enable complex economies, formal governance, and systematic wealth creation.
 
 ## Alternative Approaches
-- **clan-territories**: Different solution to same problem
-- **seasonal-use-rights**: Different solution to same problem
-- **usufruct-systems**: Different solution to same problem
+- **Common ownership**: Shared community control rather than individual property rights
+- **Use rights**: Temporary access to resources without permanent ownership
+- **Rotating access**: Cyclical resource use patterns rather than fixed ownership
+- **Collective property**: Group ownership with shared decision-making and benefits
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary property systems use legal documentation, registration systems, and government enforcement while maintaining fundamental principles of ownership, inheritance, and transfer rights.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional property systems and resource management techniques disappeared with modernization. Indigenous land tenure systems and customary ownership practices represent lost approaches to resource governance.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Property and Political Order* by John Berman - institutional analysis of property systems
+- *The Mystery of Capital* by Hernando de Soto - property rights and economic development
+- *Common Property Economics* by various authors - alternatives to private property
+- *Traditional Land Tenure* studies - indigenous property systems and resource management
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that property systems must balance individual rights with community needs and resource sustainability. Establish clear methods for defining boundaries and proving ownership. Create fair mechanisms for property acquisition and transfer. Develop dispute resolution procedures for boundary conflicts. Consider environmental and social impacts of property concentration. Remember that effective property systems require ongoing legal and social support to maintain legitimacy and enforceability.
 
 ## Description
 
