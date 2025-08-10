@@ -41,12 +41,12 @@ First appeared ~1760 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Factory system evolved from cottage industries to centralized mechanized production. Development included water-powered mills, steam-powered factories, assembly line methods, and modern manufacturing systems creating industrial production organization.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Factory system concentrates workers, machinery, and production processes in single locations, using division of labor, mechanization, and management coordination to achieve efficient large-scale manufacturing.
 
 ### Materials & Resources
 **Materials needed:**
@@ -69,10 +69,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Factory system concentrated production, created industrial employment, and increased manufacturing efficiency while establishing new forms of work organization and urban industrial centers.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Factory system transformed society by creating industrial working class, enabling mass production, accelerating urbanization, and establishing modern industrial capitalism while generating labor movements and social reforms.
 
 ### Technologies Unlocked
 - **industrial-labor**: [How this enables it]
@@ -85,7 +85,7 @@ This technology was invented independently in multiple locations.
 - **manufacturing-efficiency**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Factory system combines powerfully with mass production (manufacturing efficiency), capitalism (investment systems), and steam engines (industrial power). It enables modern manufacturing, industrial coordination, and economic development.
 
 ## Alternative Approaches
 - **cottage-industry**: Different solution to same problem
@@ -93,16 +93,19 @@ This technology was invented independently in multiple locations.
 - **putting-out-system**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary manufacturing uses automation, robotics, and digital systems while maintaining fundamental principles of centralized production, specialized labor, and systematic organization.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional factory management techniques and early industrial organization methods disappeared with modern automation. Historical approaches to worker coordination represent partially lost management knowledge.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Factory System* by various authors - comprehensive analysis of industrial organization
+- *Industrial Revolution and Factory Development* studies - evolution of manufacturing systems
+- *Labor and Industrial Organization* - worker experiences and management systems
+- *Manufacturing History* - technical and social development of factory production
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that factory systems demand systematic organization, coordinated labor, and efficient production processes. Design facilities optimizing workflow and machinery placement. Develop management hierarchies coordinating production activities. Create standardized procedures and quality control systems. Train workers in specialized tasks and safety procedures. Build supply and distribution networks supporting factory operations. Remember that factory success depends on systematic organization, worker coordination, and efficient production methods.
 
 ## Description
 

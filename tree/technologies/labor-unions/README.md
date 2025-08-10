@@ -41,12 +41,12 @@ First appeared ~1800 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Labor unions evolved from informal worker associations to formal collective bargaining organizations. Development included craft unions, industrial unions, collective bargaining rights, and modern labor movements creating systematic worker representation.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Labor unions organize workers to negotiate collectively with employers about wages, working conditions, and benefits, using solidarity, strikes, and legal frameworks to balance power between labor and management.
 
 ### Materials & Resources
 **Materials needed:**
@@ -69,10 +69,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Labor unions provided worker solidarity, enabled collective bargaining, and established mechanisms for improving wages and working conditions while creating organized labor movements.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Labor unions shaped modern industrial relations, secured worker rights and benefits, influenced labor legislation, and created middle class prosperity while establishing frameworks for workplace democracy.
 
 ### Technologies Unlocked
 - **labor-rights**: [How this enables it]
@@ -85,7 +85,7 @@ This technology was invented independently in multiple locations.
 - **working-conditions-improvement**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Labor unions combine powerfully with factory systems (industrial organization), law (collective bargaining rights), and democracy (worker representation). They enable labor rights, workplace safety, and economic justice.
 
 ## Alternative Approaches
 - **individual-bargaining**: Different solution to same problem
@@ -93,16 +93,19 @@ This technology was invented independently in multiple locations.
 - **government-regulation**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary labor unions use legal frameworks, professional negotiation, and modern communication while adapting to globalization, automation, and changing work arrangements.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional organizing techniques and early labor solidarity methods disappeared with modern union structures. Historical approaches to worker mobilization represent partially lost organizing knowledge.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Labor Union History* by various authors - comprehensive development of worker organization
+- *Collective Bargaining and Industrial Relations* studies - union-management interactions
+- *The Labor Movement* - social and economic analysis of worker organization
+- *Union Democracy and Worker Rights* - political and legal dimensions of labor organization
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that labor unions demand worker solidarity, effective leadership, and strategic organizing. Build trust and communication among workers with shared interests. Develop skilled negotiators and organizers. Create democratic structures for member participation and decision-making. Establish legal frameworks protecting organizing rights and collective bargaining. Build financial resources supporting strikes and organizing campaigns. Remember that union success depends on worker solidarity, strategic thinking, and sustained organizational commitment.
 
 ## Description
 
