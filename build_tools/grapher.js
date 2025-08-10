@@ -64,39 +64,69 @@ function generateDOT(technologies, options = {}) {
     } = options;
     
     let dot = 'digraph TechTree {\n';
-    dot += '  rankdir=TB;\n';
-    dot += '  splines=ortho;\n';
-    dot += '  node [fontsize=10];\n';
-    dot += '  edge [fontsize=8];\n\n';
+    dot += '  rankdir=LR;\n';
+    dot += '  ranksep=1.0;\n';
+    dot += '  nodesep=0.2;\n';
+    dot += '  node [fontsize=7 width=0.8 height=0.5];\n';
+    dot += '  edge [arrowsize=0.5];\n';
+    dot += '  concentrate=true;\n';
+    dot += '  overlap=false;\n\n';
     
-    // Define era subgraphs
+    // Simple approach - just nodes with era-based ranks
     if (showEras) {
         const byEra = {};
+        const eraOrder = ['prehistoric', 'ancient', 'medieval', 'early-modern', 'industrial', 'information', 'contemporary', 'future'];
+        
         for (const [id, tech] of Object.entries(technologies)) {
             if (!byEra[tech.era]) byEra[tech.era] = [];
             byEra[tech.era].push({ id, tech });
         }
         
-        for (const [era, techs] of Object.entries(byEra)) {
-            dot += `  subgraph cluster_${era} {\n`;
-            dot += `    label="${era.charAt(0).toUpperCase() + era.slice(1)}";\n`;
-            dot += `    color="${COLORS.eras[era] || '#666666'}";\n`;
-            dot += `    style=dashed;\n`;
-            
-            for (const { id, tech } of techs) {
-                const shape = SHAPES[tech.type] || 'box';
-                const color = COLORS.types[tech.type] || '#888888';
-                dot += `    "${id}" [label="${tech.name}\\n(${tech.type})" shape=${shape} color="${color}" fillcolor="${color}22" style=filled];\n`;
+        // Add era headers as simple nodes
+        for (const era of eraOrder) {
+            if (byEra[era]) {
+                const eraLabel = era.charAt(0).toUpperCase() + era.slice(1).replace(/-/g, ' ');
+                const color = COLORS.eras[era] || '#666666';
+                dot += `  "${era}_era" [label="${eraLabel}" shape=plaintext fontsize=12 fontcolor="${color}" fontweight=bold];\n`;
             }
-            
-            dot += '  }\n\n';
         }
-    } else {
-        // Simple node definitions without clustering
+        
+        // Add all technology nodes (smaller labels)
         for (const [id, tech] of Object.entries(technologies)) {
             const shape = SHAPES[tech.type] || 'box';
             const color = COLORS.types[tech.type] || '#888888';
-            dot += `  "${id}" [label="${tech.name}\\n(${tech.type})" shape=${shape} color="${color}" fillcolor="${color}22" style=filled];\n`;
+            // Shorter labels
+            const shortName = tech.name.length > 12 ? tech.name.substring(0, 12) + '...' : tech.name;
+            dot += `  "${id}" [label="${shortName}" shape=${shape} color="${color}" fillcolor="${color}22" style=filled];\n`;
+        }
+        
+        // Create rank constraints to keep eras in order
+        for (let i = 0; i < eraOrder.length; i++) {
+            const era = eraOrder[i];
+            if (byEra[era]) {
+                dot += `\n  { rank=same; "${era}_era";`;
+                for (const { id } of byEra[era]) {
+                    dot += ` "${id}";`;
+                }
+                dot += ' }\n';
+            }
+        }
+        
+        // Add invisible edges to maintain era order
+        for (let i = 0; i < eraOrder.length - 1; i++) {
+            const currentEra = eraOrder[i];
+            const nextEra = eraOrder[i + 1];
+            if (byEra[currentEra] && byEra[nextEra]) {
+                dot += `  "${currentEra}_era" -> "${nextEra}_era" [style=invis];\n`;
+            }
+        }
+        
+    } else {
+        // Simple node definitions without era organization
+        for (const [id, tech] of Object.entries(technologies)) {
+            const shape = SHAPES[tech.type] || 'box';
+            const color = COLORS.types[tech.type] || '#888888';
+            dot += `  "${id}" [label="${tech.name}" shape=${shape} color="${color}" fillcolor="${color}22" style=filled];\n`;
         }
     }
     
@@ -115,7 +145,7 @@ function generateDOT(technologies, options = {}) {
                          depType === 'catalyst' ? 'dotted' : 'bold';
             
             for (const dep of deps) {
-                dot += `  "${dep}" -> "${id}" [color="${color}" style=${style} label="${depType}"];\n`;
+                dot += `  "${dep}" -> "${id}" [color="${color}" style=${style}];\n`;
             }
         }
     }
@@ -136,22 +166,10 @@ function generateDOT(technologies, options = {}) {
         }
     }
     
-    // Legend
+    // Simple legend
     dot += '\n  // Legend\n';
-    dot += '  subgraph cluster_legend {\n';
-    dot += '    label="Legend";\n';
-    dot += '    style=filled;\n';
-    dot += '    fillcolor="#F0F0F0";\n';
-    dot += '    \n';
-    dot += '    "Material" [shape=box color="#8B4513" fillcolor="#8B451322" style=filled];\n';
-    dot += '    "Social" [shape=ellipse color="#9932CC" fillcolor="#9932CC22" style=filled];\n';
-    dot += '    "Knowledge" [shape=diamond color="#006400" fillcolor="#00640022" style=filled];\n';
-    dot += '    \n';
-    dot += '    "Hard" -> "Soft" [color="#FF4444" style=solid label="required"];\n';
-    dot += '    "Soft" -> "Catalyst" [color="#44BB44" style=dashed label="helpful"];\n';
-    dot += '    "Catalyst" -> "Synergistic" [color="#4444FF" style=dotted label="accelerates"];\n';
-    dot += '    "Synergistic" -> "End" [color="#FF8800" style=bold label="combines"];\n';
-    dot += '  }\n';
+    dot += '  legend [label="◆=Knowledge\\n◻=Material\\n◯=Social\\n\\nRed=Hard\\nGreen=Soft\\nBlue=Catalyst" shape=plaintext fontsize=8];\n';
+    dot += '  { rank=same; legend; prehistoric_era; }\n';
     
     dot += '}\n';
     return dot;
