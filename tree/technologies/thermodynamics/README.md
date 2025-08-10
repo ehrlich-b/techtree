@@ -41,12 +41,12 @@ First appeared ~1824 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Thermodynamics evolved from practical steam engine optimization to fundamental physical laws governing energy, heat, and entropy. Development included Carnot cycles, conservation laws, statistical mechanics, and modern thermal physics.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Thermodynamics studies energy transformations, heat flow, and entropy using mathematical laws to predict system behavior and optimize energy efficiency in engines, refrigerators, and natural processes.
 
 ### Materials & Resources
 **Materials needed:**
@@ -69,10 +69,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Thermodynamics provided scientific foundations for heat engines, improved steam engine efficiency, and enabled systematic optimization of energy conversion processes in industrial applications.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Thermodynamics became fundamental to modern physics and engineering, enabling power generation, refrigeration, chemical engineering, and understanding of natural phenomena from stars to biological processes.
 
 ### Technologies Unlocked
 - **heat-engines**: [How this enables it]
@@ -85,7 +85,7 @@ This technology was invented independently in multiple locations.
 - **efficiency-analysis**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Thermodynamics combines powerfully with physics (energy laws), calculus (mathematical analysis), and steam engines (practical applications). It enables modern engineering, energy systems, and physical understanding.
 
 ## Alternative Approaches
 - **empirical-engineering**: Different solution to same problem
@@ -93,16 +93,19 @@ This technology was invented independently in multiple locations.
 - **craft-knowledge**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary thermodynamics uses quantum mechanics, computational modeling, and advanced materials while maintaining fundamental laws governing energy efficiency, heat transfer, and entropy production.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Some early experimental techniques and classical thermodynamic intuitions disappeared with modern computational approaches. Historical experimental methods and traditional thermal analysis represent partially lost practices.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *A History of Thermodynamics* by Ingo Müller - comprehensive development survey
+- *The Second Law of Thermodynamics* by various authors - entropy and energy concepts
+- *Thermodynamics and Statistical Mechanics* studies - theoretical foundations
+- *Heat Engines and Thermodynamics* - practical applications and industrial development
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that thermodynamics demands rigorous mathematical analysis and careful experimental measurement. Master calculus and statistical methods before attempting complex analysis. Learn to design controlled experiments measuring heat, work, and temperature. Develop skills in energy balance calculations and efficiency optimization. Keep detailed records of experimental data and theoretical development. Remember that thermodynamic understanding advances through combining precise measurement with mathematical models explaining energy behavior.
 
 ## Description
 

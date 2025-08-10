@@ -43,68 +43,73 @@ First appeared ~3500 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Military organization evolved from tribal war bands to professional armies with specialized units, formal command structures, and sophisticated logistics. Development included phalanxes, legions, feudal systems, and modern military institutions.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Military organization creates systematic structures for coordinating armed forces through hierarchical command, specialized roles, standardized training, and logistical support to achieve strategic objectives through organized collective violence or deterrence.
 
 ### Materials & Resources
 **Materials needed:**
-- weapons
-- armor
-- fortifications
-
+- Weapons and equipment: standardized arms, armor, and military technology appropriate to tactical requirements
+- Military infrastructure: barracks, training facilities, fortifications, and supply systems
+- Communication systems: methods for coordinating units and transmitting orders across distances
+- Logistical support: supply chains, transportation, and maintenance systems for sustained operations
 
 **Knowledge requirements:**
-- military-tactics
-- strategy
-- logistics
-
+- Military tactics: techniques for coordinating units in battle and achieving tactical advantages
+- Strategic planning: understanding of campaign objectives, resource allocation, and operational timing
+- Leadership skills: abilities to command, motivate, and coordinate military personnel under stress
+- Logistics management: expertise in supplying, moving, and maintaining military forces
 
 **Social requirements:**
-- military-hierarchy
-- warrior-training
-- command-structure
+- Command hierarchy: clear authority structures and chains of command for military decision-making
+- Professional training: systematic instruction in military skills, discipline, and procedures
+- Military culture: shared values, traditions, and identity fostering unit cohesion and effectiveness
+- Civilian support: social and economic systems sustaining military institutions and operations
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Military organization enabled coordinated warfare, territorial conquest, and effective defense. It created professional warrior classes and systematic approaches to organized violence and conflict resolution.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Military organization shaped political development, enabled empire building, and influenced technological advancement. It created institutions capable of large-scale coordination and became fundamental to state formation and international relations.
 
 ### Technologies Unlocked
-- **professional-armies**: [How this enables it]
-- **military-engineering**: [How this enables it]
-- **warfare-tactics**: [How this enables it]
+- **professional-warfare**: Specialized military institutions and career soldiers
+- **strategic-planning**: Systematic approaches to campaign design and resource allocation
+- **military-engineering**: Specialized construction of fortifications and siege equipment
 
 ### New Capabilities
-- **organized-warfare**: [Description]
-- **territorial-expansion**: [Description]
-- **defense-systems**: [Description]
+- **coordinated-combat**: Large-scale battlefield coordination and tactical execution
+- **territorial-control**: Systematic conquest, occupation, and defense of geographic areas
+- **institutional-violence**: Organized application of force for political and strategic objectives
 
 ### Synergies
-[Technologies that combine well with this]
+Military organization combines powerfully with metallurgy (weapons), governance (state authority), and logistics (supply systems). It enables empire building, territorial defense, and political control.
 
 ## Alternative Approaches
-- **tribal-warriors**: Different solution to same problem
-- **feudal-levies**: Different solution to same problem
-- **standing-armies**: Different solution to same problem
+- **Tribal warfare**: Kinship-based fighting without formal military institutions
+- **Militia systems**: Part-time citizen soldiers rather than professional military forces
+- **Mercenary armies**: Hired fighters without institutional military development
+- **Guerrilla warfare**: Irregular combat avoiding formal military organization
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary military organization uses advanced technology, joint operations, and civilian control while maintaining fundamental principles of hierarchy, specialization, and systematic coordination.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional military systems and tactical knowledge disappeared with technological and social changes. Ancient formation techniques and warrior traditions represent lost military expertise.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Art of War* by Sun Tzu - classical analysis of military strategy and organization
+- *The Western Way of War* by Victor Davis Hanson - development of Western military institutions
+- *Ancient Warfare* studies - historical analysis of early military systems and tactics
+- *Military History* by various authors - comprehensive surveys of military development
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective military organization depends on clear command structures, adequate training, and reliable logistics. Establish hierarchical authority with clear responsibilities and accountability. Develop systematic training appropriate to available technology and tactical requirements. Create supply systems capable of sustaining operations over extended periods. Maintain discipline and morale through leadership, tradition, and shared purpose. Remember that sustainable military institutions require integration with political authority and civilian society while maintaining professional military expertise and effectiveness.
 
 ## Description
 

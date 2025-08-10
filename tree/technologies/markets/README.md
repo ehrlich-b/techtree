@@ -39,65 +39,73 @@ First appeared ~8000 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Markets evolved from simple gathering places for trade to sophisticated systems with specialized merchants, standardized weights, and complex financial instruments. Development included bazaars, guilds, stock exchanges, and global markets.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Markets organize systematic exchange of goods and services through established locations, procedures, and institutions that facilitate price discovery, trade negotiation, and transaction completion between multiple buyers and sellers.
 
 ### Materials & Resources
 **Materials needed:**
-- market-spaces
-- transport-systems
-
+- Market infrastructure: dedicated spaces, stalls, and facilities for conducting trade and commerce
+- Transportation systems: methods for bringing goods and participants to market locations
+- Measurement standards: scales, measures, and other tools for determining quantities and values
+- Security systems: protection for goods, merchants, and customers during market activities
 
 **Knowledge requirements:**
-- value-assessment
-- exchange-rates
-
+- Value assessment: understanding of supply, demand, and price determination mechanisms
+- Quality evaluation: ability to judge goods and services for condition, authenticity, and worth
+- Market procedures: knowledge of trading customs, negotiation practices, and transaction methods
+- Economic relationships: understanding of credit, exchange rates, and commercial networks
 
 **Social requirements:**
-- market-regulation
-- trader-networks
+- Market regulation: rules and institutions maintaining fair trade and preventing fraud
+- Trust networks: relationships enabling credit, delayed payment, and repeat transactions
+- Commercial law: legal frameworks protecting property rights and enforcing agreements
+- Professional merchants: specialists dedicated to trade and commercial activities
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Markets enabled efficient price discovery, increased trade volume, and created specialized commercial activities. They provided central locations for exchange and reduced transaction costs through organization.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Markets became the foundation of complex economies, enabling specialization, capital formation, and economic growth. They created mechanisms for resource allocation and wealth creation through competitive exchange.
 
 ### Technologies Unlocked
-- **currency**: [How this enables it]
-- **banking**: [How this enables it]
-- **commerce**: [How this enables it]
+- **financial-systems**: Banking, credit, and investment institutions supporting commercial activities
+- **commercial-law**: Legal frameworks protecting trade and enabling complex transactions
+- **economic-specialization**: Professional merchants and commercial organizations
 
 ### New Capabilities
-- **price-discovery**: [Description]
-- **economic-efficiency**: [Description]
-- **wealth-creation**: [Description]
+- **price-optimization**: Efficient determination of fair values through competitive bidding
+- **resource-allocation**: Distribution of goods to those who value them most highly
+- **economic-growth**: Wealth creation through improved efficiency and specialization
 
 ### Synergies
-[Technologies that combine well with this]
+Markets combine powerfully with trade (exchange foundation), currency (transaction medium), and law (enforcement). They enable banking, insurance, and complex economic systems.
 
 ## Alternative Approaches
-- **traveling-merchants**: Different solution to same problem
-- **periodic-markets**: Different solution to same problem
-- **temple-commerce**: Different solution to same problem
+- **Barter networks**: Direct exchange without central market locations or standardized procedures
+- **Redistribution systems**: Central authority collecting and distributing goods rather than market allocation
+- **Gift economies**: Social obligation and reciprocity rather than commercial exchange
+- **Household production**: Self-sufficiency without external market participation
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary markets use electronic trading, global networks, and computer algorithms while maintaining fundamental principles of organized exchange and price discovery through supply and demand.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional market systems and commercial practices disappeared with modernization. Indigenous trading networks and customary market organization represent lost economic wisdom and social capital.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Great Transformation* by Karl Polanyi - historical development of market systems
+- *Markets and Hierarchies* by Oliver Williamson - economic analysis of market organization
+- *Bazaars, Markets, and Merchants* by various authors - anthropological studies of traditional markets
+- *History of Commerce* studies - development of trade institutions and commercial practices
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective markets depend on trust, regulation, and infrastructure. Establish secure locations with adequate space and facilities for trade activities. Create fair rules governing transactions and preventing fraud. Develop systems for quality assurance and dispute resolution. Encourage participation through accessible entry requirements and reasonable fees. Remember that sustainable markets require ongoing maintenance of infrastructure, regulation, and social relationships supporting commercial activity.
 
 ## Description
 

@@ -39,12 +39,12 @@ First appeared ~1800 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Mass production evolved from craft manufacturing to systematic industrial production. Development included factory systems, interchangeable parts, assembly lines, and automated manufacturing creating modern industrial production methods.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Mass production uses specialized machinery, standardized processes, and division of labor to manufacture large quantities of identical products efficiently, reducing costs through economies of scale.
 
 ### Materials & Resources
 **Materials needed:**
@@ -67,10 +67,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Mass production dramatically reduced manufacturing costs, increased product availability, and enabled standardization while creating industrial employment and concentrated manufacturing in factories.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Mass production transformed global economy, enabled consumer culture, created industrial working class, and established modern manufacturing while contributing to urbanization and environmental impacts.
 
 ### Technologies Unlocked
 - **assembly-lines**: [How this enables it]
@@ -83,7 +83,7 @@ This technology was invented independently in multiple locations.
 - **product-standardization**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Mass production combines powerfully with steam engines (industrial power), metallurgy (precision machinery), and factory systems (organized labor). It enables consumer goods, industrial efficiency, and modern manufacturing.
 
 ## Alternative Approaches
 - **craft-production**: Different solution to same problem
@@ -91,16 +91,19 @@ This technology was invented independently in multiple locations.
 - **cottage-industry**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary mass production uses robotics, computer-controlled machinery, and lean manufacturing while maintaining fundamental principles of standardization, specialization, and economies of scale.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional manufacturing skills and early industrial techniques disappeared with automation. Historical approaches to quality control and traditional manufacturing processes represent partially lost craftsmanship.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Machine That Changed the World* by various authors - evolution of manufacturing systems
+- *Mass Production and Industrial Revolution* studies - development of factory systems
+- *Manufacturing History* - comprehensive survey of production techniques
+- *Industrial Organization and Efficiency* - economic analysis of mass production
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that mass production demands systematic organization, standardized processes, and coordinated operations. Design production systems optimizing efficiency through specialization and standardization. Invest in appropriate machinery and tooling for volume production. Develop quality control systems ensuring consistent output. Create efficient workflows minimizing waste and bottlenecks. Train workers in specialized tasks and standard procedures. Remember that mass production success depends on achieving sufficient scale to justify fixed costs and systematic approaches.
 
 ## Description
 

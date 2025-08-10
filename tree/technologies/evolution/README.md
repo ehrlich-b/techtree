@@ -37,12 +37,12 @@ First appeared ~1859 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Evolutionary theory evolved from natural theology and taxonomy to comprehensive biological framework. Development included Darwinian natural selection, modern synthesis with genetics, molecular evolution, and contemporary evolutionary biology.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Evolution explains biological diversity through natural selection acting on heritable variation, where organisms with advantageous traits survive and reproduce more successfully, leading to population changes over time.
 
 ### Materials & Resources
 **Materials needed:**
@@ -65,10 +65,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Evolution provided scientific explanation for biological diversity, challenged religious creation narratives, and established framework for understanding species relationships and adaptation mechanisms.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Evolution became central to all biological sciences, enabled modern medicine and biotechnology, revolutionized human understanding of nature, and provided foundation for ecology, genetics, and anthropology.
 
 ### Technologies Unlocked
 - **modern-biology**: [How this enables it]
@@ -81,7 +81,7 @@ This technology was invented independently in multiple locations.
 - **adaptation-mechanisms**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Evolution combines powerfully with scientific method (evidence-based reasoning), medicine (disease understanding), and genetics (heredity mechanisms). It enables modern biology, biotechnology, and medical research.
 
 ## Alternative Approaches
 - **special-creation**: Different solution to same problem
@@ -89,16 +89,19 @@ This technology was invented independently in multiple locations.
 - **vitalism**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary evolutionary biology uses molecular genetics, computational modeling, and experimental evolution while maintaining Darwin's fundamental insights about natural selection and common descent.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Some early naturalist observation techniques and traditional biological classification methods disappeared with modern molecular approaches. Historical field biology practices represent partially lost expertise.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *On the Origin of Species* by Charles Darwin - foundational evolutionary theory
+- *The Evolution of Evolution* by various authors - development of evolutionary thought
+- *Darwin and Wallace* studies - parallel discovery of natural selection
+- *Modern Evolutionary Biology* - contemporary understanding and applications
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that evolutionary theory demands careful observation, comparative analysis, and long-term perspective. Study biological diversity through specimen collection and field observation. Learn to recognize patterns of similarity and difference among species. Develop skills in comparative anatomy and systematic classification. Understand geological time scales and fossil evidence. Remember that evolutionary understanding emerges through synthesizing multiple lines of evidence from different biological disciplines.
 
 ## Description
 

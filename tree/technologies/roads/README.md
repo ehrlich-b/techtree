@@ -42,66 +42,73 @@ First appeared ~4000 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Roads evolved from animal trails to engineered highways. Early civilizations created simple paths, while Romans developed sophisticated multi-layer construction with stone foundations, drainage, and standardized specifications. Modern roads use asphalt, concrete, and engineered subgrades with GPS-guided construction equipment.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Roads provide stable, all-weather surfaces that reduce transportation friction and enable wheeled vehicles. Construction involves preparing a stable foundation, adding structural layers (subgrade, base course, surface), and managing water drainage. Proper design distributes loads to prevent failure while providing smooth, durable surfaces.
 
 ### Materials & Resources
 **Materials needed:**
-- stone
-- gravel
-- surveying-tools
-
+- Foundation materials: stone, gravel, sand for stable base layers
+- Surface materials: fitted stones, concrete, asphalt for traffic surfaces
+- Drainage components: culverts, ditches, camber for water management
+- Construction tools: surveying equipment, heavy hammers, leveling instruments
 
 **Knowledge requirements:**
-- road-engineering
-- drainage-systems
-
+- Engineering principles: load distribution, material strength, slope calculations
+- Surveying techniques: grade establishment, alignment, and distance measurement
+- Construction methods: layer compaction, joint fitting, surface finishing
+- Maintenance planning: wear patterns, repair techniques, seasonal considerations
 
 **Social requirements:**
-- road-maintenance
-- imperial-administration
+- Organized labor forces for construction and ongoing maintenance
+- Administrative systems for route planning and resource allocation
+- Economic mechanisms to fund construction and upkeep
+- Legal frameworks for right-of-way acquisition and traffic regulation
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Roads dramatically reduced travel time and transportation costs, enabling faster movement of people, goods, and information. They facilitated military deployment, administrative control, and economic exchange. All-weather access connected previously isolated communities.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Roads enabled empire formation by allowing central control over distant territories. They accelerated urbanization, trade expansion, and cultural exchange. The technology created network effects - each new road increased the value of existing roads by expanding connectivity.
 
 ### Technologies Unlocked
-- **logistics**: [How this enables it]
-- **postal-systems**: [How this enables it]
-- **commerce-networks**: [How this enables it]
+- **logistics**: Systematic supply chain management becomes possible with reliable transport
+- **postal-systems**: Regular communication networks require predictable travel routes
+- **commerce-networks**: Complex trade relationships depend on reliable transportation infrastructure
 
 ### New Capabilities
-- **rapid-transport**: [Description]
-- **military-mobility**: [Description]
-- **trade-facilitation**: [Description]
+- **rapid-transport**: Movement speeds increase dramatically compared to cross-country travel
+- **military-mobility**: Armed forces can deploy quickly across vast distances
+- **trade-facilitation**: Heavy goods transport becomes economically viable over long distances
 
 ### Synergies
-[Technologies that combine well with this]
+Roads combine powerfully with wheeled vehicles (carts, chariots), written communication (messages, orders), and standardized currency (long-distance trade). They enable the development of inns, rest stations, and service industries.
 
 ## Alternative Approaches
-- **river-transport**: Different solution to same problem
-- **pack-trails**: Different solution to same problem
-- **coastal-shipping**: Different solution to same problem
+- **Inca road system**: Stone-paved mountain roads designed for foot traffic and llamas
+- **Corduroy roads**: Logs laid across swampy ground for temporary access
+- **Plank roads**: Wooden planks over timber frames, popular in 19th century America
+- **Raised causeways**: Elevated roads across wetlands and flood-prone areas
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Modern highways use engineered materials, scientific design principles, and heavy machinery for construction. Interstate systems enable continental-scale transportation networks. Smart roads incorporate sensors, lighting, and communication systems. Automated construction equipment uses GPS for precision grading and paving.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Roman road construction techniques, particularly their use of natural hydraulic cement and multi-layer foundation systems, exceeded medieval capabilities for centuries. Some ancient roads remain more durable than modern alternatives. Traditional stone-cutting and fitting techniques for mountain roads have largely disappeared.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Roman Roads* by Hugh Davies - comprehensive study of ancient road engineering
+- *The Roads of the Romans* by Romolo Augusto Staccioli - technical construction methods
+- *Inca Road System* archaeological studies - high-altitude engineering techniques
+- *Transportation Engineering* modern textbooks - contemporary road design principles
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that roads are systems, not just surfaces. Begin with proper drainage - water is the primary enemy of road durability. Establish stable foundations using local materials when possible. Design for the heaviest expected loads with safety margins. Plan maintenance access and material storage. Consider the full lifecycle costs, not just initial construction expenses.
 
 ## Description
 

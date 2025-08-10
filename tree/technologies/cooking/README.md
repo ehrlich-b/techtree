@@ -35,66 +35,73 @@ First appeared ~1.9 million years ago
 This technology appears to have a single point of origin.
 
 ### Evolution
-[How the technology changed over time]
+Cooking evolved from simple roasting over open fires to sophisticated techniques including boiling, steaming, baking, and fermentation. Development of pottery, metal cookware, and controlled heating systems enabled complex cuisine and food preservation methods.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Cooking applies controlled heat to transform food through chemical and physical changes that improve digestibility, safety, flavor, and preservation. Heat denatures proteins, breaks down cellular structures, kills pathogens, and creates new chemical compounds through Maillard reactions and caramelization.
 
 ### Materials & Resources
 **Materials needed:**
-- fire
-- containers
-- food
-
+- Heat sources: controlled fires, coals, or other consistent thermal energy for cooking processes
+- Cooking containers: pottery, gourds, animal stomachs, or heat-resistant vessels for boiling and steaming
+- Food preparation tools: cutting implements, stirring sticks, and utensils for handling hot food
+- Temperature control materials: stones, clay, or other thermal mass for regulating heat intensity
 
 **Knowledge requirements:**
-- heat-effects
-- timing
-- temperature-control
-
+- Heat management: understanding temperature control, timing, and different cooking methods
+- Food chemistry: recognizing how heat affects different foods and optimal cooking conditions
+- Safety principles: identifying properly cooked food and avoiding contamination or burns
+- Resource management: efficient use of fuel and cooking materials for sustained food preparation
 
 **Social requirements:**
-- food-sharing
+- Food sharing systems: communal preparation and distribution of cooked meals
+- Knowledge transmission: teaching cooking techniques and safety practices across generations
+- Coordinated preparation: groups working together for large-scale food processing
+- Cultural development: establishment of cooking traditions and meal-based social activities
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Cooking dramatically improved food safety, digestibility, and nutritional value while expanding available food sources. It enabled consumption of otherwise inedible or toxic foods through proper heat treatment.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Cooking fundamentally altered human evolution by supporting larger brains through improved nutrition and enabling complex societies through communal meal preparation. It provided the foundation for all thermal processing technologies.
 
 ### Technologies Unlocked
-- **food-preservation**: [How this enables it]
-- **brewing**: [How this enables it]
-- **metallurgy**: [How this enables it]
+- **food-preservation**: Heat-based methods like smoking, drying, and rendering for long-term storage
+- **thermal-processing**: Advanced heating techniques leading to metallurgy and materials science
+- **cuisine-development**: Complex food preparation systems and cultural culinary traditions
 
 ### New Capabilities
-- **improved-nutrition**: [Description]
-- **food-safety**: [Description]
-- **taste-enhancement**: [Description]
+- **enhanced-nutrition**: Access to more calories and nutrients from cooked food compared to raw
+- **pathogen-elimination**: Destruction of harmful bacteria, parasites, and toxins through heat
+- **flavor-development**: Creation of complex tastes through chemical reactions during cooking
 
 ### Synergies
-[Technologies that combine well with this]
+Cooking combines powerfully with fire control (heat source), pottery (containers), and food storage (preservation). It enables complex societies, trade in cooked goods, and cultural development.
 
 ## Alternative Approaches
-- **sun-drying**: Different solution to same problem
-- **fermentation**: Different solution to same problem
-- **smoking**: Different solution to same problem
+- **Fermentation**: Using biological processes to transform and preserve food without heat
+- **Chemical processing**: Using acids, salts, or other chemicals for food transformation
+- **Mechanical processing**: Grinding, pounding, or crushing to improve digestibility
+- **Natural preservation**: Sun drying, freezing, or other environmental preservation methods
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary cooking uses precise temperature control, advanced materials, and scientific understanding while maintaining fundamental principles of heat application for food transformation and safety.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional cooking techniques, specialized equipment, and food preparation methods disappeared with cultural changes. Indigenous cooking systems and specific heat management techniques represent lost culinary wisdom.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Catching Fire* by Richard Wrangham - evolutionary impact of cooking on human development
+- *On Food and Cooking* by Harold McGee - science of cooking and food transformation
+- *The Raw and the Cooked* by Claude Lévi-Strauss - cultural significance of cooking practices
+- *Traditional Food Processing* studies - indigenous cooking techniques and systems
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that cooking safety depends on adequate heat and proper timing. Learn to recognize properly cooked food and maintain clean preparation conditions. Master basic heat management techniques before attempting complex cooking methods. Practice with simple, safe foods before experimenting with potentially dangerous ingredients. Remember that different foods require different cooking approaches and timing for optimal results and safety.
 
 ## Description
 

@@ -41,12 +41,12 @@ First appeared ~1347 CE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Insurance evolved from informal mutual aid to formal risk-sharing mechanisms with mathematical foundations. Development included maritime insurance, fire insurance, life insurance, and modern actuarial science creating comprehensive risk management systems.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Insurance creates risk-sharing pools where participants pay premiums to fund compensation for losses, using statistical analysis and probability to balance risk exposure with financial sustainability.
 
 ### Materials & Resources
 **Materials needed:**
@@ -69,10 +69,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Insurance enabled merchants to take greater risks in trade and investment, protected individuals against catastrophic losses, and created systems for pooling and distributing financial risk across communities.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Insurance became essential for modern economic activity, enabling large-scale investment, international trade, and personal financial security while creating massive financial institutions and actuarial professions.
 
 ### Technologies Unlocked
 - **actuarial-science**: [How this enables it]
@@ -85,7 +85,7 @@ This technology was invented independently in multiple locations.
 - **economic-stability**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Insurance combines powerfully with banking (financial infrastructure), mathematics (risk calculation), and trade (commercial protection). It enables large-scale commerce, investment security, and economic stability.
 
 ## Alternative Approaches
 - **mutual-aid**: Different solution to same problem
@@ -93,16 +93,19 @@ This technology was invented independently in multiple locations.
 - **religious-charity**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary insurance uses sophisticated statistical modeling, global risk pools, and digital platforms while expanding into cyber insurance, parametric insurance, and complex financial derivatives.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional mutual aid systems and community-based risk sharing disappeared with commercial insurance. Historical approaches to informal risk pooling and traditional solidarity mechanisms represent partially lost social technologies.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *A History of Insurance* by various authors - comprehensive development survey
+- *The Economics of Insurance* by economic historians - financial and social analysis
+- *Risk and Insurance* studies - mathematical and social foundations
+- *Maritime Insurance History* - evolution of commercial risk management
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective insurance balances risk assessment with affordable premiums and sustainable reserves. Master probability mathematics and statistical analysis. Learn to assess and price various risk types. Develop systems for claims processing and fraud prevention. Build adequate reserves for unexpected losses. Create regulatory compliance and consumer protection measures. Remember that insurance success depends on accurate risk assessment and maintaining public trust.
 
 ## Description
 

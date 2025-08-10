@@ -36,64 +36,73 @@ First appeared ~1.5 million years ago
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Fire control evolved through distinct stages: first, opportunistic use of natural fires (lightning, volcanoes); then controlled maintenance of captured fire; finally, deliberate fire creation through friction, percussion, or chemical methods. Each advancement reduced dependence on chance encounters with flame.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Fire requires three elements: fuel (combustible material), oxygen (air), and heat (ignition source). Early humans learned to create friction heat by rapidly rubbing dry wood together, generating temperatures above 400°F needed to ignite tinder. The bow drill method uses a rotating spindle against a fire board, creating wood dust that smolders when sufficient heat accumulates.
 
 ### Materials & Resources
 **Materials needed:**
-- wood
-- friction-tools
-- tinder
-
+- Dry hardwood (oak, ash) for fire boards and spindles
+- Softwood tinder (cedar bark, birch bark, dry grass)
+- Combustible progression: tinder → kindling → fuel wood
+- Tools: bow drill apparatus, flint and steel, fire pistons
 
 **Knowledge requirements:**
-- combustion-understanding
-
+- Understanding of combustion triangle (fuel, heat, oxygen)
+- Recognition of suitable fire-making materials in different environments
+- Timing and technique for transferring ember to flame
+- Weather awareness and fire safety principles
 
 **Social requirements:**
-- group-coordination
+- Knowledge transmission across generations
+- Coordinated fuel gathering and fire maintenance
+- Establishment of fire-keeping roles within groups
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Fire extended human activity into darkness and cold, enabling 24-hour productivity and survival in previously uninhabitable climates. Cooking made plant toxins harmless and proteins more digestible. Light provided security against nocturnal predators while warmth enabled survival in ice age conditions.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Fire control triggered rapid brain development as cooking improved nutrition and reduced digestion energy needs. Extended social interaction around fires accelerated language development. Controlled burning shaped landscapes worldwide, creating grasslands that supported large game herds and prevented forest fires.
 
 ### Technologies Unlocked
-- **cooking**: [How this enables it]
-- **metallurgy**: [How this enables it]
-- **ceramics**: [How this enables it]
-- **chemistry**: [How this enables it]
+- **cooking**: Fire makes foods digestible and safe, unlocking new nutritional sources
+- **metallurgy**: High-temperature fires enable metal extraction and working
+- **ceramics**: Controlled heat transforms clay into permanent storage vessels
+- **chemistry**: Understanding combustion leads to alchemical experiments
 
 ### New Capabilities
-- **heat-generation**: [Description]
-- **light-production**: [Description]
-- **predator-deterrence**: [Description]
+- **heat-generation**: Artificial climate control for survival and comfort
+- **light-production**: Extended daylight for nighttime activities
+- **predator-deterrence**: Most animals instinctively fear fire
 
 ### Synergies
-[Technologies that combine well with this]
+Fire amplifies almost every subsequent technology: cooking improves nutrition; light extends working hours; heat enables material processing; smoke provides signaling and preservation methods.
 
 ## Alternative Approaches
-- **lightning-capture**: Different solution to same problem
-- **volcanic-fire**: Different solution to same problem
+- **Fire plows**: Friction method using wooden groove and stick
+- **Flint and steel**: Spark-based ignition using metal and stone
+- **Fire pistons**: Compression ignition using air pressure in bamboo tube
+- **Chemical methods**: Pyrite and marcasite, potassium permanganate reactions
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Fire remains fundamental to modern civilization through internal combustion engines, power generation, industrial processes, and home heating. While methods have evolved from friction to electrical ignition, the basic principles remain unchanged. Wildfire management continues fire's landscape-shaping role.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional fire-making techniques have disappeared with industrialization. Indigenous knowledge of specific tinder materials, seasonal fire behavior, and landscape burning patterns represents lost expertise. Some friction methods and chemical fire-starting knowledge survives only in remote communities.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Catching Fire: How Cooking Made Us Human* by Richard Wrangham - cooking's role in human evolution
+- *The Control of Fire by Early Humans* (Archaeological evidence) - timing and spread of fire control
+- *Primitive Skills and Crafts* survival manuals - practical fire-making techniques
+- Experimental archaeology studies on paleolithic fire technology
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Modern fire-making requires understanding that success depends more on preparation than technique. Gather multiple grades of material from pencil-thick kindling to thumb-thick fuel wood. Create a proper tinder bundle with fine, fibrous material. Practice the bow drill technique with proper wood selection - hardwood spindle, softwood fire board. Master the critical moment of transferring glowing ember to flame through gentle, sustained breathing on the tinder bundle.
 
 ## Description
 

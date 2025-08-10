@@ -39,68 +39,73 @@ First appeared ~1665 CE
 This technology appears to have a single point of origin.
 
 ### Evolution
-[How the technology changed over time]
+Peer review emerged from informal Royal Society discussions, formalized through scientific journals, and developed into double-blind review systems. Modern peer review includes open review, post-publication review, and digital platforms, while facing challenges from predatory journals and reproducibility crises.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Peer review evaluates scholarly work through expert assessment before publication. Authors submit manuscripts to journals, editors select qualified reviewers in the same field, reviewers assess methodology, significance, and validity, then recommend acceptance, revision, or rejection. This process filters scientific literature and maintains quality standards.
 
 ### Materials & Resources
 **Materials needed:**
-- printing-facilities
-- communication-systems
-- institutional-networks
-
+- Publication infrastructure: printing presses, distribution networks, academic libraries
+- Communication systems: postal services, telegraphs, and modern electronic networks
+- Record-keeping systems: editorial databases, reviewer records, and institutional archives
+- Academic institutions: universities and research centers supporting scholarly evaluation
 
 **Knowledge requirements:**
-- evaluation-criteria
-- scholarly-standards
-- critical-analysis
-
+- Disciplinary expertise: deep knowledge in specific scientific fields for competent evaluation
+- Critical analysis skills: ability to identify flaws, assess significance, and suggest improvements
+- Ethical standards: understanding conflicts of interest and maintaining review confidentiality
+- Communication abilities: clear written feedback and constructive criticism techniques
 
 **Social requirements:**
-- scientific-societies
-- editorial-systems
-- academic-networks
+- Scientific communities: networks of researchers committed to collective quality control
+- Editorial systems: professional editors coordinating review processes and making decisions
+- Institutional support: universities and societies providing time and incentives for review work
+- Trust relationships: reputation systems ensuring honest, thorough evaluation
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Peer review established quality control for scientific literature, reducing publication of flawed or fraudulent research. It created systematic evaluation standards and provided feedback mechanism for improving research quality. The process legitimized scientific knowledge through community validation.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Peer review became the cornerstone of modern scientific publishing, shaping how knowledge advances and careers develop. It created conservative bias favoring established paradigms while sometimes hindering revolutionary discoveries. The system enabled cumulative knowledge building through validated foundations.
 
 ### Technologies Unlocked
-- **quality-control**: [How this enables it]
-- **scientific-journals**: [How this enables it]
-- **research-standards**: [How this enables it]
+- **quality-control**: Systematic evaluation prevents publication of seriously flawed research
+- **scientific-journals**: Peer review enables specialized publications maintaining disciplinary standards
+- **research-standards**: Community-enforced methodological rigor improves scientific practice
 
 ### New Capabilities
-- **knowledge-validation**: [Description]
-- **error-detection**: [Description]
-- **scholarly-communication**: [Description]
+- **knowledge-validation**: Community consensus confirms reliability of scientific claims
+- **error-detection**: Multiple expert reviewers identify mistakes and methodological problems
+- **scholarly-communication**: Structured feedback improves research quality and researcher skills
 
 ### Synergies
-[Technologies that combine well with this]
+Peer review combines powerfully with scientific method (quality assurance), printing press (wide dissemination), and universities (institutional support). It enables evidence-based medicine, technological development, and public policy formation.
 
 ## Alternative Approaches
-- **patronage-system**: Different solution to same problem
-- **guild-approval**: Different solution to same problem
-- **religious-authority**: Different solution to same problem
+- **Open science**: Public evaluation through preprint servers and post-publication review
+- **Editorial review**: Journal editors making publication decisions without external reviewers
+- **Market-based**: Citation counts and usage metrics determining research value
+- **Institutional approval**: Academic hierarchies controlling knowledge dissemination
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary peer review faces challenges from publication pressure, reviewer fatigue, and disciplinary specialization. Digital platforms enable new review models including open peer review, post-publication comments, and artificial intelligence assistance. Reproducibility efforts require enhanced review of data and methods.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Some aspects of early scholarly evaluation emphasized broader intellectual context over narrow technical correctness. Traditional mentorship relationships and informal scholarly networks provided quality control mechanisms that formal peer review partially replaced but didn't fully replicate.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *The Peer Review Process* by Jefferson Pooley - comprehensive history of scientific evaluation
+- *Guardians of Science* by Sheila Jasanoff - sociological analysis of peer review systems
+- *The Scientific Journal* by A.J. Meadows - development of scholarly publication systems
+- *Open Science* literature - contemporary alternatives to traditional peer review
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that peer review balances quality control with knowledge advancement. Establish clear evaluation criteria appropriate to field and journal scope. Train reviewers in constructive criticism and ethical standards. Design systems preventing conflicts of interest while maintaining reviewer anonymity when appropriate. Balance thoroughness with reasonable review timelines. Consider field-specific variations - experimental sciences need different evaluation than theoretical work.
 
 ## Description
 

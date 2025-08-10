@@ -40,12 +40,12 @@ First appeared ~15,000 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Animal domestication evolved from initial taming of wild species to systematic breeding for specific traits. Development included dogs from wolves, livestock from wild ancestors, and specialized breeding creating diverse domestic varieties adapted to human needs.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Animal domestication uses selective breeding, behavioral conditioning, and environmental control to develop animals adapted to human purposes, creating ongoing relationships benefiting both species through mutual dependence.
 
 ### Materials & Resources
 **Materials needed:**
@@ -66,10 +66,10 @@ This technology was invented independently in multiple locations.
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Animal domestication provided reliable protein sources, labor assistance, and materials while creating new agricultural possibilities and enabling human settlements to support larger populations.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Animal domestication transformed human society by enabling agriculture, transportation, and complex civilizations while creating new disease vectors, environmental impacts, and fundamental changes in human-animal relationships.
 
 ### Technologies Unlocked
 - **plowing**: [How this enables it]
@@ -82,7 +82,7 @@ This technology was invented independently in multiple locations.
 - **material-sources**: [Description]
 
 ### Synergies
-[Technologies that combine well with this]
+Animal domestication combines powerfully with agriculture (plow animals), hunting tools (herding), and cooperation (pastoral societies). It enables transportation, textile production, and intensive agriculture.
 
 ## Alternative Approaches
 - **dog-sledding**: Different solution to same problem
@@ -90,16 +90,19 @@ This technology was invented independently in multiple locations.
 - **horse-riding**: Different solution to same problem
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary animal domestication uses genetic science, industrial breeding, and biotechnology while grappling with ethical concerns about animal welfare and environmental sustainability of intensive farming.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional animal husbandry techniques and indigenous breeding knowledge disappeared with industrial agriculture. Historical understanding of animal behavior and traditional pastoral practices represent lost expertise.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Guns, Germs, and Steel* by Jared Diamond - analysis of domestication's civilizational impact
+- *The Variation of Animals and Plants under Domestication* by Charles Darwin - foundational study
+- *Domestication and Early Agriculture* studies - archaeological evidence and processes
+- *Animal Domestication* by various authors - comprehensive development survey
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that domestication is a long-term process requiring patience, observation, and understanding of animal behavior. Start with species showing naturally social or docile traits. Provide consistent food, shelter, and protection. Practice selective breeding for desired characteristics over multiple generations. Maintain genetic diversity to prevent inbreeding problems. Remember that domestication creates mutual dependence requiring ongoing care and responsibility.
 
 ## Description
 

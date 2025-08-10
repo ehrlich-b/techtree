@@ -38,66 +38,73 @@ First appeared ~500,000 years ago
 This technology was invented independently in multiple locations.
 
 ### Evolution
-[How the technology changed over time]
+Shelter construction evolved from simple windbreaks and modified natural formations to sophisticated structures with frameworks, coverings, and specialized features. Early shelters led to permanent architecture, urban planning, and modern construction techniques.
 
 ## Technical Details
 
 ### How It Works
-[Explanation suitable for educated non-specialist]
+Shelter construction creates protected environments using structural frameworks and weatherproof coverings. It combines materials selection, load distribution, and environmental sealing to provide protection from weather, predators, and other environmental hazards.
 
 ### Materials & Resources
 **Materials needed:**
-- wood
-- stones
-- animal-hides
-- vegetation
-
+- Structural materials: wood, stone, bone, or other framework components providing shape and strength
+- Covering materials: animal hides, vegetation, bark, or other weatherproofing elements
+- Fastening systems: sinew, plant fibers, or natural adhesives for securing components
+- Foundation materials: stones, packed earth, or drainage systems for stable bases
 
 **Knowledge requirements:**
-- structural-engineering
-- weatherproofing
-
+- Structural principles: understanding load distribution, stability, and framework construction
+- Materials properties: knowing strength, durability, and weathering characteristics of available materials
+- Environmental adaptation: designing for local climate, terrain, and weather patterns
+- Construction techniques: methods for cutting, joining, and assembling structural components
 
 **Social requirements:**
-- group-coordination
+- Coordinated labor: groups working together to gather materials and construct shelters
+- Skill transmission: teaching construction techniques and design principles across generations
+- Resource sharing: communities pooling materials and tools for shelter construction
+- Maintenance cooperation: ongoing repair and improvement of shelters requiring group effort
 
 ## Impact & Consequences
 
 ### Immediate Effects
-[What changed right away]
+Shelter construction provided protection from weather and predators, enabling survival in diverse environments and climates. It created controlled microclimates supporting extended human occupation of specific locations.
 
 ### Long-term Consequences
-[Unforeseen impacts over time]
+Shelter technology enabled permanent settlements, population concentration, and complex societies. It provided the foundation for architecture, urban planning, and all subsequent building technologies through systematic environmental control.
 
 ### Technologies Unlocked
-- **architecture**: [How this enables it]
-- **settlement-planning**: [How this enables it]
-- **insulation**: [How this enables it]
+- **permanent-settlements**: Durable structures enabling year-round occupation and population growth
+- **specialized-architecture**: Advanced building techniques for specific functions and environments
+- **climate-control**: Methods for maintaining comfortable interior temperatures and conditions
 
 ### New Capabilities
-- **weather-protection**: [Description]
-- **security**: [Description]
-- **privacy**: [Description]
+- **environmental-independence**: Reduced dependence on natural shelter and favorable weather
+- **territorial-establishment**: Ability to claim and defend specific locations through constructed improvements
+- **storage-security**: Protected spaces for preserving food, tools, and other valuable resources
 
 ### Synergies
-[Technologies that combine well with this]
+Shelter construction combines powerfully with tool making (construction implements), fire control (interior heating), and cooperation (coordinated building). It enables permanent settlements, specialized crafts, and complex social organization.
 
 ## Alternative Approaches
-- **cave-dwelling**: Different solution to same problem
-- **tree-platforms**: Different solution to same problem
-- **underground-shelters**: Different solution to same problem
+- **Cave modification**: Improving natural caves with walls, doors, and interior features
+- **Tree shelters**: Elevated platforms and structures built in trees for protection
+- **Underground construction**: Excavated shelters providing protection and insulation
+- **Portable structures**: Temporary shelters designed for nomadic lifestyles and mobility
 
 ## Modern Context
-[How we use or have superseded this technology today]
+Contemporary shelter construction uses advanced materials, mechanical systems, and computer-aided design while maintaining fundamental principles of structural integrity, environmental protection, and human comfort.
 
 ## Lost Knowledge
-[If applicable, what we no longer know about this technology]
+Many traditional building techniques and materials adapted to local conditions disappeared with industrialization. Indigenous construction methods, climate-specific designs, and sustainable building practices represent partially lost architectural wisdom.
 
 ## Sources & Further Reading
-[Academic sources and accessible explanations]
+- *Shelter* by Lloyd Kahn - survey of traditional and innovative building techniques
+- *A History of Architecture* by Spiro Kostof - development of construction technology and design
+- *Primitive Technology* by John Plant - demonstrations of traditional building methods
+- *Traditional Building Techniques* studies - documentation of indigenous construction systems
 
 ## Implementation Notes
-[For someone trying to recreate this technology]
+Success requires understanding that effective shelter depends on matching construction methods to available materials and local climate. Learn basic structural principles of load distribution and stability. Master techniques for weatherproofing appropriate to local conditions. Practice material selection and preparation methods. Plan shelter size and features based on intended use and occupancy. Consider drainage, ventilation, and maintenance requirements during initial construction.
 
 ## Description
 
