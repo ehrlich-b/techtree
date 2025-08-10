@@ -111,6 +111,8 @@ This technology was invented independently in multiple locations.
 
 
 
+
+
 Hunting tools represent humanity's first systematic attempt to overcome the disadvantages of our relatively weak bodies and short teeth by extending our capabilities through technology. Beginning around 400,000 years ago with Homo heidelbergensis, specialized hunting implements transformed our ancestors from opportunistic scavengers into apex predators.
 
 The development of hunting tools required understanding complex physical principles: trajectory, momentum, leverage, and materials science. A simple spear represents knowledge of wood grain, point attachment, balance, and throwing mechanics. The atlatl (spear-thrower) demonstrates understanding of leverage and energy transfer that would later inform everything from catapults to rocket launches.
@@ -122,4 +124,4 @@ Hunting tools also drove arms races - both between humans and prey animals, and 
 Every modern tool, weapon, and precision instrument traces its conceptual lineage back to these early hunting implements - humanity's first attempt to make our tools better than our bodies, our minds cleverer than our instincts.
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

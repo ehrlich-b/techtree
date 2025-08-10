@@ -19,7 +19,7 @@ Knowledge Technology
 - None
 
 ### Synergistic
-- **[mathematics](../mathematics/README.md)**: [How they combine for greater effect]
+- None
 
 ## Historical Development
 
@@ -42,68 +42,70 @@ First appeared ~3200 BCE
 This technology was invented independently in multiple locations.
 
 ### Evolution
-Writing evolved from simple record-keeping tokens to full linguistic representation over millennia. Early systems were logographic (symbols = words), then syllabic (symbols = sounds), finally alphabetic (symbols = individual sounds).
+[How the technology changed over time]
 
 ## Technical Details
 
 ### How It Works
-Writing systems encode spoken language into visual symbols that can be decoded later. They work by establishing consistent relationships between marks and meanings, allowing information to persist beyond the speaker's presence and memory.
+[Explanation suitable for educated non-specialist]
 
 ### Materials & Resources
 **Materials needed:**
-- writing-surface (clay, papyrus, paper, stone)
-- marking-tools (stylus, brush, pen, chisel)
+- writing-surface
+- marking-tools
+
 
 **Knowledge requirements:**
-- symbolic-representation (understanding that marks can stand for things)
-- abstraction (ability to connect symbols to concepts)
+- symbolic-representation
+- abstraction
+
 
 **Social requirements:**
-- scribal-class (specialists who maintain the system)
-- education (methods for teaching the code)
+- scribal-class
+- education
 
 ## Impact & Consequences
 
 ### Immediate Effects
-Writing immediately enabled accurate record-keeping for trade, laws, and administration. It allowed complex information to be stored outside human memory and transmitted across distances without personal travel.
+[What changed right away]
 
 ### Long-term Consequences
-Writing transformed human civilization by enabling the accumulation of knowledge across generations. It made possible complex legal systems, historical records, literature, and scientific progress. It also created social stratification between literate and illiterate populations.
+[Unforeseen impacts over time]
 
 ### Technologies Unlocked
-- **history**: Enables recording past events accurately
-- **law**: Allows complex legal codes to be preserved and referenced
-- **literature**: Makes possible lengthy, complex narratives and poetry
-- **science**: Enables precise recording of observations and theories
+- **history**: [How this enables it]
+- **law**: [How this enables it]
+- **literature**: [How this enables it]
+- **science**: [How this enables it]
 
 ### New Capabilities
-- **long-distance-communication**: Messages can travel beyond voice range
-- **record-keeping**: Information persists beyond human memory
-- **knowledge-accumulation**: Learning builds across generations
+- **long-distance-communication**: [Description]
+- **record-keeping**: [Description]
+- **knowledge-accumulation**: [Description]
 
 ### Synergies
-Writing combines powerfully with mathematics to enable complex calculations, with governance to create bureaucracies, and with education to create literate populations.
+[Technologies that combine well with this]
 
 ## Alternative Approaches
-- **quipu-knots**: Incan system using knotted strings for numerical and narrative records
-- **wampum-belts**: Native American mnemonic devices combining oral and visual information
-- **oral-tradition**: Sophisticated memory techniques for preserving knowledge without writing
+- **quipu-knots**: Different solution to same problem
+- **wampum-belts**: Different solution to same problem
+- **oral-tradition**: Different solution to same problem
 
 ## Modern Context
-Digital writing has revolutionized text creation, editing, and distribution. We've moved from permanent inscriptions to infinitely editable documents, from limited copies to instant global distribution.
+[How we use or have superseded this technology today]
 
 ## Lost Knowledge
-Many ancient scripts remain undeciphered (Linear A, Rongorongo, Indus Valley script). We've also lost the oral techniques that supplemented early writing systems.
+[If applicable, what we no longer know about this technology]
 
 ## Sources & Further Reading
-- Gelb, I.J. "A Study of Writing" - foundational work on writing system evolution
-- Robinson, Andrew "The Story of Writing" - accessible overview of world writing systems
-- Daniels, Peter "The World's Writing Systems" - comprehensive scholarly reference
+[Academic sources and accessible explanations]
 
 ## Implementation Notes
-Creating a writing system requires: consistent symbol set, rules for combining symbols, materials for inscription, and social commitment to learning and maintaining the system.
+[For someone trying to recreate this technology]
 
 ## Description
+
+
 
 
 
@@ -123,4 +125,4 @@ Creating a writing system requires: consistent symbol set, rules for combining s
 [This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

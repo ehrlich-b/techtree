@@ -303,4 +303,4 @@ Each technology folder contains:
 - **Modern Prerequisites**: Trace what enabled current technology
 
 ---
-*Auto-generated from definitions.yml - 2025-08-09*
+*Auto-generated from definitions.yml - 2025-08-10*

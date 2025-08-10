@@ -109,6 +109,8 @@ This technology appears to have a single point of origin.
 
 
 
+
+
 Cooking represents one of humanity's most transformative innovations - the discovery that applying controlled heat to food could unlock nutrients, neutralize toxins, and create entirely new flavors and textures. Beginning around 1.9 million years ago with Homo erectus in Africa, this technology literally helped fuel the evolution of our large brains and complex societies.
 
 The cognitive requirements for cooking are staggering: understanding that heat transforms matter, developing timing and temperature control, creating containers and cooking surfaces, and planning for delayed gratification. Early cooking required our ancestors to maintain fires, understand combustion, and develop the first primitive chemistry through trial and error.
@@ -122,4 +124,4 @@ Cooking also enabled food preservation through smoking, drying, and other heat-b
 Every time we bake bread, brew coffee, or forge steel, we're using the same fundamental insight that transformed our ancestors from raw-food foragers into the fire-wielding, brain-powered species that would eventually cook its way to the stars.
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*

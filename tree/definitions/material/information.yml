@@ -10,9 +10,9 @@ technologies:
     complexity: medium
     prerequisites:
       hard: [electricity, physics]
-      soft: [mathematics]
-      catalyst: [physics]
-      synergistic: []
+      soft: [mathematics, chemistry-periodic-table, quantum-mechanics]  # Semiconductors
+      catalyst: [physics, mass-production]  # Mass production essential
+      synergistic: [quantum-mechanics]  # Quantum theory enabled semiconductors
     description: "Technology for controlling electric current through circuits and components"
     unlocks:
       technologies: [transistor, computer]
@@ -26,9 +26,9 @@ technologies:
     complexity: high
     prerequisites:
       hard: [electronics, physics]
-      soft: [chemistry-periodic-table]
-      catalyst: [electromagnetism]
-      synergistic: []
+      soft: [chemistry-periodic-table, quantum-mechanics, mass-production]
+      catalyst: [electromagnetism, quantum-mechanics]  # Quantum physics crucial
+      synergistic: [mass-production, computer-science]  # Enabled digital age
     description: "Semiconductor device for switching and amplifying electrical signals"
     unlocks:
       technologies: [computer]
@@ -42,9 +42,9 @@ technologies:
     complexity: high
     prerequisites:
       hard: [transistor, mathematics]
-      soft: [logic, electromagnetism]
-      catalyst: [mathematics]
-      synergistic: []
+      soft: [logic, electromagnetism, information-theory, mass-production]
+      catalyst: [mathematics, transistor]  # Transistors enabled practical computers
+      synergistic: [internet, artificial-intelligence]  # Created information age
     description: "Programmable electronic device for processing and storing information"
     unlocks:
       technologies: [internet]
@@ -58,9 +58,9 @@ technologies:
     complexity: high
     prerequisites:
       hard: [computer, telegraph]
-      soft: []
-      catalyst: [computer]
-      synergistic: []
+      soft: [electricity, railroad]  # Infrastructure that enabled global networks
+      catalyst: [computer, open-source]  # Open protocols crucial
+      synergistic: [computer, social-media, globalization]  # Transformed society
     description: "Global network connecting computers and enabling information exchange"
     unlocks:
       technologies: []
@@ -74,9 +74,9 @@ technologies:
     complexity: high
     prerequisites:
       hard: [transistor, telegraph]
-      soft: [computer]
-      catalyst: [electronics]
-      synergistic: []
+      soft: [computer, internet, electricity]  # Digital and power infrastructure
+      catalyst: [electronics, mass-production]  # Mass production made affordable
+      synergistic: [internet, social-media]  # Created mobile revolution
     description: "Portable electronic devices for communication and computing"
     unlocks:
       technologies: []
@@ -90,9 +90,9 @@ technologies:
     complexity: high
     prerequisites:
       hard: [electricity, physics]
-      soft: [engineering]
-      catalyst: [electromagnetism]
-      synergistic: []
+      soft: [engineering, electronics, physics]  # Scientific understanding
+      catalyst: [electromagnetism, electricity]  # Electrical infrastructure
+      synergistic: [electronics, computer]  # Enabled smart management
     description: "Technologies for generating power from renewable sources"
     unlocks:
       technologies: []

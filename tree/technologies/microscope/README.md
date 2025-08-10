@@ -13,11 +13,11 @@ Material Technology
 - **[glass-making](../glass-making/README.md)**: [Why absolutely necessary]
 
 ### Soft Requirements
-- **[medicine](../medicine/README.md)**: [How it helps but isn't essential]
-- **[scientific-method](../scientific-method/README.md)**: [How it helps but isn't essential]
+- None
 
 ### Catalysts
 - **[optics](../optics/README.md)**: [How it accelerates development]
+- **[scientific-revolution](../scientific-revolution/README.md)**: [How it accelerates development]
 
 ### Synergistic
 - None
@@ -108,7 +108,9 @@ This technology was invented independently in multiple locations.
 
 
 
+
+
 [This is where detailed, enhanced content should be added. Everything after "## Description" is preserved during rebuilds.]
 
 ---
-*Generated from technical definitions - Last updated: 2025-08-09*
+*Generated from technical definitions - Last updated: 2025-08-10*
