@@ -39,14 +39,9 @@ meta-docs were written before content was solid. v2 spine is now in place:
   edge style by dep type (hard=red solid, soft=gray dashed, catalyst=blue dotted).
   Year-bucketed L→R layout pinning nature substrate at rank=min. Renders 192-node
   tree to `dependencies.{dot,svg}` (81KB / 387KB).
-
-### Pending — needs your sign-off before destructive work
-
-- [ ] **Delete v1 LLM-slop READMEs** under `tree/technologies/*/README.md` (127 files,
-  unfilled `[Why absolutely necessary]` placeholders, generic puffery essays).
-- [ ] **Delete bikeshedding meta-docs**: `EDUCATORS_GUIDE.md`, `STUDENT_EXERCISES.md`,
-  `THEMED_PATHS.md`, `CRITICAL_PATHS.md`, `VISUALIZATION_SUMMARY.md`, `ANALYSIS.md`,
-  `tree/NAVIGATION.md`. Pre-content artifacts.
+- Deleted v1 cruft: 127 LLM-slop READMEs (`tree/technologies/*/README.md`) and 7
+  bikeshed meta-docs (`EDUCATORS_GUIDE.md`, `STUDENT_EXERCISES.md`, `THEMED_PATHS.md`,
+  `CRITICAL_PATHS.md`, `VISUALIZATION_SUMMARY.md`, `ANALYSIS.md`, `tree/NAVIGATION.md`).
 
 ### Pending — non-destructive work
 
