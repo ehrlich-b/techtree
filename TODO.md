@@ -29,6 +29,10 @@ meta-docs were written before content was solid. v2 spine is now in place:
   `quantum-mechanics`, `electricity`.
 - 192 nodes validate clean. Effective-confidence distribution: 128 certain, 24
   anchor, 20 probable, 20 speculative.
+- `build_tools/migrate.js` — one-shot v1→v2 converter. Run on all 22 legacy YAMLs:
+  116 entries migrated, 76 v2 entries round-tripped. Net `-2102/+296` lines. Year
+  inferred from `historical.first_occurrence` regex, falling back to era midpoint.
+  Idempotent: re-running on v2 data is a no-op.
 
 ### Pending — needs your sign-off before destructive work
 
@@ -41,13 +45,11 @@ meta-docs were written before content was solid. v2 spine is now in place:
 
 ### Pending — non-destructive work
 
-- [ ] `build_tools/migrate.js`: one-shot script to convert remaining v1 historical
-  entries to v2 schema (rename `type` → `layer`, `era` → `year` via era-midpoint map,
-  drop `id`/`complexity`/`description`/`unlocks`/`resources`/`historical`/`alternate_*`/
-  `synergistic`). Validator already accepts both schemas, so this is non-blocking
-  cleanup.
 - [ ] Wire remaining historical entries to `nature` substrate (currently only 8 of 127
-  rooted; the rest still have human-only prereqs). Mostly mechanical.
+  rooted explicitly; the rest reach nature only transitively). Many historical entries
+  with human-only prereqs (mathematics, language, philosophy) are arguably correct as-is
+  — the question is whether to assert e.g. `language → mechanical-affordances` (vocal
+  tract / hearing) explicitly. Mostly judgment, not mechanical.
 - [ ] `build_tools/grapher.js`: re-render with edge styling by dep type and node opacity
   by effective confidence (so speculative tech fades out). Current grapher predates the
   confidence model.

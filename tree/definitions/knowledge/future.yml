@@ -2,8 +2,6 @@
 
 technologies:
 
-  # ----- Anchor-confidence (>= 0.50) -----
-
   ai-formalized-research-methodology:
     name: "AI-Formalized Research Methodology"
     layer: knowledge
@@ -40,8 +38,6 @@ technologies:
       hard: [artificial-intelligence, ai-r-and-d-acceleration]
     one_liner: "High-fidelity continuously-updated simulation of Earth's climate, biosphere, human systems."
 
-  # ----- Probable (0.20–0.49) -----
-
   artificial-general-intelligence:
     name: "AGI as Knowledge System"
     layer: knowledge
@@ -77,8 +73,6 @@ technologies:
     prerequisites:
       hard: [ai-alignment-formalized]
     one_liner: "Goal-stable AI design moves from research papers to a practitioner discipline."
-
-  # ----- Speculative (< 0.20) -----
 
   theory-of-consciousness:
     name: "Theory of Consciousness"

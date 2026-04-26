@@ -4,8 +4,6 @@
 
 technologies:
 
-  # ----- Anchor-confidence material tech (>= 0.50) -----
-
   ev-fleet-replacement:
     name: "Electric Vehicle Fleet Replacement"
     layer: material
@@ -62,8 +60,6 @@ technologies:
       hard: [carbon-removal-gigaton]
     one_liner: "Megaton-scale direct-air-capture facilities, often co-located with cheap energy."
 
-  # ----- Probable-confidence material tech (0.20–0.49) -----
-
   quantum-co-processor:
     name: "Quantum Co-Processor"
     layer: material
@@ -99,8 +95,6 @@ technologies:
     prerequisites:
       hard: [mars-crewed-presence]
     one_liner: "Closed-loop life support, ISRU, surface power for sustained Mars presence."
-
-  # ----- Speculative material tech (< 0.20) -----
 
   antimatter-power-cell:
     name: "Antimatter Power Cell"

@@ -2,137 +2,42 @@
 # Organizational methods that coordinate human effort
 
 technologies:
+
   cooperation:
-    id: cooperation
     name: "Cooperation"
-    type: social
-    era: prehistoric
+    layer: social
+    year: -2000000
     prerequisites:
-      hard: []  # Emerges from evolution
-      soft: []
       catalyst: [language]
-      synergistic: []
-    description: "Coordinated group action for mutual benefit"
-    unlocks:
-      technologies: [division-of-labor, trade, governance]
-      capabilities: [group-hunting, shared-child-rearing, collective-defense]
-    resources:
-      materials: []
-      knowledge: [reciprocity, trust]
-      social: [kin-groups]
-    historical:
-      first_occurrence: "~2 million years ago"
-      locations: ["Africa"]
-      key_figures: ["Early hominids"]
-      parallel_invention: false  # Evolutionary trait
-    complexity: medium
-    alternate_paths: []
-    alternate_solutions: []
 
   teaching:
-    id: teaching
     name: "Teaching"
-    type: social
-    era: prehistoric
+    layer: social
+    year: -100000
     prerequisites:
       hard: [language, cooperation]
-      soft: []
       catalyst: [tool-making]
-      synergistic: []
-    description: "Deliberate transmission of knowledge and skills"
-    unlocks:
-      technologies: [apprenticeship, education-systems, universities]
-      capabilities: [skill-transmission, cultural-continuity]
-    resources:
-      materials: []
-      knowledge: [demonstration, patience]
-      social: [master-student-relationship]
-    historical:
-      first_occurrence: "~100,000 years ago"
-      locations: ["Universal human trait"]
-      key_figures: ["Homo sapiens"]
-      parallel_invention: false
-    complexity: medium
-    alternate_paths: []
-    alternate_solutions: ["learning-by-observation", "trial-and-error"]
 
   division-of-labor:
-    id: division-of-labor
     name: "Division of Labor"
-    type: social
-    era: prehistoric
+    layer: social
+    year: -50000
     prerequisites:
       hard: [cooperation, teaching]
       soft: [language]
-      catalyst: []
-      synergistic: []
-    description: "Specialization of roles and tasks within groups"
-    unlocks:
-      technologies: [trade, craftsmanship, professional-skills]
-      capabilities: [task-efficiency, skill-development, group-productivity]
-    resources:
-      materials: []
-      knowledge: [role-assignment, skill-recognition]
-      social: [group-coordination, trust-systems]
-    historical:
-      first_occurrence: "~50,000 BCE"
-      locations: ["Global human societies"]
-      key_figures: ["Early Homo sapiens groups"]
-      parallel_invention: true
-    complexity: medium
-    alternate_paths: []
-    alternate_solutions: ["rotating-responsibilities", "age-based-roles"]
 
   trade:
-    id: trade
     name: "Trade"
-    type: social
-    era: prehistoric
+    layer: social
+    year: -100000
     prerequisites:
       hard: [cooperation, counting]
       soft: [division-of-labor, language]
-      catalyst: []
-      synergistic: []
-    description: "Exchange of goods and services between groups"
-    unlocks:
-      technologies: [markets, currency, long-distance-transport]
-      capabilities: [resource-distribution, relationship-building, wealth-accumulation]
-    resources:
-      materials: [trade-goods, transport-containers]
-      knowledge: [value-assessment, negotiation]
-      social: [inter-group-relations, trust-networks]
-    historical:
-      first_occurrence: "~100,000 BCE"
-      locations: ["Africa", "then global"]
-      key_figures: ["Early trading communities"]
-      parallel_invention: true
-    complexity: medium
-    alternate_paths: []
-    alternate_solutions: ["gift-exchange", "tribute-systems", "raid-and-capture"]
 
   kinship-systems:
-    id: kinship-systems
     name: "Kinship Systems"
-    type: social
-    era: prehistoric
+    layer: social
+    year: -100000
     prerequisites:
       hard: [language, cooperation]
       soft: [teaching]
-      catalyst: []
-      synergistic: []
-    description: "Formal recognition of family relationships and inheritance patterns"
-    unlocks:
-      technologies: [governance, law, property-inheritance]
-      capabilities: [social-organization, conflict-resolution, resource-allocation]
-    resources:
-      materials: []
-      knowledge: [genealogical-memory, relationship-mapping]
-      social: [family-structures, marriage-customs]
-    historical:
-      first_occurrence: "~100,000 BCE"
-      locations: ["Universal human trait"]
-      key_figures: ["All human societies"]
-      parallel_invention: false  # Universal human characteristic
-    complexity: high
-    alternate_paths: []
-    alternate_solutions: ["clan-systems", "age-based-hierarchies", "merit-based-groups"]

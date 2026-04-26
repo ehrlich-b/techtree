@@ -2,98 +2,57 @@
 # The third major transformation in human history
 
 technologies:
+
   electronics:
-    id: electronics
     name: "Electronics"
-    type: material
-    era: information
-    complexity: medium
+    layer: material
+    year: 1975
     prerequisites:
       hard: [electricity, physics]
-      soft: [mathematics, chemistry-periodic-table, quantum-mechanics]  # Semiconductors
-      catalyst: [physics, mass-production]  # Mass production essential
-      synergistic: [quantum-mechanics]  # Quantum theory enabled semiconductors
-    description: "Technology for controlling electric current through circuits and components"
-    unlocks:
-      technologies: [transistor, computer]
-      capabilities: [signal-processing, information-storage, automation]
+      soft: [mathematics, chemistry-periodic-table, quantum-mechanics]
+      catalyst: [physics, mass-production]
 
   transistor:
-    id: transistor
     name: "Transistor"
-    type: material
-    era: information
-    complexity: high
+    layer: material
+    year: 1975
     prerequisites:
       hard: [electronics, physics]
       soft: [chemistry-periodic-table, quantum-mechanics, mass-production]
-      catalyst: [electromagnetism, quantum-mechanics]  # Quantum physics crucial
-      synergistic: [mass-production, computer-science]  # Enabled digital age
-    description: "Semiconductor device for switching and amplifying electrical signals"
-    unlocks:
-      technologies: [computer]
-      capabilities: [miniaturization, reliable-switching, electronic-computation]
+      catalyst: [electromagnetism, quantum-mechanics]
 
   computer:
-    id: computer
     name: "Computer"
-    type: material
-    era: information
-    complexity: high
+    layer: material
+    year: 1975
     prerequisites:
       hard: [transistor, mathematics]
       soft: [logic, electromagnetism, information-theory, mass-production]
-      catalyst: [mathematics, transistor]  # Transistors enabled practical computers
-      synergistic: [internet, artificial-intelligence]  # Created information age
-    description: "Programmable electronic device for processing and storing information"
-    unlocks:
-      technologies: [internet]
-      capabilities: [data-processing, computation, information-storage]
+      catalyst: [mathematics, transistor]
 
   internet:
-    id: internet
     name: "Internet"
-    type: material
-    era: information
-    complexity: high
+    layer: material
+    year: 1975
     prerequisites:
       hard: [computer, telegraph]
-      soft: [electricity, railroad]  # Infrastructure that enabled global networks
-      catalyst: [computer, open-source]  # Open protocols crucial
-      synergistic: [computer, social-media, globalization]  # Transformed society
-    description: "Global network connecting computers and enabling information exchange"
-    unlocks:
-      technologies: []
-      capabilities: [global-communication, information-sharing, distributed-computing]
+      soft: [electricity, railroad]
+      catalyst: [computer, open-source]
 
   mobile-devices:
-    id: mobile-devices
     name: "Mobile Devices"
-    type: material
-    era: information
-    complexity: high
+    layer: material
+    year: 1975
     prerequisites:
       hard: [transistor, telegraph]
-      soft: [computer, internet, electricity]  # Digital and power infrastructure
-      catalyst: [electronics, mass-production]  # Mass production made affordable
-      synergistic: [internet, social-media]  # Created mobile revolution
-    description: "Portable electronic devices for communication and computing"
-    unlocks:
-      technologies: []
-      capabilities: [portable-communication, location-independence, personal-computing]
+      soft: [computer, internet, electricity]
+      catalyst: [electronics, mass-production]
 
   renewable-energy:
-    id: renewable-energy
     name: "Renewable Energy"
-    type: material
-    era: information
-    complexity: high
+    layer: material
+    year: 1975
     prerequisites:
       hard: [electricity, physics]
-      soft: [engineering, electronics, physics]  # Scientific understanding
-      catalyst: [electromagnetism, electricity]  # Electrical infrastructure
-      synergistic: [electronics, computer]  # Enabled smart management
-    description: "Technologies for generating power from renewable sources"
-    unlocks:
-      technologies: []
-      capabilities: [sustainable-power, energy-independence, clean-electricity]
+      soft: [engineering, electronics, physics]
+      catalyst: [electromagnetism, electricity]

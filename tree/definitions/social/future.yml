@@ -2,8 +2,6 @@
 
 technologies:
 
-  # ----- Anchor-confidence (>= 0.50) -----
-
   ai-augmented-knowledge-work:
     name: "AI-Augmented Knowledge Work"
     layer: social
@@ -31,8 +29,6 @@ technologies:
     prerequisites:
       hard: [welfare-state]
     one_liner: "States routinely organize around managed retreat, water rights, heat infrastructure."
-
-  # ----- Probable (0.20–0.49) -----
 
   post-labor-policy:
     name: "Post-Labor Policy Regime"
@@ -71,8 +67,6 @@ technologies:
       hard: [climate-net-zero-global]
       soft: [artificial-intelligence]
     one_liner: "Planetary-scale binding decision-making on existential and shared-commons issues."
-
-  # ----- Speculative (< 0.20) -----
 
   post-scarcity-economics:
     name: "Post-Scarcity Economics"
