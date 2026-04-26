@@ -33,6 +33,12 @@ meta-docs were written before content was solid. v2 spine is now in place:
   116 entries migrated, 76 v2 entries round-tripped. Net `-2102/+296` lines. Year
   inferred from `historical.first_occurrence` regex, falling back to era midpoint.
   Idempotent: re-running on v2 data is a no-op.
+- `build_tools/grapher.js` rewritten for v2: shape by layer (nature=cylinder,
+  material=box, social=ellipse, knowledge=diamond, scenario=octagon), fill opacity
+  by effective confidence (33/77/BB/FF for speculative/probable/anchor/certain),
+  edge style by dep type (hard=red solid, soft=gray dashed, catalyst=blue dotted).
+  Year-bucketed L→R layout pinning nature substrate at rank=min. Renders 192-node
+  tree to `dependencies.{dot,svg}` (81KB / 387KB).
 
 ### Pending — needs your sign-off before destructive work
 
@@ -41,7 +47,6 @@ meta-docs were written before content was solid. v2 spine is now in place:
 - [ ] **Delete bikeshedding meta-docs**: `EDUCATORS_GUIDE.md`, `STUDENT_EXERCISES.md`,
   `THEMED_PATHS.md`, `CRITICAL_PATHS.md`, `VISUALIZATION_SUMMARY.md`, `ANALYSIS.md`,
   `tree/NAVIGATION.md`. Pre-content artifacts.
-- [ ] **Stale visualization** `dependencies.{dot,svg,png}` — regenerate after migration.
 
 ### Pending — non-destructive work
 
@@ -50,9 +55,6 @@ meta-docs were written before content was solid. v2 spine is now in place:
   with human-only prereqs (mathematics, language, philosophy) are arguably correct as-is
   — the question is whether to assert e.g. `language → mechanical-affordances` (vocal
   tract / hearing) explicitly. Mostly judgment, not mechanical.
-- [ ] `build_tools/grapher.js`: re-render with edge styling by dep type and node opacity
-  by effective confidence (so speculative tech fades out). Current grapher predates the
-  confidence model.
 - [ ] Decide whether `tree/technologies/` (the symlink-based folder structure) is still
   worth maintaining post-reboot, or replace with a single rendered HTML/static-site view.
 
