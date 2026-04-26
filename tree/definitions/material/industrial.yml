@@ -89,7 +89,7 @@ technologies:
     type: material
     era: industrial
     prerequisites:
-      hard: [physics, metallurgy]
+      hard: [physics, metallurgy, electromagnetism-phenomenon]
       soft: [chemistry, scientific-method, telegraph, steam-engine]  # Generators
       catalyst: [physics, electromagnetism]  # Theory enabled practice
       synergistic: [mass-production, telecommunications]  # Powered modern industry

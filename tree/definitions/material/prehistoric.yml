@@ -8,7 +8,7 @@ technologies:
     type: material
     era: prehistoric
     prerequisites:
-      hard: []  # First technology - no prerequisites
+      hard: [mineral-substrate, organic-substrate, mechanical-affordances]
       soft: []
       catalyst: []
       synergistic: []
@@ -31,11 +31,11 @@ technologies:
 
   fire-control:
     id: fire-control
-    name: "Fire Control"  
+    name: "Fire Control"
     type: material
     era: prehistoric
     prerequisites:
-      hard: [tool-making]  # Need tools to create fire
+      hard: [tool-making, combustion]
       soft: []
       catalyst: []
       synergistic: []

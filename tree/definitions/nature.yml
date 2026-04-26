@@ -1,0 +1,66 @@
+# Nature — physical and biological substrate
+# Phenomena and resources that exist independent of human action.
+# Tech roots into these: tool-making depends on mineral-substrate;
+# fire-control depends on combustion; electromagnetic tech depends on electromagnetism.
+
+technologies:
+
+  combustion:
+    name: "Combustion"
+    layer: nature
+    one_liner: "Exothermic oxidation of fuels in atmospheric oxygen."
+
+  gravitation:
+    name: "Gravitation"
+    layer: nature
+    one_liner: "Mass attracts mass. Underpins weight, free-fall, fluid pressure, orbits."
+
+  mechanical-affordances:
+    name: "Mechanical Affordances"
+    layer: nature
+    one_liner: "Friction, leverage, momentum, elasticity — exploitable by simple machines."
+
+  fluid-dynamics-substrate:
+    name: "Fluid Dynamics Substrate"
+    layer: nature
+    one_liner: "Flowing water, wind, atmospheric pressure — sources of natural power."
+
+  electromagnetism-phenomenon:
+    name: "Electromagnetism (Phenomenon)"
+    layer: nature
+    one_liner: "Coupled E/B fields, charged matter, light. The phenomenon — the *theory* (Faraday/Maxwell) is a knowledge tech."
+
+  mineral-substrate:
+    name: "Mineral Substrate"
+    layer: nature
+    one_liner: "Stones, ores, clays, salts — solid-state raw materials with extractable structure."
+
+  organic-substrate:
+    name: "Organic Substrate"
+    layer: nature
+    one_liner: "Wood, fibers, hides, resins — biologically-produced materials with useful properties."
+
+  domesticable-species:
+    name: "Domesticable Species"
+    layer: nature
+    one_liner: "Plants and animals with traits amenable to selective breeding (Anna Karenina principle)."
+
+  microbial-substrate:
+    name: "Microbial Substrate"
+    layer: nature
+    one_liner: "Yeast, lactobacilli, methanogens — fermentation, decomposition, nitrogen fixation."
+
+  nuclear-phenomena:
+    name: "Nuclear Phenomena"
+    layer: nature
+    one_liner: "Radioactive decay, fission, fusion — energy locked in atomic nuclei."
+
+  quantum-phenomena:
+    name: "Quantum Phenomena"
+    layer: nature
+    one_liner: "Discrete states, superposition, tunneling, entanglement. Exploitable once understood."
+
+  cosmic-substrate:
+    name: "Cosmic Substrate"
+    layer: nature
+    one_liner: "Stars, sky, seasons — the observable celestial backdrop. Anchor for time, navigation, mythology."

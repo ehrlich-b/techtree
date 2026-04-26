@@ -1,83 +1,148 @@
-# Material Technologies - Speculative Future Era
-# Plausible future developments
+# Material — Future (2030–2076)
+# Tech that exists IF its prerequisite scenarios fire. Effective confidence is the
+# min over hard prereqs; tools compute this so we don't store it redundantly.
 
 technologies:
-  fusion-power:
-    id: fusion-power
-    name: "Fusion Power"
-    type: material
-    era: future
-    complexity: extreme
-    prerequisites:
-      hard: [physics, quantum-mechanics]
-      soft: [engineering]
-      catalyst: [quantum-mechanics]
-      synergistic: []
-    description: "Nuclear fusion technology for clean, abundant energy generation"
-    unlocks:
-      technologies: []
-      capabilities: [unlimited-energy, clean-power, space-propulsion]
 
-  room-temperature-superconductor:
-    id: room-temperature-superconductor
-    name: "Room Temperature Superconductor"
-    type: material
-    era: future
-    complexity: extreme
+  # ----- Anchor-confidence material tech (>= 0.50) -----
+
+  ev-fleet-replacement:
+    name: "Electric Vehicle Fleet Replacement"
+    layer: material
+    year: 2042
+    confidence: 0.80
     prerequisites:
-      hard: [physics, nanotechnology]
+      hard: [ev-grid-saturation, battery-density-2x]
+    one_liner: "Light-duty vehicle fleet majority-electric in developed economies."
+
+  modular-fusion-reactor:
+    name: "Modular Fusion Reactor"
+    layer: material
+    year: 2050
+    confidence: 0.45
+    prerequisites:
+      hard: [fusion-grid-commercial, engineering]
+    one_liner: "Factory-built fusion units sized for industrial sites."
+
+  desalination-at-scale:
+    name: "Industrial-Scale Desalination"
+    layer: material
+    year: 2050
+    confidence: 0.55
+    prerequisites:
+      hard: [fusion-grid-commercial]
       soft: [chemistry-periodic-table]
-      catalyst: [nanotechnology]
-      synergistic: []
-    description: "Materials with zero electrical resistance at normal temperatures"
-    unlocks:
-      technologies: []
-      capabilities: [lossless-transmission, magnetic-levitation, efficient-electronics]
+    one_liner: "Cheap fusion energy makes large-scale desalination economic for arid regions."
 
-  brain-computer-interface:
-    id: brain-computer-interface
-    name: "Brain-Computer Interface"
-    type: material
-    era: future
-    complexity: extreme
+  bioprinted-organs:
+    name: "Bioprinted Transplant Organs"
+    layer: material
+    year: 2045
+    confidence: 0.50
     prerequisites:
-      hard: [neuroscience, nanotechnology]
-      soft: [artificial-intelligence]
-      catalyst: [neuroscience]
-      synergistic: []
-    description: "Direct communication pathway between brain and external devices"
-    unlocks:
-      technologies: []
-      capabilities: [thought-control, neural-enhancement, direct-knowledge-transfer]
+      hard: [organ-printing-clinical]
+    one_liner: "Patient-derived bioprinted livers, kidneys, hearts."
 
-  molecular-assembly:
-    id: molecular-assembly
-    name: "Molecular Assembly"
-    type: material
-    era: future
-    complexity: extreme
+  humanoid-worker:
+    name: "General-Purpose Humanoid Worker"
+    layer: material
+    year: 2040
+    confidence: 0.65
     prerequisites:
-      hard: [nanotechnology, artificial-intelligence]
-      soft: [chemistry-periodic-table]
-      catalyst: [nanotechnology]
-      synergistic: []
-    description: "Precise positioning of atoms to build products from bottom up"
-    unlocks:
-      technologies: []
-      capabilities: [atomic-precision-manufacturing, self-replicating-machines, programmable-matter]
+      hard: [humanoid-robotics-deployed, artificial-intelligence]
+      soft: [battery-density-2x]
+    one_liner: "Bipedal robots performing varied physical tasks in human-shaped environments."
 
-  space-elevator:
-    id: space-elevator
-    name: "Space Elevator"
-    type: material
-    era: future
-    complexity: extreme
+  carbon-direct-air-plant:
+    name: "Industrial DAC Plant"
+    layer: material
+    year: 2045
+    confidence: 0.55
     prerequisites:
-      hard: [nanotechnology, engineering]
-      soft: [physics]
-      catalyst: [nanotechnology]
-      synergistic: []
-    description: "Structure connecting Earth's surface to space via cable system"
-    unlocks:
-      technologies: []
-      capabilities: [cheap-space-access, orbital-infrastructure, space-colonization]
+      hard: [carbon-removal-gigaton]
+    one_liner: "Megaton-scale direct-air-capture facilities, often co-located with cheap energy."
+
+  # ----- Probable-confidence material tech (0.20–0.49) -----
+
+  quantum-co-processor:
+    name: "Quantum Co-Processor"
+    layer: material
+    year: 2042
+    confidence: 0.45
+    prerequisites:
+      hard: [quantum-advantage-practical, quantum-computing]
+    one_liner: "Quantum acceleration alongside classical compute for specific workloads."
+
+  bci-consumer-device:
+    name: "Consumer BCI Device"
+    layer: material
+    year: 2050
+    confidence: 0.30
+    prerequisites:
+      hard: [bci-high-bandwidth]
+    one_liner: "Beyond-medical neural interfaces in consumer or workplace use."
+
+  superconducting-grid:
+    name: "Superconducting Power Grid"
+    layer: material
+    year: 2055
+    confidence: 0.25
+    prerequisites:
+      hard: [room-temp-superconductor]
+    one_liner: "Long-haul lossless transmission, replacing AC backbone."
+
+  martian-life-support:
+    name: "Martian Life-Support Infrastructure"
+    layer: material
+    year: 2050
+    confidence: 0.45
+    prerequisites:
+      hard: [mars-crewed-presence]
+    one_liner: "Closed-loop life support, ISRU, surface power for sustained Mars presence."
+
+  # ----- Speculative material tech (< 0.20) -----
+
+  antimatter-power-cell:
+    name: "Antimatter Power Cell"
+    layer: material
+    year: 2070
+    confidence: 0.08
+    prerequisites:
+      hard: [antimatter-bulk-containment]
+    one_liner: "Annihilation-based power source. Energy density ~10 GJ/g if containment holds."
+
+  antimatter-propulsion:
+    name: "Antimatter Propulsion"
+    layer: material
+    year: 2076
+    confidence: 0.05
+    prerequisites:
+      hard: [antimatter-bulk-containment, modular-fusion-reactor]
+    one_liner: "Interplanetary-class specific impulse. Outer-system mission enabler."
+
+  programmable-matter:
+    name: "Programmable Matter"
+    layer: material
+    year: 2070
+    confidence: 0.10
+    prerequisites:
+      hard: [molecular-nanotech-strong]
+    one_liner: "Bulk material whose physical properties are software-defined."
+
+  utility-fog:
+    name: "Utility Fog"
+    layer: material
+    year: 2075
+    confidence: 0.05
+    prerequisites:
+      hard: [molecular-nanotech-strong]
+    one_liner: "Distributed nano-robotic medium that reconfigures into arbitrary objects."
+
+  warp-bubble-prototype:
+    name: "Warp-Bubble Prototype"
+    layer: material
+    year: 2076
+    confidence: 0.02
+    prerequisites:
+      hard: [exotic-matter-stable, ftl-feasibility-confirmed]
+    one_liner: "Laboratory-scale demonstration of macroscopic spacetime manipulation."

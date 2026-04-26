@@ -1,0 +1,266 @@
+# Scenarios — breakthrough/discovery gates with explicit confidence.
+# These are the "if this happens, then..." nodes. Tech downstream of a low-confidence
+# scenario inherits low effective confidence (computed by tools as min over hard prereqs).
+#
+# Confidence convention:
+#   >= 0.50  anchor — main timeline plans around this happening
+#   0.20-0.49 probable — design-relevant
+#   < 0.20   speculative side-branch — only matters if it fires
+#
+# Year is the rough target by which the gate is realized at scale, not invention date.
+
+technologies:
+
+  # ============================================================
+  # ANCHOR SCENARIOS (>= 0.50) — main timeline plans around these
+  # ============================================================
+
+  ai-r-and-d-acceleration:
+    name: "AI-Accelerated R&D"
+    layer: scenario
+    year: 2030
+    confidence: 0.85
+    prerequisites:
+      hard: [artificial-intelligence]
+    one_liner: "Frontier AI materially compresses scientific and engineering research cycles."
+
+  ev-grid-saturation:
+    name: "EV Grid Saturation"
+    layer: scenario
+    year: 2040
+    confidence: 0.80
+    prerequisites:
+      hard: [battery-density-2x]
+    one_liner: "Most new vehicles electric; grid storage and V2G integration mainstream."
+
+  battery-density-2x:
+    name: "Battery Energy Density 2x"
+    layer: scenario
+    year: 2032
+    confidence: 0.85
+    prerequisites:
+      hard: [chemistry-periodic-table, electronics]
+    one_liner: "Solid-state or successor chemistry doubles practical Wh/kg vs 2025 lithium."
+
+  mrna-platform-broad:
+    name: "Broad mRNA Therapeutic Platform"
+    layer: scenario
+    year: 2032
+    confidence: 0.85
+    prerequisites:
+      hard: [genetics, medicine]
+    one_liner: "mRNA used as a programmable platform across infectious disease and oncology."
+
+  formal-verification-mainstream:
+    name: "AI-Assisted Formal Verification"
+    layer: scenario
+    year: 2032
+    confidence: 0.75
+    prerequisites:
+      hard: [artificial-intelligence, computer-science]
+    one_liner: "Critical software routinely shipped with machine-checked proofs."
+
+  humanoid-robotics-deployed:
+    name: "General-Purpose Humanoid Robotics"
+    layer: scenario
+    year: 2038
+    confidence: 0.65
+    prerequisites:
+      hard: [artificial-intelligence, autonomous-systems]
+    one_liner: "Humanoid robots in industrial and service workplaces at meaningful scale."
+
+  agi-emergence:
+    name: "AGI Emergence"
+    layer: scenario
+    year: 2035
+    confidence: 0.55
+    prerequisites:
+      hard: [artificial-intelligence, ai-r-and-d-acceleration]
+    one_liner: "AI systems match or exceed humans across most cognitive domains."
+
+  carbon-removal-gigaton:
+    name: "Gigaton-Scale Carbon Removal"
+    layer: scenario
+    year: 2045
+    confidence: 0.50
+    prerequisites:
+      hard: [chemistry-periodic-table, engineering]
+    one_liner: "DAC, enhanced weathering, or biological CDR deployed at climate-relevant scale."
+
+  fusion-grid-commercial:
+    name: "Commercial Grid-Scale Fusion"
+    layer: scenario
+    year: 2045
+    confidence: 0.50
+    prerequisites:
+      hard: [quantum-mechanics, electromagnetism, nuclear-phenomena]
+    one_liner: "Net-positive fusion deployed competitively at utility scale. (Required scenario.)"
+
+  mars-crewed-presence:
+    name: "Mars Crewed Presence"
+    layer: scenario
+    year: 2045
+    confidence: 0.50
+    prerequisites:
+      hard: [autonomous-systems]
+    one_liner: "Sustained human presence on Mars beyond flag-and-footprints."
+
+  # ============================================================
+  # PROBABLE SCENARIOS (0.20–0.49) — design-relevant if they fire
+  # ============================================================
+
+  quantum-advantage-practical:
+    name: "Practical Quantum Advantage"
+    layer: scenario
+    year: 2040
+    confidence: 0.45
+    prerequisites:
+      hard: [quantum-computing, quantum-mechanics]
+    one_liner: "Quantum machines deliver useful speedup on real-world problems beyond benchmarks."
+
+  senolytic-rejuvenation:
+    name: "Senolytic Rejuvenation"
+    layer: scenario
+    year: 2045
+    confidence: 0.40
+    prerequisites:
+      hard: [medicine, genetics]
+    one_liner: "Pharmacological clearance of senescent cells extends healthspan in humans."
+
+  organ-printing-clinical:
+    name: "Bioprinted Transplantable Organs"
+    layer: scenario
+    year: 2042
+    confidence: 0.50
+    prerequisites:
+      hard: [3d-printing, medicine, genetics]
+    one_liner: "Patient-derived bioprinted organs enter standard transplant practice."
+
+  crispr-germline-clinical:
+    name: "Heritable Germline Editing"
+    layer: scenario
+    year: 2045
+    confidence: 0.35
+    prerequisites:
+      hard: [gene-editing, genetics]
+    one_liner: "Heritable human gene edits move from rogue cases to regulated clinical use."
+
+  bci-high-bandwidth:
+    name: "High-Bandwidth BCI"
+    layer: scenario
+    year: 2045
+    confidence: 0.30
+    prerequisites:
+      hard: [neuroscience, nanotechnology]
+    one_liner: "Neural interfaces at 1+ Mbps bidirectional, beyond medical-only deployment."
+
+  room-temp-superconductor:
+    name: "Room-Temperature Superconductor"
+    layer: scenario
+    year: 2050
+    confidence: 0.25
+    prerequisites:
+      hard: [quantum-mechanics, nanotechnology]
+    one_liner: "Practical superconductivity at room temperature and ambient pressure."
+
+  ai-alignment-formalized:
+    name: "Formalized AI Alignment"
+    layer: scenario
+    year: 2040
+    confidence: 0.30
+    prerequisites:
+      hard: [artificial-intelligence, formal-verification-mainstream]
+    one_liner: "A theoretical framework for goal-stable AI moves from research to engineering practice."
+
+  climate-net-zero-global:
+    name: "Global Net-Zero Achieved"
+    layer: scenario
+    year: 2050
+    confidence: 0.30
+    prerequisites:
+      hard: [carbon-removal-gigaton]
+    one_liner: "Anthropogenic emissions net-zero on a global accounting basis."
+
+  post-labor-transition:
+    name: "Post-Labor Economic Transition"
+    layer: scenario
+    year: 2055
+    confidence: 0.30
+    prerequisites:
+      hard: [agi-emergence, humanoid-robotics-deployed]
+    one_liner: "Majority of economic value produced without human labor input. Policy regime adjusts."
+
+  # ============================================================
+  # SPECULATIVE SCENARIOS (< 0.20) — side branches; only matter if they fire
+  # ============================================================
+
+  antimatter-bulk-containment:
+    name: "Bulk Antimatter Containment"
+    layer: scenario
+    year: 2065
+    confidence: 0.08
+    prerequisites:
+      hard: [quantum-mechanics, electromagnetism, nuclear-phenomena]
+    one_liner: "Stable confinement of antimatter at gram-and-above scale. (Optional scenario.)"
+
+  molecular-nanotech-strong:
+    name: "Strong Molecular Nanotechnology"
+    layer: scenario
+    year: 2065
+    confidence: 0.10
+    prerequisites:
+      hard: [nanotechnology, agi-emergence]
+    one_liner: "Drexler-style atomically precise general-purpose assemblers."
+
+  whole-brain-emulation:
+    name: "Whole-Brain Emulation"
+    layer: scenario
+    year: 2070
+    confidence: 0.12
+    prerequisites:
+      hard: [neuroscience, agi-emergence]
+    one_liner: "Functional emulation of an individual human brain on non-biological substrate."
+
+  consciousness-mechanistic:
+    name: "Mechanistic Theory of Consciousness"
+    layer: scenario
+    year: 2065
+    confidence: 0.15
+    prerequisites:
+      hard: [neuroscience, philosophy]
+    one_liner: "A predictive, falsifiable theory of subjective experience."
+
+  p-vs-np-resolved:
+    name: "P vs NP Resolved"
+    layer: scenario
+    year: 2055
+    confidence: 0.15
+    prerequisites:
+      hard: [computer-science, mathematics]
+    one_liner: "Either way; resolution upends complexity theory and possibly cryptography."
+
+  exotic-matter-stable:
+    name: "Stable Exotic Matter"
+    layer: scenario
+    year: 2070
+    confidence: 0.04
+    prerequisites:
+      hard: [quantum-mechanics, nuclear-phenomena]
+    one_liner: "Negative-mass or other exotic states maintained outside experimental settings."
+
+  ftl-feasibility-confirmed:
+    name: "FTL Feasibility Confirmed"
+    layer: scenario
+    year: 2076
+    confidence: 0.02
+    prerequisites:
+      hard: [exotic-matter-stable]
+    one_liner: "Theoretical or experimental confirmation of a path to faster-than-light transit."
+
+  contact-extraterrestrial:
+    name: "Confirmed Extraterrestrial Contact"
+    layer: scenario
+    year: 2076
+    confidence: 0.03
+    prerequisites: {}
+    one_liner: "Verified non-human technological signal or artifact. Reorders nearly everything."

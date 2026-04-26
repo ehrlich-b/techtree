@@ -89,7 +89,7 @@ technologies:
     type: knowledge
     era: ancient
     prerequisites:
-      hard: [seasonal-patterns, counting]
+      hard: [seasonal-patterns, counting, cosmic-substrate]
       soft: [calendar, mathematics, religion]  # Religious significance
       catalyst: [writing-systems, agriculture]  # Recording observations
       synergistic: [navigation-instruments, telescope]  # Enhanced observation

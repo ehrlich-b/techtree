@@ -83,6 +83,10 @@ analyze:
 		exit 1; \
 	fi
 
+# Confidence-aware future-tree report (v2)
+report:
+	@$(NODE) $(BUILD_TOOLS)/report.js $(DEFINITIONS)
+
 # Run all validations
 test: validate check
 	@echo "✅ All validations passed!"

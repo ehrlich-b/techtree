@@ -1,324 +1,345 @@
 #!/usr/bin/env node
 
 /**
- * schema.js - Validates YAML technology definitions against schema
- * 
- * Usage: node schema.js [path-to-definitions-directory]
- * 
- * Validates all YAML files in tree/definitions/ and subdirectories:
- * - Required fields are present
- * - Technology types are valid (material|social|knowledge)
- * - Dependency references exist
- * - Historical data is reasonable
- * - Era classifications are correct
+ * schema.js — TechTree v2 schema validator
+ *
+ * Union-tolerant: accepts both v1 (type/era/id) and v2 (layer/year/confidence) fields
+ * so the 127 historical entries keep validating during migration.
+ *
+ * Required: name, layer (or v1 `type`)
+ * Optional: year, confidence, prerequisites.{hard,soft,catalyst}, one_liner, sources, notes
+ * Tolerated (ignored): description, unlocks, resources, historical, complexity, alternate_*,
+ *                       prerequisites.synergistic
+ *
+ * Usage: node schema.js [path-to-definitions-dir]
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Simple YAML parser (no dependencies)
-function parseYAML(content) {
-    try {
-        // Very basic YAML parsing - just enough for our needs
-        const lines = content.split('\n');
-        const result = { technologies: {} };
-        let currentTech = null;
-        let currentSection = null;
-        let indent = 0;
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            const trimmed = line.trim();
-            
-            if (trimmed === '' || trimmed.startsWith('#')) continue;
-            
-            const currentIndent = line.length - line.trimStart().length;
-            
-            if (trimmed === 'technologies:') {
-                continue;
-            }
-            
-            // Technology definition
-            if (currentIndent === 2 && trimmed.endsWith(':') && !trimmed.includes(' ')) {
-                currentTech = trimmed.slice(0, -1);
-                result.technologies[currentTech] = {};
-                currentSection = null;
-                continue;
-            }
-            
-            if (!currentTech) continue;
-            
-            // Field within technology
-            if (currentIndent === 4 && trimmed.includes(':')) {
-                const [key, ...valueParts] = trimmed.split(':');
-                const value = valueParts.join(':').trim();
-                
-                if (['prerequisites', 'unlocks', 'resources', 'historical'].includes(key)) {
-                    result.technologies[currentTech][key] = {};
-                    currentSection = key;
-                } else {
-                    // Handle simple values
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        result.technologies[currentTech][key] = value.slice(1, -1);
-                    } else if (value.startsWith('[') && value.endsWith(']')) {
-                        // Simple array parsing
-                        const arrayContent = value.slice(1, -1);
-                        if (arrayContent.trim() === '') {
-                            result.technologies[currentTech][key] = [];
-                        } else {
-                            result.technologies[currentTech][key] = arrayContent.split(',').map(s => s.trim().replace(/"/g, ''));
-                        }
-                    } else if (!isNaN(value) && value !== '') {
-                        result.technologies[currentTech][key] = parseFloat(value);
-                    } else if (value === 'true' || value === true) {
-                        result.technologies[currentTech][key] = true;
-                    } else if (value === 'false' || value === false) {
-                        result.technologies[currentTech][key] = false;
-                    } else {
-                        result.technologies[currentTech][key] = value;
-                    }
-                    currentSection = null;
-                }
-                continue;
-            }
-            
-            // Subsections within prerequisites, unlocks, etc.
-            if (currentSection && currentIndent === 6 && trimmed.includes(':')) {
-                const [key, ...valueParts] = trimmed.split(':');
-                const value = valueParts.join(':').trim();
-                
-                if (value.startsWith('[') && value.endsWith(']')) {
-                    const arrayContent = value.slice(1, -1);
-                    if (arrayContent.trim() === '') {
-                        result.technologies[currentTech][currentSection][key] = [];
-                    } else {
-                        result.technologies[currentTech][currentSection][key] = arrayContent.split(',').map(s => s.trim().replace(/"/g, ''));
-                    }
-                } else if (value.startsWith('"') && value.endsWith('"')) {
-                    result.technologies[currentTech][currentSection][key] = value.slice(1, -1);
-                } else if (value.startsWith('[') && !value.endsWith(']')) {
-                    // Multi-line array
-                    result.technologies[currentTech][currentSection][key] = [];
-                } else if (value === 'true' || value === true || value === 'True') {
-                    result.technologies[currentTech][currentSection][key] = true;
-                } else if (value === 'false' || value === false || value === 'False') {
-                    result.technologies[currentTech][currentSection][key] = false;
-                } else if (key === 'parallel_invention') {
-                    // Handle boolean values with inline comments
-                    const boolValue = value.toString().toLowerCase().includes('true');
-                    result.technologies[currentTech][currentSection][key] = boolValue;
-                } else {
-                    result.technologies[currentTech][currentSection][key] = value;
-                }
-            }
-            
-            // Array items
-            if (currentSection && currentIndent === 8 && trimmed.startsWith('- ')) {
-                const item = trimmed.slice(2).replace(/"/g, '');
-                const keys = Object.keys(result.technologies[currentTech][currentSection]);
-                const lastKey = keys[keys.length - 1];
-                if (Array.isArray(result.technologies[currentTech][currentSection][lastKey])) {
-                    result.technologies[currentTech][currentSection][lastKey].push(item);
-                }
-            }
-        }
-        
-        return result;
-    } catch (error) {
-        throw new Error(`YAML parsing failed: ${error.message}`);
+// ---------- YAML loader (hand-rolled, no deps) ----------
+// Handles: nested maps with 2-space indents, inline arrays [a, b, c],
+// quoted/unquoted scalars, integers (incl. negative), floats, booleans, null,
+// block-list arrays (- item), comments. No multi-line strings (notes stays single-line).
+
+function parseScalar(raw) {
+    if (raw === undefined) return undefined;
+    const s = raw.trim();
+    if (s === '' || s === '~' || s === 'null') return null;
+    if (s === 'true' || s === 'True') return true;
+    if (s === 'false' || s === 'False') return false;
+    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+        return s.slice(1, -1);
     }
+    if (s.startsWith('[') && s.endsWith(']')) {
+        const body = s.slice(1, -1).trim();
+        if (body === '') return [];
+        return body.split(',').map(x => parseScalar(x));
+    }
+    if (s.startsWith('{') && s.endsWith('}')) {
+        // tolerate `{}` for empty maps
+        if (s.slice(1, -1).trim() === '') return {};
+    }
+    if (/^-?\d+$/.test(s)) return parseInt(s, 10);
+    if (/^-?\d+\.\d+$/.test(s)) return parseFloat(s);
+    return s;
 }
 
-// Load and merge all YAML files from definitions directory
+function stripComment(line) {
+    // Remove # comments outside quoted strings. Simple state machine.
+    let out = '';
+    let inSingle = false, inDouble = false;
+    for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === "'" && !inDouble) inSingle = !inSingle;
+        else if (c === '"' && !inSingle) inDouble = !inDouble;
+        else if (c === '#' && !inSingle && !inDouble) break;
+        out += c;
+    }
+    return out.replace(/\s+$/, '');
+}
+
+function parseYAML(content) {
+    const rawLines = content.split('\n').map(stripComment);
+    // Filter blank lines but keep indentation info on real lines.
+    const lines = rawLines.map(l => ({ raw: l, indent: l.length - l.trimStart().length, trimmed: l.trim() }))
+                          .filter(x => x.trimmed !== '');
+
+    let i = 0;
+    function parseBlock(parentIndent) {
+        // Returns either an object (map) or an array (list of items).
+        // Decided by first non-empty line's leading char.
+        if (i >= lines.length) return null;
+        const first = lines[i];
+        if (first.indent <= parentIndent) return null;
+        const blockIndent = first.indent;
+
+        if (first.trimmed.startsWith('- ')) {
+            // List
+            const arr = [];
+            while (i < lines.length && lines[i].indent === blockIndent && lines[i].trimmed.startsWith('- ')) {
+                const itemBody = lines[i].trimmed.slice(2);
+                if (itemBody.includes(':') && !itemBody.startsWith('"') && !itemBody.startsWith("'")) {
+                    // map item starting on the same line
+                    const [k, ...rest] = itemBody.split(':');
+                    const after = rest.join(':').trim();
+                    i++;
+                    const obj = {};
+                    obj[k.trim()] = after === '' ? parseBlock(blockIndent) : parseScalar(after);
+                    // continue to absorb any sibling fields at deeper indent under the same '-'
+                    while (i < lines.length && lines[i].indent > blockIndent && !lines[i].trimmed.startsWith('- ')) {
+                        const sub = parseBlock(blockIndent);
+                        if (sub && typeof sub === 'object' && !Array.isArray(sub)) Object.assign(obj, sub);
+                        else break;
+                    }
+                    arr.push(obj);
+                } else {
+                    arr.push(parseScalar(itemBody));
+                    i++;
+                }
+            }
+            return arr;
+        }
+
+        // Map
+        const obj = {};
+        while (i < lines.length && lines[i].indent === blockIndent) {
+            const ln = lines[i];
+            if (ln.trimmed.startsWith('- ')) break;
+            const colonIdx = ln.trimmed.indexOf(':');
+            if (colonIdx === -1) { i++; continue; }
+            const key = ln.trimmed.slice(0, colonIdx).trim();
+            const after = ln.trimmed.slice(colonIdx + 1).trim();
+            i++;
+            if (after === '') {
+                obj[key] = parseBlock(blockIndent);
+                if (obj[key] === null && i < lines.length && lines[i].indent > blockIndent) {
+                    // empty mapping but there are children at deeper indent — recurse
+                    obj[key] = parseBlock(blockIndent);
+                }
+                if (obj[key] === null) obj[key] = {};
+            } else {
+                obj[key] = parseScalar(after);
+            }
+        }
+        return obj;
+    }
+
+    // Top level expects `technologies:` then a nested map.
+    let result = { technologies: {} };
+    while (i < lines.length) {
+        const ln = lines[i];
+        if (ln.indent === 0 && ln.trimmed.startsWith('technologies:')) {
+            i++;
+            const block = parseBlock(0);
+            if (block && typeof block === 'object') result.technologies = block;
+            break;
+        }
+        i++;
+    }
+    return result;
+}
+
+// ---------- File loader ----------
+
+function findYamlFiles(dir) {
+    const out = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) out.push(...findYamlFiles(full));
+        else if (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml')) out.push(full);
+    }
+    return out;
+}
+
 function loadDefinitions(definitionsDir = 'tree/definitions') {
-    const allTechnologies = {};
-    
     if (!fs.existsSync(definitionsDir)) {
         throw new Error(`Definitions directory not found: ${definitionsDir}`);
     }
-    
-    // Recursively find all .yml files
-    function findYamlFiles(dir) {
-        const files = [];
-        const entries = fs.readdirSync(dir, { withFileTypes: true });
-        
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name);
-            if (entry.isDirectory()) {
-                files.push(...findYamlFiles(fullPath));
-            } else if (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml')) {
-                files.push(fullPath);
-            }
-        }
-        
-        return files;
-    }
-    
-    const yamlFiles = findYamlFiles(definitionsDir);
-    console.log(`Found ${yamlFiles.length} definition files`);
-    
-    for (const filePath of yamlFiles) {
+    const all = {};
+    const files = findYamlFiles(definitionsDir);
+    console.log(`Found ${files.length} definition files`);
+    for (const f of files) {
         try {
-            const content = fs.readFileSync(filePath, 'utf8');
-            const data = parseYAML(content);
-            
-            if (data.technologies) {
-                Object.assign(allTechnologies, data.technologies);
-                console.log(`  Loaded ${Object.keys(data.technologies).length} technologies from ${path.relative('.', filePath)}`);
+            const raw = fs.readFileSync(f, 'utf8');
+            const data = parseYAML(raw);
+            if (data.technologies && typeof data.technologies === 'object') {
+                const count = Object.keys(data.technologies).length;
+                Object.assign(all, data.technologies);
+                console.log(`  Loaded ${count} technologies from ${path.relative('.', f)}`);
             }
-        } catch (error) {
-            throw new Error(`Failed to load ${filePath}: ${error.message}`);
+        } catch (e) {
+            throw new Error(`Failed to load ${f}: ${e.message}`);
         }
     }
-    
-    return { technologies: allTechnologies };
+    return { technologies: all };
 }
 
-// Schema validation
-const VALID_TYPES = ['material', 'social', 'knowledge'];
-const VALID_ERAS = ['prehistoric', 'ancient', 'medieval', 'early-modern', 'industrial', 'information', 'contemporary', 'future'];
-const VALID_COMPLEXITY = ['low', 'medium', 'high', 'extreme'];
-const DEPENDENCY_TYPES = ['hard', 'soft', 'catalyst', 'synergistic'];
+// ---------- Schema ----------
 
-function validateTechnology(id, tech, allTechIds) {
-    const errors = [];
-    
-    // Required fields
-    const requiredFields = ['id', 'name', 'type', 'era', 'description', 'complexity'];
-    for (const field of requiredFields) {
-        if (!tech[field]) {
-            errors.push(`Missing required field: ${field}`);
+const VALID_LAYERS = ['nature', 'material', 'social', 'knowledge', 'scenario'];
+const LEGACY_TYPES = ['material', 'social', 'knowledge'];   // v1 `type`
+const DEP_TYPES = ['hard', 'soft', 'catalyst'];
+const TOLERATED_DEP_TYPES = ['synergistic'];                 // v1 — accepted, not enforced
+
+function normalize(tech) {
+    // v1 → v2 normalization (non-destructive: add v2 fields if missing)
+    if (!tech.layer && tech.type) tech.layer = tech.type;
+    if (tech.confidence === undefined) tech.confidence = 1.0;
+    if (!tech.prerequisites) tech.prerequisites = {};
+    for (const dt of DEP_TYPES) {
+        if (!tech.prerequisites[dt]) tech.prerequisites[dt] = [];
+    }
+    return tech;
+}
+
+function validateOne(id, tech, allIds) {
+    const errs = [];
+    if (!tech.name) errs.push('missing required field: name');
+    if (!tech.layer) errs.push('missing required field: layer (or legacy: type)');
+    if (tech.layer && !VALID_LAYERS.includes(tech.layer)) {
+        errs.push(`invalid layer '${tech.layer}'; must be one of ${VALID_LAYERS.join(', ')}`);
+    }
+    if (tech.id && tech.id !== id) {
+        errs.push(`id mismatch: key '${id}' vs id field '${tech.id}'`);
+    }
+    if (tech.confidence !== undefined) {
+        const c = tech.confidence;
+        if (typeof c !== 'number' || c < 0 || c > 1) {
+            errs.push(`confidence must be a number in [0,1]; got ${c}`);
         }
     }
-    
-    // ID consistency
-    if (tech.id && tech.id !== id) {
-        errors.push(`ID mismatch: folder name '${id}' vs id field '${tech.id}'`);
+    if (tech.year !== undefined && tech.year !== null) {
+        if (typeof tech.year !== 'number' && typeof tech.year !== 'string') {
+            errs.push(`year must be number or string; got ${typeof tech.year}`);
+        }
     }
-    
-    // Type validation
-    if (tech.type && !VALID_TYPES.includes(tech.type)) {
-        errors.push(`Invalid type '${tech.type}'. Must be one of: ${VALID_TYPES.join(', ')}`);
-    }
-    
-    // Era validation
-    if (tech.era && !VALID_ERAS.includes(tech.era)) {
-        errors.push(`Invalid era '${tech.era}'. Must be one of: ${VALID_ERAS.join(', ')}`);
-    }
-    
-    // Complexity validation
-    if (tech.complexity && !VALID_COMPLEXITY.includes(tech.complexity)) {
-        errors.push(`Invalid complexity '${tech.complexity}'. Must be one of: ${VALID_COMPLEXITY.join(', ')}`);
-    }
-    
-    // Prerequisites structure
-    if (tech.prerequisites) {
-        for (const depType of Object.keys(tech.prerequisites)) {
-            if (!DEPENDENCY_TYPES.includes(depType)) {
-                errors.push(`Invalid dependency type '${depType}'. Must be one of: ${DEPENDENCY_TYPES.join(', ')}`);
+    if (tech.prerequisites && typeof tech.prerequisites === 'object') {
+        for (const [dt, list] of Object.entries(tech.prerequisites)) {
+            if (!DEP_TYPES.includes(dt) && !TOLERATED_DEP_TYPES.includes(dt)) {
+                errs.push(`unknown dependency type '${dt}'`);
+                continue;
             }
-            
-            if (!Array.isArray(tech.prerequisites[depType])) {
-                errors.push(`Prerequisites.${depType} must be an array`);
-            } else {
-                // Check that referenced technologies exist
-                for (const prereq of tech.prerequisites[depType]) {
-                    if (!allTechIds.includes(prereq)) {
-                        errors.push(`Unknown prerequisite '${prereq}' in ${depType} dependencies`);
-                    }
+            if (!Array.isArray(list)) {
+                errs.push(`prerequisites.${dt} must be an array`);
+                continue;
+            }
+            // Only enforce reference resolution on first-class dep types.
+            // Tolerated types (synergistic, legacy) may reference unknown ids without error.
+            if (DEP_TYPES.includes(dt)) {
+                for (const dep of list) {
+                    if (!allIds.has(dep)) errs.push(`unknown prereq '${dep}' in ${dt}`);
                 }
             }
         }
-        
-        // Ensure all dependency types are present (can be empty arrays)
-        for (const depType of DEPENDENCY_TYPES) {
-            if (!tech.prerequisites[depType]) {
-                tech.prerequisites[depType] = [];
-            }
-        }
     }
-    
-    // Historical data validation
-    if (tech.historical) {
-        if (tech.historical.parallel_invention !== undefined && 
-            typeof tech.historical.parallel_invention !== 'boolean') {
-            errors.push('historical.parallel_invention must be true or false');
-        }
-        
-        if (tech.historical.locations && !Array.isArray(tech.historical.locations)) {
-            errors.push('historical.locations must be an array');
-        }
-        
-        if (tech.historical.key_figures && !Array.isArray(tech.historical.key_figures)) {
-            errors.push('historical.key_figures must be an array');
-        }
-    }
-    
-    // Resources structure
-    if (tech.resources) {
-        const resourceTypes = ['materials', 'knowledge', 'social'];
-        for (const resourceType of resourceTypes) {
-            if (tech.resources[resourceType] && !Array.isArray(tech.resources[resourceType])) {
-                errors.push(`resources.${resourceType} must be an array`);
-            }
-        }
-    }
-    
-    // Unlocks structure
-    if (tech.unlocks) {
-        if (tech.unlocks.technologies && !Array.isArray(tech.unlocks.technologies)) {
-            errors.push('unlocks.technologies must be an array');
-        }
-        
-        if (tech.unlocks.capabilities && !Array.isArray(tech.unlocks.capabilities)) {
-            errors.push('unlocks.capabilities must be an array');
-        }
-    }
-    
-    return errors;
+    return errs;
 }
 
-function validateTechnologies(technologies) {
-    const allTechIds = Object.keys(technologies);
-    let totalErrors = 0;
-    
-    for (const [id, tech] of Object.entries(technologies)) {
-        const errors = validateTechnology(id, tech, allTechIds);
-        
-        if (errors.length > 0) {
-            console.error(`\n❌ ${id}:`);
-            for (const error of errors) {
-                console.error(`  - ${error}`);
+function detectCycles(techs) {
+    // Cycles only matter on hard edges. Soft/catalyst can be conceptually cyclic
+    // (math ↔ astronomy mutually reinforcing) without breaking DAG semantics.
+    const WHITE = 0, GRAY = 1, BLACK = 2;
+    const color = new Map();
+    for (const id of Object.keys(techs)) color.set(id, WHITE);
+    const cycles = [];
+
+    function visit(id, stack) {
+        if (color.get(id) === GRAY) {
+            const idx = stack.indexOf(id);
+            cycles.push(stack.slice(idx).concat(id));
+            return;
+        }
+        if (color.get(id) === BLACK) return;
+        color.set(id, GRAY);
+        stack.push(id);
+        const t = techs[id];
+        if (t && t.prerequisites) {
+            for (const dep of (t.prerequisites.hard || [])) {
+                if (techs[dep]) visit(dep, stack);
             }
-            totalErrors += errors.length;
+        }
+        stack.pop();
+        color.set(id, BLACK);
+    }
+    for (const id of Object.keys(techs)) visit(id, []);
+    return cycles;
+}
+
+function effectiveConfidence(techs) {
+    // E[id] = min(self_confidence, min over hard prereqs of E[prereq]).
+    // Memoized; cycles already ruled out (or return self if loop detected).
+    const memo = new Map();
+    const visiting = new Set();
+    function eff(id) {
+        if (memo.has(id)) return memo.get(id);
+        if (visiting.has(id)) return techs[id]?.confidence ?? 1.0;
+        visiting.add(id);
+        const t = techs[id];
+        if (!t) { visiting.delete(id); return 1.0; }
+        let c = t.confidence ?? 1.0;
+        for (const dep of (t.prerequisites?.hard || [])) {
+            if (techs[dep]) c = Math.min(c, eff(dep));
+        }
+        visiting.delete(id);
+        memo.set(id, c);
+        return c;
+    }
+    const out = {};
+    for (const id of Object.keys(techs)) out[id] = eff(id);
+    return out;
+}
+
+function validateTechnologies(techs) {
+    for (const [id, tech] of Object.entries(techs)) normalize(tech);
+    const allIds = new Set(Object.keys(techs));
+    let total = 0;
+    for (const [id, tech] of Object.entries(techs)) {
+        const errs = validateOne(id, tech, allIds);
+        if (errs.length) {
+            console.error(`\n❌ ${id}:`);
+            for (const e of errs) console.error(`  - ${e}`);
+            total += errs.length;
         }
     }
-    
-    if (totalErrors === 0) {
-        console.log(`\n✅ Schema validation passed for ${allTechIds.length} technologies`);
+    const cycles = detectCycles(techs);
+    if (cycles.length) {
+        console.error(`\n❌ ${cycles.length} cycle(s) detected (hard+soft+catalyst graph):`);
+        for (const c of cycles.slice(0, 5)) console.error(`  - ${c.join(' -> ')}`);
+        total += cycles.length;
+    }
+
+    if (total === 0) {
+        console.log(`\n✅ Schema validation passed for ${allIds.size} technologies`);
+        // Confidence rollup summary
+        const eff = effectiveConfidence(techs);
+        const buckets = { anchor: 0, probable: 0, speculative: 0, certain: 0 };
+        for (const [id, c] of Object.entries(eff)) {
+            if (c >= 1.0) buckets.certain++;
+            else if (c >= 0.5) buckets.anchor++;
+            else if (c >= 0.2) buckets.probable++;
+            else buckets.speculative++;
+        }
+        console.log(`   Effective confidence: ${buckets.certain} certain, ${buckets.anchor} anchor, ${buckets.probable} probable, ${buckets.speculative} speculative`);
         return true;
     } else {
-        console.error(`\n❌ Schema validation failed with ${totalErrors} errors`);
+        console.error(`\n❌ Schema validation failed with ${total} error(s)`);
         return false;
     }
 }
 
-// CLI interface
 if (require.main === module) {
-    const definitionsPath = process.argv[2] || 'tree/definitions';
-    
-    console.log(`🔍 Validating technology definitions from ${definitionsPath}...`);
-    
+    const dir = process.argv[2] || 'tree/definitions';
+    console.log(`🔍 Validating technology definitions from ${dir}...`);
     try {
-        const data = loadDefinitions(definitionsPath);
+        const data = loadDefinitions(dir);
         console.log(`\nTotal technologies loaded: ${Object.keys(data.technologies).length}`);
-        
-        const success = validateTechnologies(data.technologies);
-        process.exit(success ? 0 : 1);
-    } catch (error) {
-        console.error(`❌ ${error.message}`);
+        const ok = validateTechnologies(data.technologies);
+        process.exit(ok ? 0 : 1);
+    } catch (e) {
+        console.error(`❌ ${e.message}`);
         process.exit(1);
     }
 }
 
-module.exports = { validateTechnologies, loadDefinitions, parseYAML };
+module.exports = { validateTechnologies, loadDefinitions, parseYAML, effectiveConfidence };

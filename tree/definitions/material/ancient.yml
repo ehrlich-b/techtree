@@ -8,7 +8,7 @@ technologies:
     type: material
     era: ancient
     prerequisites:
-      hard: [tool-making]
+      hard: [tool-making, domesticable-species, organic-substrate]
       soft: []
       catalyst: []  # Climate change at end of Ice Age
       synergistic: []
@@ -35,7 +35,7 @@ technologies:
     type: material
     era: ancient
     prerequisites:
-      hard: [fire-control]
+      hard: [fire-control, mineral-substrate]
       soft: []  # Kilns help
       catalyst: []  # Access to ores
       synergistic: []

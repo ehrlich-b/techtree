@@ -41,7 +41,7 @@ technologies:
     era: information
     complexity: high
     prerequisites:
-      hard: [medicine]
+      hard: [medicine, organic-substrate, microbial-substrate]
       soft: [microscope]
       catalyst: [scientific-method]
       synergistic: []
@@ -57,7 +57,7 @@ technologies:
     era: information
     complexity: extreme
     prerequisites:
-      hard: [physics, mathematics]
+      hard: [physics, mathematics, quantum-phenomena]
       soft: [thermodynamics]
       catalyst: [physics]
       synergistic: []
