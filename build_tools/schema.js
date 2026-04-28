@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * schema.js — TechTree v2 schema validator
+ * schema.js — TechTree schema validator.
  *
- * Union-tolerant: accepts both v1 (type/era/id) and v2 (layer/year/confidence) fields
- * so the 127 historical entries keep validating during migration.
- *
- * Required: name, layer (or v1 `type`)
+ * Required: name, layer
  * Optional: year, confidence, prerequisites.{hard,soft,catalyst}, one_liner, sources, notes
- * Tolerated (ignored): description, unlocks, resources, historical, complexity, alternate_*,
- *                       prerequisites.synergistic
+ *
+ * Detects hard-edge cycles and rolls up effective confidence
+ * (min over self and hard prereqs).
  *
  * Usage: node schema.js [path-to-definitions-dir]
  */
@@ -178,13 +176,9 @@ function loadDefinitions(definitionsDir = 'tree/definitions') {
 // ---------- Schema ----------
 
 const VALID_LAYERS = ['nature', 'material', 'social', 'knowledge', 'scenario'];
-const LEGACY_TYPES = ['material', 'social', 'knowledge'];   // v1 `type`
 const DEP_TYPES = ['hard', 'soft', 'catalyst'];
-const TOLERATED_DEP_TYPES = ['synergistic'];                 // v1 — accepted, not enforced
 
 function normalize(tech) {
-    // v1 → v2 normalization (non-destructive: add v2 fields if missing)
-    if (!tech.layer && tech.type) tech.layer = tech.type;
     if (tech.confidence === undefined) tech.confidence = 1.0;
     if (!tech.prerequisites) tech.prerequisites = {};
     for (const dt of DEP_TYPES) {
@@ -196,12 +190,9 @@ function normalize(tech) {
 function validateOne(id, tech, allIds) {
     const errs = [];
     if (!tech.name) errs.push('missing required field: name');
-    if (!tech.layer) errs.push('missing required field: layer (or legacy: type)');
+    if (!tech.layer) errs.push('missing required field: layer');
     if (tech.layer && !VALID_LAYERS.includes(tech.layer)) {
         errs.push(`invalid layer '${tech.layer}'; must be one of ${VALID_LAYERS.join(', ')}`);
-    }
-    if (tech.id && tech.id !== id) {
-        errs.push(`id mismatch: key '${id}' vs id field '${tech.id}'`);
     }
     if (tech.confidence !== undefined) {
         const c = tech.confidence;
@@ -216,7 +207,7 @@ function validateOne(id, tech, allIds) {
     }
     if (tech.prerequisites && typeof tech.prerequisites === 'object') {
         for (const [dt, list] of Object.entries(tech.prerequisites)) {
-            if (!DEP_TYPES.includes(dt) && !TOLERATED_DEP_TYPES.includes(dt)) {
+            if (!DEP_TYPES.includes(dt)) {
                 errs.push(`unknown dependency type '${dt}'`);
                 continue;
             }
@@ -224,12 +215,8 @@ function validateOne(id, tech, allIds) {
                 errs.push(`prerequisites.${dt} must be an array`);
                 continue;
             }
-            // Only enforce reference resolution on first-class dep types.
-            // Tolerated types (synergistic, legacy) may reference unknown ids without error.
-            if (DEP_TYPES.includes(dt)) {
-                for (const dep of list) {
-                    if (!allIds.has(dep)) errs.push(`unknown prereq '${dep}' in ${dt}`);
-                }
+            for (const dep of list) {
+                if (!allIds.has(dep)) errs.push(`unknown prereq '${dep}' in ${dt}`);
             }
         }
     }
@@ -304,7 +291,7 @@ function validateTechnologies(techs) {
     }
     const cycles = detectCycles(techs);
     if (cycles.length) {
-        console.error(`\n❌ ${cycles.length} cycle(s) detected (hard+soft+catalyst graph):`);
+        console.error(`\n❌ ${cycles.length} hard-edge cycle(s) detected:`);
         for (const c of cycles.slice(0, 5)) console.error(`  - ${c.join(' -> ')}`);
         total += cycles.length;
     }
