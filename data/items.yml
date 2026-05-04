@@ -1,0 +1,60 @@
+items:
+  iron-ore:
+    name: "Iron Ore"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  coal:
+    name: "Coal"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  limestone:
+    name: "Limestone"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  clay:
+    name: "Clay"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  corn:
+    name: "Corn"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  coke:
+    name: "Coke"
+    era: industrial
+    tier: 2
+    unit: kg
+
+  pig-iron:
+    name: "Pig Iron"
+    era: industrial
+    tier: 2
+    unit: kg
+
+  brick:
+    name: "Brick"
+    era: industrial
+    tier: 2
+    unit: count
+
+  steel:
+    name: "Steel"
+    era: industrial
+    tier: 3
+    unit: kg
+
+  machine-tool:
+    name: "Machine Tool"
+    era: industrial
+    tier: 4
+    unit: count

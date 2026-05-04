@@ -1,0 +1,205 @@
+/**
+ * tick.js — one simulation tick.
+ *
+ * Order:
+ *   1. Production: each running slot debits inputs at progress=0, advances
+ *      by output_multiplier / recipe.seconds, credits outputs at progress
+ *      >= 1.0. Workers on running slots gain skill in the recipe's tech.
+ *      Research-in-progress advances by 1 point/tick; on completion the tech
+ *      moves into actor.researched.
+ *   2. Households consumption: drain worker count × rate of each STAPLES
+ *      item (corn only in v0) from the households actor's inventory
+ *      (silent shortfall).
+ *   3. Orders + clearing: each actor posts orders (NPC liquidity, player
+ *      priceBook + pendingBids, household staple bids, government
+ *      bid+ask for each item in GOV_BALLAST — corn only in v0); per-item
+ *      double auction matches at midpoint. Trades transfer inventory
+ *      always and cash for non-government participants — gov is the money
+ *      issuer and exempt from the cash side. pendingBids drained.
+ *   4. Wages: transferred from each employer to the households actor
+ *      (closes the cash loop). Households and government are exempt
+ *      from paying wages. Maintenance YAML fields are inert for v0.
+ *   5. Bankruptcy counter (households and government exempt).
+ *   6. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
+ *      inventory and building construction at fair × 0.5, then drop from
+ *      state.actors. Households and government are exempt. Respawn is v1+.
+ */
+
+const { wage, gainSkill, outputMultiplier } = require('./worker.js');
+const {
+    fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
+    HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES,
+} = require('./market.js');
+
+const HISTORY_LIMIT = 100;
+const BANKRUPTCY_TICKS = 30;
+const LIQUIDATION_RECOVERY = 0.5;
+
+function workersForSlot(actor, slot) {
+    const byId = new Map(actor.workers.map(w => [w.id, w]));
+    return slot.workerIds.map(id => byId.get(id)).filter(Boolean);
+}
+
+function hasInputs(inventory, inputs) {
+    for (const [item, amt] of Object.entries(inputs || {})) {
+        if ((inventory[item] || 0) < amt) return false;
+    }
+    return true;
+}
+
+function debit(inventory, inputs) {
+    for (const [item, amt] of Object.entries(inputs || {})) {
+        inventory[item] = (inventory[item] || 0) - amt;
+    }
+}
+
+function credit(inventory, outputs) {
+    for (const [item, amt] of Object.entries(outputs || {})) {
+        inventory[item] = (inventory[item] || 0) + amt;
+    }
+}
+
+function runProduction(actor, data) {
+    const recipes = data.recipes || {};
+    for (const bldg of actor.buildings) {
+        for (let s = 0; s < bldg.slots.length; s++) {
+            const slot = bldg.slots[s];
+            if (!slot) continue;
+            const recipe = recipes[slot.recipe];
+            if (!recipe || !recipe.seconds || recipe.seconds <= 0) continue;
+            const workers = workersForSlot(actor, slot);
+            if (workers.length < (recipe.workers || 0)) continue;
+
+            if (slot.progress === 0) {
+                if (!hasInputs(actor.inventory, recipe.inputs)) continue;
+                debit(actor.inventory, recipe.inputs);
+            }
+
+            const mult = outputMultiplier(workers, recipe.tech);
+            slot.progress += mult / recipe.seconds;
+
+            for (const w of workers) {
+                if (recipe.tech) gainSkill(w, recipe.tech);
+            }
+
+            if (slot.progress >= 1.0) {
+                credit(actor.inventory, recipe.outputs);
+                slot.progress = 0;
+            }
+        }
+    }
+}
+
+function advanceResearch(actor, data) {
+    const rip = actor.researchInProgress;
+    if (!rip) return;
+    const def = (data.tech || {})[rip.tech];
+    if (!def) {
+        actor.researchInProgress = null;
+        return;
+    }
+    rip.progress = (rip.progress || 0) + 1;
+    if (rip.progress >= (def.research_cost || 0)) {
+        actor.researched.add(rip.tech);
+        actor.researchInProgress = null;
+    }
+}
+
+function gatherOrders(actor, data, prices, state) {
+    if (actor.strategy === 'households') return householdOrders(actor, data, prices, state);
+    if (actor.strategy === 'government') return governmentOrders(actor);
+    if (actor.strategy) return npcOrders(actor, data, prices);
+    return playerOrders(actor);
+}
+
+function consumeStaples(state) {
+    const h = state.actors[HOUSEHOLDS_ID];
+    if (!h) return;
+    let totalWorkers = 0;
+    for (const a of Object.values(state.actors)) totalWorkers += (a.workers || []).length;
+    for (const s of STAPLES) {
+        const need = totalWorkers * s.rate;
+        const have = h.inventory[s.item] || 0;
+        h.inventory[s.item] = Math.max(0, have - need);
+    }
+}
+
+function settle(state, trade) {
+    const buyer = state.actors[trade.buyer];
+    const seller = state.actors[trade.seller];
+    if (!buyer || !seller) return;
+    const total = trade.price * trade.qty;
+    if (buyer.strategy !== 'government') buyer.cash -= total;
+    if (seller.strategy !== 'government') seller.cash += total;
+    buyer.inventory[trade.item] = (buyer.inventory[trade.item] || 0) + trade.qty;
+    seller.inventory[trade.item] = (seller.inventory[trade.item] || 0) - trade.qty;
+}
+
+function recordTrade(state, trade) {
+    if (!state.marketHistory) state.marketHistory = {};
+    const hist = state.marketHistory[trade.item] || (state.marketHistory[trade.item] = []);
+    hist.push({ tick: state.tick, price: trade.price, qty: trade.qty });
+    if (hist.length > HISTORY_LIMIT) hist.shift();
+}
+
+function liquidate(state, data, actor, prices) {
+    const buildings = data.buildings || {};
+    let recovery = 0;
+    for (const [item, qty] of Object.entries(actor.inventory || {})) {
+        if (qty > 0 && prices[item] > 0) recovery += qty * prices[item] * LIQUIDATION_RECOVERY;
+    }
+    for (const b of actor.buildings || []) {
+        const def = buildings[b.type];
+        if (!def || !def.construction) continue;
+        for (const [item, amt] of Object.entries(def.construction)) {
+            if (prices[item] > 0) recovery += amt * prices[item] * LIQUIDATION_RECOVERY;
+        }
+    }
+    actor.cash += recovery;
+    delete state.actors[actor.id];
+}
+
+function tick(state, data) {
+    state.tick++;
+    state.lastTickAt = Date.now();
+
+    for (const actor of Object.values(state.actors)) {
+        runProduction(actor, data);
+        advanceResearch(actor, data);
+    }
+
+    consumeStaples(state);
+
+    const prices = fairPrice(data);
+    const orders = [];
+    for (const actor of Object.values(state.actors)) {
+        const o = gatherOrders(actor, data, prices, state);
+        orders.push(...o.bids, ...o.asks);
+    }
+
+    const trades = clear(orders);
+    for (const t of trades) {
+        settle(state, t);
+        recordTrade(state, t);
+    }
+
+    for (const actor of Object.values(state.actors)) actor.pendingBids = [];
+
+    const households = state.actors[HOUSEHOLDS_ID];
+    const dead = [];
+    for (const actor of Object.values(state.actors)) {
+        if (actor.strategy === 'households' || actor.strategy === 'government') continue;
+        let totalWages = 0;
+        for (const w of actor.workers) totalWages += wage(w);
+        actor.cash -= totalWages;
+        if (households) households.cash += totalWages;
+
+        if (actor.cash < 0) actor.bankruptTicks++;
+        else actor.bankruptTicks = 0;
+
+        if (actor.bankruptTicks > BANKRUPTCY_TICKS) dead.push(actor);
+    }
+    for (const a of dead) liquidate(state, data, a, prices);
+}
+
+module.exports = { tick, runProduction, BANKRUPTCY_TICKS };

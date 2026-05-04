@@ -1,37 +1,25 @@
 # TechTree build system
 
-NODE        = node
-DEFINITIONS = tree/definitions
-TOOLS       = build_tools
+NODE = node
+DATA = data
+ENGINE = engine
+CLI = cli
 
-.PHONY: help validate graph report all clean
+.PHONY: help validate play clean
 
 help:
 	@echo "TechTree"
 	@echo ""
 	@echo "Targets:"
-	@echo "  validate   Schema check; cycle detection; confidence rollup."
-	@echo "  graph      Render dependencies.{dot,svg} (requires GraphViz)."
-	@echo "  report     Confidence-banded view of the future window."
-	@echo "  all        validate + graph + report."
-	@echo "  clean      Remove generated graph artifacts."
+	@echo "  validate   Check data integrity (refs resolve, no tech cycles)."
+	@echo "  play       Start the CLI play loop."
+	@echo "  clean      Remove save.json."
 
 validate:
-	@$(NODE) $(TOOLS)/schema.js $(DEFINITIONS)
+	@$(NODE) $(ENGINE)/schema.js $(DATA)
 
-graph:
-	@$(NODE) $(TOOLS)/grapher.js $(DEFINITIONS) dependencies.dot
-	@if command -v dot >/dev/null 2>&1; then \
-		dot -Tsvg dependencies.dot -o dependencies.svg; \
-		echo "Wrote dependencies.svg"; \
-	else \
-		echo "GraphViz not installed (brew install graphviz); kept dependencies.dot only"; \
-	fi
-
-report:
-	@$(NODE) $(TOOLS)/report.js $(DEFINITIONS)
-
-all: validate graph report
+play:
+	@$(NODE) $(CLI)/play.js $(DATA)
 
 clean:
-	@rm -f dependencies.dot dependencies.svg
+	@rm -f save.json

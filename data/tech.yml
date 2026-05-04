@@ -1,0 +1,27 @@
+tech:
+  ironworking:
+    name: "Ironworking"
+    era: industrial
+    research_cost: 50
+
+  ceramic-kiln:
+    name: "Ceramic Kiln"
+    era: industrial
+    research_cost: 30
+
+  coal-tar:
+    name: "Coal Tar Process"
+    era: industrial
+    research_cost: 50
+
+  bessemer-process:
+    name: "Bessemer Process"
+    era: industrial
+    prereqs: [ironworking, coal-tar]
+    research_cost: 200
+
+  precision-machining:
+    name: "Precision Machining"
+    era: industrial
+    prereqs: [ironworking]
+    research_cost: 150

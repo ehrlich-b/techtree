@@ -1,0 +1,98 @@
+recipes:
+  mine-iron-ore:
+    name: "Mine Iron Ore"
+    building: iron-mine
+    outputs:
+      iron-ore: 5
+    seconds: 30
+    workers: 2
+
+  mine-coal:
+    name: "Mine Coal"
+    building: coal-mine
+    outputs:
+      coal: 5
+    seconds: 30
+    workers: 2
+
+  quarry-limestone:
+    name: "Quarry Limestone"
+    building: quarry
+    outputs:
+      limestone: 4
+    seconds: 30
+    workers: 2
+
+  dig-clay:
+    name: "Dig Clay"
+    building: clay-pit
+    outputs:
+      clay: 8
+    seconds: 30
+    workers: 1
+
+  farm-corn:
+    name: "Farm Corn"
+    building: farm
+    outputs:
+      corn: 200
+    seconds: 60
+    workers: 4
+
+  bake-coke:
+    name: "Bake Coke"
+    tech: coal-tar
+    building: coke-oven
+    inputs:
+      coal: 2
+    outputs:
+      coke: 1
+    seconds: 60
+    workers: 1
+
+  fire-bricks:
+    name: "Fire Bricks"
+    tech: ceramic-kiln
+    building: kiln
+    inputs:
+      clay: 3
+    outputs:
+      brick: 5
+    seconds: 60
+    workers: 1
+
+  smelt-pig-iron:
+    name: "Smelt Pig Iron"
+    tech: ironworking
+    building: blast-furnace
+    inputs:
+      iron-ore: 3
+      coke: 1
+      limestone: 1
+    outputs:
+      pig-iron: 2
+    seconds: 90
+    workers: 3
+
+  smelt-steel:
+    name: "Smelt Steel"
+    tech: bessemer-process
+    building: blast-furnace
+    inputs:
+      pig-iron: 2
+      coke: 1
+    outputs:
+      steel: 2
+    seconds: 90
+    workers: 3
+
+  forge-machine-tool:
+    name: "Forge Machine Tool"
+    tech: precision-machining
+    building: machine-shop
+    inputs:
+      steel: 8
+    outputs:
+      machine-tool: 1
+    seconds: 180
+    workers: 2

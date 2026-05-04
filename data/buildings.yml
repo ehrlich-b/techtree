@@ -1,0 +1,64 @@
+buildings:
+  iron-mine:
+    name: "Iron Mine"
+    slots: 1
+    construction:
+      brick: 50
+    maintenance: 2
+
+  coal-mine:
+    name: "Coal Mine"
+    slots: 1
+    construction:
+      brick: 50
+    maintenance: 2
+
+  quarry:
+    name: "Limestone Quarry"
+    slots: 1
+    construction:
+      brick: 30
+    maintenance: 2
+
+  clay-pit:
+    name: "Clay Pit"
+    slots: 1
+    construction:
+      brick: 20
+    maintenance: 1
+
+  farm:
+    name: "Farm"
+    slots: 1
+    construction:
+      brick: 30
+    maintenance: 1
+
+  coke-oven:
+    name: "Coke Oven"
+    slots: 1
+    construction:
+      brick: 100
+    maintenance: 5
+
+  kiln:
+    name: "Brick Kiln"
+    slots: 1
+    construction:
+      brick: 80
+    maintenance: 4
+
+  blast-furnace:
+    name: "Blast Furnace"
+    slots: 2
+    construction:
+      brick: 200
+    maintenance: 10
+
+  machine-shop:
+    name: "Machine Shop"
+    slots: 1
+    construction:
+      brick: 200
+      steel: 50
+    maintenance: 8

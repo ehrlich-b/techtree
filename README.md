@@ -1,111 +1,51 @@
 # TechTree
 
-A directed acyclic graph of human technological development, from physical
-substrate up through speculative late-21st-century scenarios. Each node is a
-technology — material, social, or knowledge — wired to its prerequisites by
-type. Future nodes carry a confidence in [0, 1] that propagates through hard
-prereqs as a min, so a tech downstream of a 0.10 scenario can never be more
-certain than 0.10.
+An idle market simulation built on a tech tree from the industrial era through
+space.
 
-192 nodes, ~680 edges. Pure Node.js tooling, no npm dependencies. GraphViz
-for rendering.
+You run one company among several NPC competitors in a tick-based economy.
+Workers gain skill at recipes they repeatedly run. Every good in the game has
+a productive use — items are extracted, transformed, and sold; cash is just
+the clearing mechanism. Research unlocks new recipes. The market clears each
+tick; prices respond to supply and demand.
 
-## Layers
+Pure Node.js, no npm dependencies. CLI-first; sessions are short — the
+simulation keeps running while you're away.
 
-| Layer       | Definition                                                        | Examples                                                  |
-|-------------|-------------------------------------------------------------------|-----------------------------------------------------------|
-| `nature`    | Physical/biological substrate. Always available. No prerequisites.| combustion, electromagnetism-phenomenon, mineral-substrate|
-| `material`  | Physical, reproducible methods. Build, demonstrate, replicate.    | metallurgy, transistor, fusion-reactor                    |
-| `social`    | Organizational structures that coordinate human effort.           | property, markets, ai-governance-regime                   |
-| `knowledge` | Abstract systems for understanding and recording.                 | mathematics, evolution, quantum-mechanics                 |
-| `scenario`  | Future breakthrough/discovery gates with explicit uncertainty.    | agi-emergence, fusion-grid-commercial, antimatter-bulk-containment |
+## Status
 
-## Dependency types
+Pre-v0. Anchor docs and project skeleton are in place; engine and seed data
+are stubs. See [TODO.md](TODO.md) for what's next.
 
-- **hard** — absolutely required (steel needs iron). Confidence propagates through.
-- **soft** — helps but not essential (telegraph helped railways).
-- **catalyst** — accelerates development (mathematics speeds engineering).
+## Run
 
-Cycles are checked on `hard` edges only. Mutually-reinforcing pairs in `soft`
-or `catalyst` (math ↔ astronomy) are valid and expected.
-
-## Confidence
-
-- **Self-confidence:** how likely a node exists by its target year, *given its
-  prerequisites are met*. Default 1.0 for historical nodes.
-- **Effective confidence:** `min(self, min over hard prereqs of effective)`.
-  Computed by tools, not stored.
-- **Bands:** `≥ 0.50` anchor (main timeline plans around it), `0.20–0.49`
-  probable, `< 0.20` speculative side-branch.
-
-Current rollup: 128 certain, 24 anchor, 20 probable, 20 speculative.
-
-## Schema
-
-```yaml
-technologies:
-  combustion:
-    name: "Combustion"
-    layer: nature
-    one_liner: "Exothermic oxidation of fuels in oxygen."
-
-  fire-control:
-    name: "Fire Control"
-    layer: material
-    year: -1500000
-    prerequisites:
-      hard: [combustion, tool-making]
-
-  fusion-grid-commercial:
-    name: "Fusion at Grid Scale"
-    layer: scenario
-    year: 2045
-    confidence: 0.50
-    prerequisites:
-      hard: [fusion-ignition, plasma-physics]
-    one_liner: "Net-positive fusion deployed at utility scale."
 ```
-
-The map key *is* the id. No redundant `id:` field.
+make validate    # check data integrity (refs resolve, no cycles)
+make play        # start the CLI loop (TODO)
+```
 
 ## Layout
 
-```
-tree/definitions/
-├── nature.yml             # substrate (no era split; ~12 nodes)
-├── scenarios.yml          # future gates (~27 nodes)
-├── material/{era}.yml     # historical material tech
-├── social/{era}.yml       # historical social tech
-└── knowledge/{era}.yml    # historical knowledge tech
-
-build_tools/
-├── schema.js              # YAML loader, validator, cycle check, confidence rollup
-├── grapher.js             # GraphViz renderer (shape by layer, opacity by confidence)
-└── report.js              # confidence-banded text view of the future window
-```
-
-Eras: `prehistoric, ancient, medieval, early-modern, industrial, information,
-contemporary, future`.
-
-## Build
-
-```
-make validate    # schema + cycle check + confidence rollup
-make graph       # dependencies.dot + dependencies.svg (needs GraphViz)
-make report      # text view of future-window tech grouped by confidence band
-make all         # all of the above
-```
-
-## Design
-
-See [DESIGN.md](DESIGN.md) for the layer/dependency/confidence model in detail
-and the rationale behind each choice.
+- [DESIGN.md](DESIGN.md) — model spec: entities, tick loop, market clearing,
+  schema.
+- [CLAUDE.md](CLAUDE.md) — working conventions for contributors.
+- [TODO.md](TODO.md) — current milestones.
+- `data/` — YAML source of truth for items, recipes, tech, buildings, world.
+- `engine/` — simulation core (loader, validator, tick, market, save/load).
+- `cli/` — interactive REPL.
 
 ## Conventions
 
-- IDs are `lowercase-with-hyphens`. Descriptive but concise.
-- Every claim has historical basis. Document uncertainty; don't paper over it.
-- No "primitive" vs "advanced" framing. Recognize parallel and non-Western
-  invention paths.
-- The map key is the id. The YAML hand-loader has no npm deps but also no
-  exotic features — single-line scalars, 2-space indent, inline arrays.
+- Item, recipe, tech, and building ids are `lowercase-with-hyphens`.
+- YAML dialect is a deliberate subset (single-line scalars, 2-space maps,
+  inline arrays). The hand-rolled loader does not support multi-line strings
+  or anchors.
+- Every item must be productive: extracted from a deposit-style recipe, or
+  consumed by at least one other recipe. No purely-decorative goods.
+
+## History
+
+This started as a static DAG of human technological development from physical
+substrate through speculative late-21st-century tech. The v3 game pivot kept
+the "tech tree" framing but discarded the data — the prior schema lives in
+git history if needed.

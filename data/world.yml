@@ -1,0 +1,46 @@
+actors:
+  player:
+    cash: 10000
+    starting_inventory:
+      brick: 200
+    starting_buildings: [clay-pit, kiln]
+    starting_tech: [ceramic-kiln]
+    starting_workers: 2
+    starting_assignments:
+      clay-pit: dig-clay
+      kiln: fire-bricks
+
+  rival-co:
+    cash: 15000
+    strategy: balanced
+    starting_inventory:
+      brick: 200
+      coal: 30
+    starting_buildings: [clay-pit, kiln, coal-mine]
+    starting_tech: [ceramic-kiln, coal-tar]
+    starting_workers: 2
+    starting_assignments:
+      clay-pit: dig-clay
+      kiln: fire-bricks
+
+  farm-co:
+    cash: 10000
+    strategy: balanced
+    starting_inventory:
+      brick: 50
+    starting_buildings: [farm]
+    starting_workers: 4
+    starting_assignments:
+      farm: farm-corn
+
+  households:
+    cash: 5000
+    strategy: households
+    starting_inventory:
+      corn: 100
+
+  government:
+    cash: 1000000
+    strategy: government
+    starting_inventory:
+      corn: 1000
