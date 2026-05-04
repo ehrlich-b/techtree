@@ -13,6 +13,7 @@ actors:
   rival-co:
     cash: 15000
     strategy: balanced
+    growth_building: kiln
     starting_inventory:
       brick: 200
       coal: 30
@@ -26,6 +27,7 @@ actors:
   farm-co:
     cash: 10000
     strategy: balanced
+    growth_building: farm
     starting_inventory:
       brick: 50
     starting_buildings: [farm]

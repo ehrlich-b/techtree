@@ -40,6 +40,13 @@ const GOVERNMENT_ID = 'government';
 const HOUSEHOLD_BUFFER_TICKS = 10;
 const HOUSEHOLD_BID_BUDGET_FRAC = 0.5;
 
+// NPCs grow by building more of their `growthBuilding` once cash clears a
+// runway threshold (covers materials at fair price + a wage cushion). Until
+// they grow, they bid for missing construction materials and reserve any
+// they already hold.
+const NPC_GROWTH_RUNWAY_TICKS = 200;
+const NPC_GROWTH_BUDGET_FRAC = 0.7;
+
 const CORN_ANCHOR = 50;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
 // Brick is not a staple — it's a construction good. Producers earn from real
@@ -97,15 +104,55 @@ function inputDemand(actor, recipes) {
     return need;
 }
 
+function growthRunwayCost(actor, data, prices) {
+    if (!actor.growthBuilding) return 0;
+    const def = (data.buildings || {})[actor.growthBuilding];
+    if (!def || !def.construction) return 0;
+    let materialsCost = 0;
+    for (const [item, amt] of Object.entries(def.construction)) {
+        materialsCost += (prices[item] || 0) * amt;
+    }
+    const recipe = recipeForBuilding(actor, data, actor.growthBuilding);
+    const wageRunway = recipe ? (recipe.workers || 0) * BASE_WAGE * NPC_GROWTH_RUNWAY_TICKS : 0;
+    return materialsCost + wageRunway;
+}
+
+function recipeForBuilding(actor, data, type) {
+    const recipes = data.recipes || {};
+    for (const [id, r] of Object.entries(recipes)) {
+        if (r.building !== type) continue;
+        if (r.tech && !actor.researched.has(r.tech)) continue;
+        return { id, ...r };
+    }
+    return null;
+}
+
+function growthReserve(actor, data, prices) {
+    const reserve = {};
+    if (!actor.growthBuilding) return reserve;
+    if ((actor.cash || 0) < growthRunwayCost(actor, data, prices)) return reserve;
+    const def = (data.buildings || {})[actor.growthBuilding];
+    if (!def || !def.construction) return reserve;
+    for (const [item, amt] of Object.entries(def.construction)) {
+        reserve[item] = (reserve[item] || 0) + amt;
+    }
+    return reserve;
+}
+
 function npcOrders(actor, data, prices) {
     const recipes = data.recipes || {};
     const bids = [];
     const asks = [];
-    const need = inputDemand(actor, recipes);
+    const inputNeed = inputDemand(actor, recipes);
+    const growthNeed = growthReserve(actor, data, prices);
+    const reserve = { ...inputNeed };
+    for (const [item, amt] of Object.entries(growthNeed)) {
+        reserve[item] = (reserve[item] || 0) + amt;
+    }
 
     for (const [item, qty] of Object.entries(actor.inventory || {})) {
         if (qty <= 0) continue;
-        const surplus = qty - (need[item] || 0);
+        const surplus = qty - (reserve[item] || 0);
         if (surplus <= 0) continue;
         const price = (prices[item] || 0) * (1 + NPC_SPREAD);
         if (price <= 0) continue;
@@ -113,7 +160,7 @@ function npcOrders(actor, data, prices) {
     }
 
     let budget = Math.max(0, (actor.cash || 0) * NPC_BID_BUDGET_FRAC);
-    for (const [item, n] of Object.entries(need)) {
+    for (const [item, n] of Object.entries(inputNeed)) {
         const have = actor.inventory[item] || 0;
         const short = n - have;
         if (short <= 0) continue;
@@ -124,6 +171,25 @@ function npcOrders(actor, data, prices) {
         if (qty <= 0) continue;
         bids.push({ actor: actor.id, item, side: 'bid', price, qty });
         budget -= price * qty;
+    }
+
+    let growthBudget = Math.max(0, (actor.cash || 0) * NPC_GROWTH_BUDGET_FRAC) - budget;
+    if (growthBudget < 0) growthBudget = 0;
+    for (const [item, n] of Object.entries(growthNeed)) {
+        const have = actor.inventory[item] || 0;
+        const short = n - have;
+        if (short <= 0) continue;
+        // Growth bids cross the spread — NPC needs the material to expand
+        // and is willing to pay the market ask (fair × 1+spread). Without
+        // this, growth bids and surplus asks both sit at ±spread and
+        // never clear.
+        const price = (prices[item] || 0) * (1 + NPC_SPREAD);
+        if (price <= 0) continue;
+        const affordable = Math.floor(growthBudget / price);
+        const qty = Math.min(short, affordable);
+        if (qty <= 0) continue;
+        bids.push({ actor: actor.id, item, side: 'bid', price, qty });
+        growthBudget -= price * qty;
     }
 
     return { bids, asks };
@@ -219,4 +285,5 @@ function clear(orders) {
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
     MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, CORN_ANCHOR,
+    NPC_GROWTH_RUNWAY_TICKS,
 };

@@ -53,44 +53,44 @@
   accumulates as gov absorbs surplus farm output. Industry items are not
   ballasted — producers stand or fall on real demand.
 - [x] `make validate`, `make play`.
+- [x] NPC growth strategy. Each actor with a `growth_building` and cash
+  above the runway threshold (materials at fair price + a wage cushion)
+  bids for missing construction materials at fair × (1 + spread) so the
+  growth bid actually crosses producer asks. When all materials are in
+  hand, `npcGrow` debits inventory, adds the new building, hires the
+  required workers, and auto-assigns them to the new slot. Drives
+  organic brick demand from rival/farm expansion. 10k-tick smoke shows
+  farm-co growing 1 → 16 farms over ~2500 ticks before brick supply
+  consolidates.
 
-### Next: tuning
+### Next: organic loop tuning
 
-- [ ] Industry has no idle-state demand. With brick removed from
-  `STAPLES` and gov no longer subsidizing it, the player and rival-co
-  both go bankrupt within ~2500 ticks of an idle smoke run — nobody
-  bids for bricks. Intended: in real play, build demand (player
-  `set-bid brick`, or future NPC growth) keeps producers alive. Until
-  NPC growth is implemented, the idle test will always show industry
-  collapse. Decide whether to (a) accept this as expected behavior,
-  (b) add a dumb construction-sector synthetic actor that buys bricks
-  at fair price for a steady but small rate, or (c) prioritize NPC
-  growth so brick demand emerges from rival farm/industry expansion.
-- [ ] Wage drift. Workers on tech-gated recipes gain skill, so wages
-  rise above `BASE_WAGE` over time, but staple bid prices are pinned
-  to `BASE_WAGE`. Now that brick is unsubsidized, this bites harder:
-  even when an NPC sells bricks at the fair-price ask, wage drift
-  outpaces revenue within ~1000 ticks. Pick a strategy: derive bids
-  from a rolling average wage, cap wage at `BASE_WAGE`, or accept as
-  a research-pacing knob.
+- [ ] Static prices, no discovery. NPC asks/bids are pinned to
+  `fair × (1 ± spread)`. When growth-driven brick demand exceeds the
+  static fair-price midpoint's profit margin, producers (player +
+  rival-co) bleed cash and die in ~1500–2500 ticks. Real economies
+  raise prices when demand outruns supply; v0 doesn't. Add ask/bid
+  drift driven by recent clearing history (or unmet-order signal) so
+  brick price rises until producers are profitable.
+- [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
+  multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
+  fair price for fire-bricks. Workers reach productive skill (~mult
+  1.0) only after ~1000 ticks. Producers must survive the loss period
+  on starting cash. Either pre-train starting workers (skill > 0) or
+  delay wage scaling to ramp with output.
+- [ ] Clay-pit:kiln imbalance. 1 clay-pit (multiplier 0.5, no tech-skill
+  scaling) supplies ~3 kilns at low skill but only ~0.7 at max skill
+  — kilns starve as they skill up. NPC growth_building is a single
+  type, so player and rival keep building kilns and never add a new
+  clay-pit. Either (a) make growth pick the bottleneck building each
+  tick, or (b) let `growth_building` be a list/ratio.
 - [ ] Money supply leak at liquidation. Recovered cash (`fair × 0.5`
   on inventory + construction) is added to the dead actor's cash, then
-  the actor is dropped — that cash leaves the system entirely. Real
-  now that brick producers reliably die idle: every smoke run leaks
-  ~$5–10k of player + rival recovery on liquidation.
-- [ ] Farm over-production. Farm produces 1.67 corn/tick (200 / 60 ×
-  raw-extraction multiplier 0.5) but households only consume 0.4–0.8
-  corn/tick at 4–8 workers. Gov absorbs the surplus indefinitely
-  (cash-free since it's the issuer), but corn inventory in gov grows
-  without bound. Either reduce `farm-corn` recipe output to match
-  demand, or rate-limit gov bids to actual consumption.
-- [ ] NPC growth. Player can `hire` and `build` to grow GDP, but NPCs
-  have static `starting_workers` / `starting_buildings` and never
-  expand even when accumulating cash (farm-co at +$70/tick fills its
-  coffers and does nothing). Add a simple expansion strategy: when
-  cash > hire-cost-buffer and a slot is unfilled, hire; when cash >
-  build-cost and demand for an output is unmet, build. Doubles as the
-  fix for the industry-demand problem above.
+  the actor is dropped — that cash leaves the system entirely.
+- [ ] Farm over-production. Farm produces 1.67 corn/tick but households
+  only consume 0.4–0.8 corn/tick at 4–8 workers. Gov absorbs the
+  surplus indefinitely (cash-free since it's the issuer), but corn
+  inventory in gov grows without bound.
 
 ## Spatial layer brainstorm (v1, parking lot)
 

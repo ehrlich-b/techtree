@@ -40,6 +40,7 @@ function initState(data, opts = {}) {
             priceBook: {},
             pendingBids: [],
             strategy: a.strategy || null,
+            growthBuilding: a.growth_building || null,
             bankruptTicks: 0,
         };
         applyStartingAssignments(actor, a.starting_assignments || {}, data);

@@ -10,25 +10,30 @@
  *   2. Households consumption: drain worker count × rate of each STAPLES
  *      item (corn only in v0) from the households actor's inventory
  *      (silent shortfall).
- *   3. Orders + clearing: each actor posts orders (NPC liquidity, player
- *      priceBook + pendingBids, household staple bids, government
- *      bid+ask for each item in GOV_BALLAST — corn only in v0); per-item
- *      double auction matches at midpoint. Trades transfer inventory
- *      always and cash for non-government participants — gov is the money
- *      issuer and exempt from the cash side. pendingBids drained.
- *   4. Wages: transferred from each employer to the households actor
+ *   3. Orders + clearing: each actor posts orders (NPC liquidity + growth
+ *      construction-material bids, player priceBook + pendingBids,
+ *      household staple bids, government bid+ask for each item in
+ *      GOV_BALLAST — corn only in v0); per-item double auction matches
+ *      at midpoint. Trades transfer inventory always and cash for
+ *      non-government participants — gov is the money issuer and exempt
+ *      from the cash side. pendingBids drained.
+ *   4. NPC growth: NPCs with `growthBuilding` and cash above the runway
+ *      threshold (materials at fair price + a wage cushion) construct
+ *      one new building per tick when they hold all required materials,
+ *      hiring + auto-assigning workers to the new slot.
+ *   5. Wages: transferred from each employer to the households actor
  *      (closes the cash loop). Households and government are exempt
  *      from paying wages. Maintenance YAML fields are inert for v0.
- *   5. Bankruptcy counter (households and government exempt).
- *   6. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
+ *   6. Bankruptcy counter (households and government exempt).
+ *   7. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
  *      inventory and building construction at fair × 0.5, then drop from
  *      state.actors. Households and government are exempt. Respawn is v1+.
  */
 
-const { wage, gainSkill, outputMultiplier } = require('./worker.js');
+const { wage, gainSkill, outputMultiplier, newWorker, BASE_WAGE } = require('./worker.js');
 const {
     fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
-    HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES,
+    HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
 
 const HISTORY_LIMIT = 100;
@@ -142,6 +147,78 @@ function recordTrade(state, trade) {
     if (hist.length > HISTORY_LIMIT) hist.shift();
 }
 
+function idleWorkerIds(actor) {
+    const assigned = new Set();
+    for (const b of actor.buildings) {
+        for (const slot of b.slots) {
+            if (slot) for (const id of slot.workerIds) assigned.add(id);
+        }
+    }
+    return actor.workers.filter(w => !assigned.has(w.id)).map(w => w.id);
+}
+
+function recipeForGrowthBuilding(actor, data) {
+    const recipes = data.recipes || {};
+    for (const [id, r] of Object.entries(recipes)) {
+        if (r.building !== actor.growthBuilding) continue;
+        if (r.tech && !actor.researched.has(r.tech)) continue;
+        return { id, ...r };
+    }
+    return null;
+}
+
+function npcGrow(state, data, prices) {
+    const buildings = data.buildings || {};
+    for (const actor of Object.values(state.actors)) {
+        if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
+        if (!actor.growthBuilding) continue;
+        const def = buildings[actor.growthBuilding];
+        if (!def) continue;
+        const construction = def.construction || {};
+        const recipe = recipeForGrowthBuilding(actor, data);
+        const workersNeeded = recipe ? (recipe.workers || 0) : 0;
+
+        let materialsCost = 0;
+        for (const [item, amt] of Object.entries(construction)) {
+            materialsCost += (prices[item] || 0) * amt;
+        }
+        const wageRunway = workersNeeded * BASE_WAGE * NPC_GROWTH_RUNWAY_TICKS;
+        if (actor.cash < materialsCost + wageRunway) continue;
+
+        let hasAll = true;
+        for (const [item, amt] of Object.entries(construction)) {
+            if ((actor.inventory[item] || 0) < amt) { hasAll = false; break; }
+        }
+        if (!hasAll) continue;
+
+        for (const [item, amt] of Object.entries(construction)) {
+            actor.inventory[item] -= amt;
+        }
+        const numSlots = def.slots || 1;
+        const idx = actor.buildingCounter++;
+        const newBldg = {
+            id: `${actor.id}-${actor.growthBuilding}-${idx}`,
+            type: actor.growthBuilding,
+            slots: Array(numSlots).fill(null),
+        };
+        actor.buildings.push(newBldg);
+
+        if (recipe && workersNeeded > 0) {
+            let idle = idleWorkerIds(actor);
+            const toHire = Math.max(0, workersNeeded - idle.length);
+            for (let i = 0; i < toHire; i++) {
+                actor.workers.push(newWorker(`${actor.id}-w${actor.workerCounter++}`));
+            }
+            idle = idleWorkerIds(actor);
+            newBldg.slots[0] = {
+                recipe: recipe.id,
+                progress: 0,
+                workerIds: idle.slice(0, workersNeeded),
+            };
+        }
+    }
+}
+
 function liquidate(state, data, actor, prices) {
     const buildings = data.buildings || {};
     let recovery = 0;
@@ -184,6 +261,8 @@ function tick(state, data) {
     }
 
     for (const actor of Object.values(state.actors)) actor.pendingBids = [];
+
+    npcGrow(state, data, prices);
 
     const households = state.actors[HOUSEHOLDS_ID];
     const dead = [];
