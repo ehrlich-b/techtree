@@ -38,6 +38,7 @@ function initState(data, opts = {}) {
             researched: new Set(a.starting_tech || []),
             researchInProgress: null,
             priceBook: {},
+            priceBelief: {},
             pendingBids: [],
             strategy: a.strategy || null,
             growthBuilding: a.growth_building || null,
@@ -90,6 +91,7 @@ function load(filePath) {
     for (const a of Object.values(raw.actors || {})) {
         a.researched = new Set(a.researched);
         if (!a.priceBook) a.priceBook = {};
+        if (!a.priceBelief) a.priceBelief = {};
         if (!a.pendingBids) a.pendingBids = [];
         if (a.buildingCounter === undefined) a.buildingCounter = (a.buildings || []).length;
     }

@@ -17,15 +17,19 @@
  *      at midpoint. Trades transfer inventory always and cash for
  *      non-government participants — gov is the money issuer and exempt
  *      from the cash side. pendingBids drained.
- *   4. NPC growth: NPCs with `growthBuilding` and cash above the runway
+ *   4. Price drift: each NPC's per-item priceBelief is nudged from this
+ *      tick's fill outcome. Fully filled ask / unfilled bid → drift toward
+ *      higher prices; unfilled ask / fully filled bid → drift toward
+ *      lower prices. Households + gov skipped (synthetic anchors).
+ *   5. NPC growth: NPCs with `growthBuilding` and cash above the runway
  *      threshold (materials at fair price + a wage cushion) construct
  *      one new building per tick when they hold all required materials,
  *      hiring + auto-assigning workers to the new slot.
- *   5. Wages: transferred from each employer to the households actor
+ *   6. Wages: transferred from each employer to the households actor
  *      (closes the cash loop). Households and government are exempt
  *      from paying wages. Maintenance YAML fields are inert for v0.
- *   6. Bankruptcy counter (households and government exempt).
- *   7. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
+ *   7. Bankruptcy counter (households and government exempt).
+ *   8. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
  *      inventory and building construction at fair × 0.5, then drop from
  *      state.actors. Households and government are exempt. Respawn is v1+.
  */
@@ -39,6 +43,16 @@ const {
 const HISTORY_LIMIT = 100;
 const BANKRUPTCY_TICKS = 30;
 const LIQUIDATION_RECOVERY = 0.5;
+
+// Per-actor-per-item price belief drifts from fill outcomes each tick:
+// fully filled ask → +PRICE_DRIFT (could've asked more); unfilled ask →
+// −PRICE_DRIFT (too high). Bids inverted: fully filled bid → −PRICE_DRIFT
+// (could've paid less); unfilled bid → +PRICE_DRIFT (too low). Clamped to
+// [MIN_BELIEF, MAX_BELIEF] so beliefs can't run away. Households + gov
+// skipped — they're synthetic anchors.
+const PRICE_DRIFT = 0.005;
+const MIN_BELIEF = 0.5;
+const MAX_BELIEF = 2.0;
 
 function workersForSlot(actor, slot) {
     const byId = new Map(actor.workers.map(w => [w.id, w]));
@@ -219,6 +233,35 @@ function npcGrow(state, data, prices) {
     }
 }
 
+function applyPriceDrift(state, orders, trades) {
+    const posted = {};
+    for (const o of orders) {
+        if (!o || !(o.qty > 0)) continue;
+        const key = `${o.actor}|${o.item}|${o.side}`;
+        posted[key] = (posted[key] || 0) + o.qty;
+    }
+    const filled = {};
+    for (const t of trades) {
+        const buyKey = `${t.buyer}|${t.item}|bid`;
+        const sellKey = `${t.seller}|${t.item}|ask`;
+        filled[buyKey] = (filled[buyKey] || 0) + t.qty;
+        filled[sellKey] = (filled[sellKey] || 0) + t.qty;
+    }
+    for (const [key, qty] of Object.entries(posted)) {
+        const [actorId, item, side] = key.split('|');
+        const actor = state.actors[actorId];
+        if (!actor) continue;
+        if (actor.strategy === 'households' || actor.strategy === 'government') continue;
+        if (!actor.priceBelief) actor.priceBelief = {};
+        const ratio = (filled[key] || 0) / qty;
+        const delta = side === 'ask'
+            ? (ratio - 0.5) * 2 * PRICE_DRIFT
+            : (0.5 - ratio) * 2 * PRICE_DRIFT;
+        const cur = actor.priceBelief[item] || 1.0;
+        actor.priceBelief[item] = Math.max(MIN_BELIEF, Math.min(MAX_BELIEF, cur + delta));
+    }
+}
+
 function liquidate(state, data, actor, prices) {
     const buildings = data.buildings || {};
     let recovery = 0;
@@ -259,6 +302,8 @@ function tick(state, data) {
         settle(state, t);
         recordTrade(state, t);
     }
+
+    applyPriceDrift(state, orders, trades);
 
     for (const actor of Object.values(state.actors)) actor.pendingBids = [];
 

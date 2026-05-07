@@ -62,16 +62,27 @@
   organic brick demand from rival/farm expansion. 10k-tick smoke shows
   farm-co growing 1 → 16 farms over ~2500 ticks before brick supply
   consolidates.
+- [x] Price discovery via per-actor `priceBelief`. Each actor (except
+  households + government) carries a per-item belief multiplier; npcOrders
+  uses `fair × (1 ± spread) × belief` for asks/bids/growth-bids. Each tick,
+  `applyPriceDrift` nudges belief from the actor's fill outcome:
+  fully filled ask / unfilled bid → drift up by PRICE_DRIFT (0.005);
+  unfilled ask / fully filled bid → drift down. Clamped to [0.5, 2.0].
+  10k-tick smoke: brick clears at $185 (vs static $93 baseline), farm-co
+  grows 1 → 38 farms (vs 16), player + rival survive ~2× longer. Beliefs
+  saturate at the 2.0 cap by tick 500 because farm-co has no demand
+  satiation (see "Demand satiation" item below).
 
 ### Next: organic loop tuning
 
-- [ ] Static prices, no discovery. NPC asks/bids are pinned to
-  `fair × (1 ± spread)`. When growth-driven brick demand exceeds the
-  static fair-price midpoint's profit margin, producers (player +
-  rival-co) bleed cash and die in ~1500–2500 ticks. Real economies
-  raise prices when demand outruns supply; v0 doesn't. Add ask/bid
-  drift driven by recent clearing history (or unmet-order signal) so
-  brick price rises until producers are profitable.
+- [ ] Demand satiation. Farm-co has no profit ceiling — gov absorbs
+  surplus corn at $50 indefinitely, farm-co's cash compounds, growth
+  budget compounds, brick demand becomes infinite. Belief saturates at
+  cap because every growth-bid fills 100%. Without a satiation
+  mechanism, no supply expansion can catch up. Options: (a) gov
+  ballast quantity cap so corn price drops when farms over-produce;
+  (b) cash-pile diminishing returns on growth budget; (c) farm-co
+  growth gated by household corn demand (real consumer-side pull).
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult

@@ -7,9 +7,14 @@
  * clear: per-item double auction. Sort bids desc / asks asc, match top of
  * book at midpoint until prices no longer cross. Self-trades skipped.
  *
- * npcOrders: NPCs ask surplus inventory at fair × (1 + spread); bid for
- * short input items (per running slot, NPC_INPUT_BUFFER_CYCLES of buffer)
- * at fair × (1 - spread), capped by NPC_BID_BUDGET_FRAC of cash.
+ * npcOrders: NPCs ask surplus inventory at fair × (1 + spread) × belief; bid
+ * for short input items (per running slot, NPC_INPUT_BUFFER_CYCLES of buffer)
+ * at fair × (1 - spread) × belief, capped by NPC_BID_BUDGET_FRAC of cash.
+ * `belief` is a per-actor-per-item multiplier that drifts each tick from
+ * fill outcomes (see applyPriceDrift in tick.js): unfilled asks/bids drift
+ * the actor's belief away from fair to chase a clear; fully filled drifts
+ * back. Heterogeneous beliefs let producers raise prices when demand
+ * outruns supply without static tuning.
  *
  * householdOrders: the synthetic 'households' actor absorbs wages and
  * eats one unit of each STAPLES item per worker per tick at its rate. It
@@ -141,6 +146,8 @@ function growthReserve(actor, data, prices) {
 
 function npcOrders(actor, data, prices) {
     const recipes = data.recipes || {};
+    const beliefs = actor.priceBelief || {};
+    const beliefOf = (item) => beliefs[item] || 1.0;
     const bids = [];
     const asks = [];
     const inputNeed = inputDemand(actor, recipes);
@@ -154,7 +161,7 @@ function npcOrders(actor, data, prices) {
         if (qty <= 0) continue;
         const surplus = qty - (reserve[item] || 0);
         if (surplus <= 0) continue;
-        const price = (prices[item] || 0) * (1 + NPC_SPREAD);
+        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item);
         if (price <= 0) continue;
         asks.push({ actor: actor.id, item, side: 'ask', price, qty: surplus });
     }
@@ -164,7 +171,7 @@ function npcOrders(actor, data, prices) {
         const have = actor.inventory[item] || 0;
         const short = n - have;
         if (short <= 0) continue;
-        const price = (prices[item] || 0) * (1 - NPC_SPREAD);
+        const price = (prices[item] || 0) * (1 - NPC_SPREAD) * beliefOf(item);
         if (price <= 0) continue;
         const affordable = Math.floor(budget / price);
         const qty = Math.min(short, affordable);
@@ -183,7 +190,7 @@ function npcOrders(actor, data, prices) {
         // and is willing to pay the market ask (fair × 1+spread). Without
         // this, growth bids and surplus asks both sit at ±spread and
         // never clear.
-        const price = (prices[item] || 0) * (1 + NPC_SPREAD);
+        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item);
         if (price <= 0) continue;
         const affordable = Math.floor(growthBudget / price);
         const qty = Math.min(short, affordable);
