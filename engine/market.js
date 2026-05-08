@@ -22,11 +22,14 @@
  * at anchor) means the midpoint clears at anchor.
  *
  * governmentOrders: the 'government' actor ballasts only corn (the wage
- * staple). It posts a deep bid at 2× anchor and a deep ask at anchor;
- * midpoint with the household corn bid clears at anchor. Industry (brick,
- * etc.) is not subsidized — producers earn from actual build demand or
- * die. Cash side is suppressed in settle: gov is the money issuer; trades
- * create money for sellers and absorb it from buyers.
+ * staple). It posts a bid at 2× anchor capped at GOV_BID_BUFFER × current
+ * household corn demand (so producer surplus beyond that doesn't clear at
+ * the floor — keeps corn revenue bounded by employment, not by infinite
+ * gov absorption), plus a deep ask at anchor. Midpoint with the household
+ * corn bid still clears at anchor. Industry (brick, etc.) is not
+ * subsidized — producers earn from actual build demand or die. Cash side
+ * is suppressed in settle: gov is the money issuer; trades create money
+ * for sellers and absorb it from buyers.
  *
  * playerOrders: actor.priceBook → auto-asks of full inventory at the set
  * price; actor.pendingBids → one-shot bids drained by the tick caller.
@@ -44,6 +47,11 @@ const HOUSEHOLDS_ID = 'households';
 const GOVERNMENT_ID = 'government';
 const HOUSEHOLD_BUFFER_TICKS = 10;
 const HOUSEHOLD_BID_BUDGET_FRAC = 0.5;
+// Gov absorbs surplus staple supply up to GOV_BID_BUFFER × household per-tick
+// demand. Beyond that, producer surplus has no buyer at the floor; their
+// belief drifts down → ask drops → real-market clearing below floor. Caps
+// the money-creation rate so farm-co cash growth doesn't compound infinitely.
+const GOV_BID_BUFFER = 3;
 
 // NPCs grow by building more of their `growthBuilding` once cash clears a
 // runway threshold (covers materials at fair price + a wage cushion). Until
@@ -221,11 +229,18 @@ function householdOrders(actor, data, prices, state) {
     return { bids, asks: [] };
 }
 
-function governmentOrders(actor) {
+function governmentOrders(actor, state) {
     const orders = { bids: [], asks: [] };
     const cash = Math.max(0, actor.cash || 0);
+    let totalWorkers = 0;
+    for (const a of Object.values((state && state.actors) || {})) {
+        totalWorkers += (a.workers || []).length;
+    }
     for (const b of GOV_BALLAST) {
-        const bidQty = Math.floor(cash / b.bidPrice);
+        const staple = STAPLES.find(s => s.item === b.item);
+        const cashCap = Math.floor(cash / b.bidPrice);
+        const demandCap = staple ? Math.ceil(totalWorkers * staple.rate * GOV_BID_BUFFER) : cashCap;
+        const bidQty = Math.min(cashCap, demandCap);
         const askQty = actor.inventory[b.item] || 0;
         if (bidQty > 0) orders.bids.push({ actor: actor.id, item: b.item, side: 'bid', price: b.bidPrice, qty: bidQty });
         if (askQty > 0) orders.asks.push({ actor: actor.id, item: b.item, side: 'ask', price: b.askPrice, qty: askQty });

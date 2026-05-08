@@ -73,16 +73,27 @@
   saturate at the 2.0 cap by tick 500 because farm-co has no demand
   satiation (see "Demand satiation" item below).
 
+- [x] Gov bid quantity cap. `governmentOrders` caps the corn bid at
+  `GOV_BID_BUFFER × totalWorkers × stapleRate` (currently 3× household
+  per-tick demand). Beyond the cap, producer surplus has no buyer at
+  the floor; farm-co's belief drifts to the 0.5 floor, ask drops to
+  fair × 1.05 × 0.5 = $3.78, household trades clear at midpoint $27
+  instead of the $50 anchor. 10k smoke: farm-co cash growth ~30%
+  slower ($7.1M vs $9.9M @ 5000), but brick belief still saturates at
+  cap because farm-co's residual cash growth is still fast enough to
+  outrun brick supply. Producer death timing unchanged — bottleneck is
+  brick-side, not money-side.
+
 ### Next: organic loop tuning
 
-- [ ] Demand satiation. Farm-co has no profit ceiling — gov absorbs
-  surplus corn at $50 indefinitely, farm-co's cash compounds, growth
-  budget compounds, brick demand becomes infinite. Belief saturates at
-  cap because every growth-bid fills 100%. Without a satiation
-  mechanism, no supply expansion can catch up. Options: (a) gov
-  ballast quantity cap so corn price drops when farms over-produce;
-  (b) cash-pile diminishing returns on growth budget; (c) farm-co
-  growth gated by household corn demand (real consumer-side pull).
+- [ ] Producer survival via bottleneck-aware NPC growth. Player +
+  rival die ~tick 5000 because they only build kilns, never clay-pits.
+  Their kilns starve as workers skill up (1 clay-pit ≤ 0.7 brick/tick
+  at high skill, 3+ kilns demand more). Make `npcGrow` pick whichever
+  building in the actor's recipe chain is the current bottleneck (via
+  produced-vs-demanded ratio across own slots), not just
+  `growth_building`. Or replace single `growth_building` with a list
+  the NPC rotates through.
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult

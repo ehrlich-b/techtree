@@ -126,7 +126,7 @@ function advanceResearch(actor, data) {
 
 function gatherOrders(actor, data, prices, state) {
     if (actor.strategy === 'households') return householdOrders(actor, data, prices, state);
-    if (actor.strategy === 'government') return governmentOrders(actor);
+    if (actor.strategy === 'government') return governmentOrders(actor, state);
     if (actor.strategy) return npcOrders(actor, data, prices);
     return playerOrders(actor);
 }
