@@ -37,6 +37,7 @@
 const { wage, gainSkill, outputMultiplier, newWorker, BASE_WAGE } = require('./worker.js');
 const {
     fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
+    growthTarget, recipeForBuilding,
     HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
 
@@ -171,30 +172,25 @@ function idleWorkerIds(actor) {
     return actor.workers.filter(w => !assigned.has(w.id)).map(w => w.id);
 }
 
-function recipeForGrowthBuilding(actor, data) {
-    const recipes = data.recipes || {};
-    for (const [id, r] of Object.entries(recipes)) {
-        if (r.building !== actor.growthBuilding) continue;
-        if (r.tech && !actor.researched.has(r.tech)) continue;
-        return { id, ...r };
-    }
-    return null;
-}
-
 function npcGrow(state, data, prices) {
     const buildings = data.buildings || {};
     for (const actor of Object.values(state.actors)) {
         if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
-        if (!actor.growthBuilding) continue;
-        const def = buildings[actor.growthBuilding];
+        const target = growthTarget(actor, data);
+        if (!target) continue;
+        const def = buildings[target];
         if (!def) continue;
         const construction = def.construction || {};
-        const recipe = recipeForGrowthBuilding(actor, data);
+        const recipe = recipeForBuilding(actor, data, target);
         const workersNeeded = recipe ? (recipe.workers || 0) : 0;
 
+        // Cash check counts only MISSING materials (what actor would buy).
+        // Items already produced internally don't drain cash.
         let materialsCost = 0;
         for (const [item, amt] of Object.entries(construction)) {
-            materialsCost += (prices[item] || 0) * amt;
+            const have = actor.inventory[item] || 0;
+            const missing = Math.max(0, amt - have);
+            materialsCost += (prices[item] || 0) * missing;
         }
         const wageRunway = workersNeeded * BASE_WAGE * NPC_GROWTH_RUNWAY_TICKS;
         if (actor.cash < materialsCost + wageRunway) continue;
@@ -211,8 +207,8 @@ function npcGrow(state, data, prices) {
         const numSlots = def.slots || 1;
         const idx = actor.buildingCounter++;
         const newBldg = {
-            id: `${actor.id}-${actor.growthBuilding}-${idx}`,
-            type: actor.growthBuilding,
+            id: `${actor.id}-${target}-${idx}`,
+            type: target,
             slots: Array(numSlots).fill(null),
         };
         actor.buildings.push(newBldg);

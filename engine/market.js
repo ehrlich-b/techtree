@@ -35,7 +35,7 @@
  * price; actor.pendingBids → one-shot bids drained by the tick caller.
  */
 
-const { BASE_WAGE } = require('./worker.js');
+const { BASE_WAGE, outputMultiplier } = require('./worker.js');
 
 const MARKUP = 1.2;
 const NPC_SPREAD = 0.05;
@@ -117,19 +117,6 @@ function inputDemand(actor, recipes) {
     return need;
 }
 
-function growthRunwayCost(actor, data, prices) {
-    if (!actor.growthBuilding) return 0;
-    const def = (data.buildings || {})[actor.growthBuilding];
-    if (!def || !def.construction) return 0;
-    let materialsCost = 0;
-    for (const [item, amt] of Object.entries(def.construction)) {
-        materialsCost += (prices[item] || 0) * amt;
-    }
-    const recipe = recipeForBuilding(actor, data, actor.growthBuilding);
-    const wageRunway = recipe ? (recipe.workers || 0) * BASE_WAGE * NPC_GROWTH_RUNWAY_TICKS : 0;
-    return materialsCost + wageRunway;
-}
-
 function recipeForBuilding(actor, data, type) {
     const recipes = data.recipes || {};
     for (const [id, r] of Object.entries(recipes)) {
@@ -140,11 +127,71 @@ function recipeForBuilding(actor, data, type) {
     return null;
 }
 
+// Bottleneck-aware growth target: pick whichever building produces the item
+// with the most-negative net flow across the actor's running slots (skill-
+// scaled). Falls back to actor.growthBuilding when no internal shortfall.
+// Without this, an actor with growthBuilding=kiln keeps stacking kilns past
+// the point where their fixed clay-pit can feed them — kilns starve as
+// workers skill up.
+function growthTarget(actor, data) {
+    if (!actor.growthBuilding) return null;
+    const recipes = data.recipes || {};
+    const buildings = data.buildings || {};
+    const byId = new Map((actor.workers || []).map(w => [w.id, w]));
+    const flow = {};
+
+    for (const b of actor.buildings || []) {
+        for (const slot of b.slots) {
+            if (!slot) continue;
+            const r = recipes[slot.recipe];
+            if (!r) continue;
+            const workers = (slot.workerIds || []).map(id => byId.get(id)).filter(Boolean);
+            if (workers.length < (r.workers || 0)) continue;
+            const mult = outputMultiplier(workers, r.tech);
+            const rate = mult / (r.seconds || 1);
+            for (const [item, amt] of Object.entries(r.outputs || {})) flow[item] = (flow[item] || 0) + amt * rate;
+            for (const [item, amt] of Object.entries(r.inputs || {})) flow[item] = (flow[item] || 0) - amt * rate;
+        }
+    }
+
+    let worst = { item: null, val: 0 };
+    for (const [item, f] of Object.entries(flow)) {
+        if (f < worst.val) worst = { item, val: f };
+    }
+    if (worst.item) {
+        for (const r of Object.values(recipes)) {
+            if (!((r.outputs || {})[worst.item])) continue;
+            if (r.tech && !actor.researched.has(r.tech)) continue;
+            if (buildings[r.building]) return r.building;
+        }
+    }
+    return actor.growthBuilding;
+}
+
+function growthRunwayCost(actor, data, prices) {
+    const target = growthTarget(actor, data);
+    if (!target) return 0;
+    const def = (data.buildings || {})[target];
+    if (!def || !def.construction) return 0;
+    // Only count materials the actor would have to BUY. Items already in
+    // inventory (because they produce them internally) don't cost cash.
+    let materialsCost = 0;
+    for (const [item, amt] of Object.entries(def.construction)) {
+        const have = actor.inventory[item] || 0;
+        const missing = Math.max(0, amt - have);
+        materialsCost += (prices[item] || 0) * missing;
+    }
+    const recipe = recipeForBuilding(actor, data, target);
+    const wageRunway = recipe ? (recipe.workers || 0) * BASE_WAGE * NPC_GROWTH_RUNWAY_TICKS : 0;
+    return materialsCost + wageRunway;
+}
+
 function growthReserve(actor, data, prices) {
     const reserve = {};
-    if (!actor.growthBuilding) return reserve;
+    const target = growthTarget(actor, data);
+    if (!target) return reserve;
     if ((actor.cash || 0) < growthRunwayCost(actor, data, prices)) return reserve;
-    const def = (data.buildings || {})[actor.growthBuilding];
+    const def = (data.buildings || {})[target];
     if (!def || !def.construction) return reserve;
     for (const [item, amt] of Object.entries(def.construction)) {
         reserve[item] = (reserve[item] || 0) + amt;
@@ -306,6 +353,7 @@ function clear(orders) {
 
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
+    growthTarget, recipeForBuilding,
     MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, CORN_ANCHOR,
     NPC_GROWTH_RUNWAY_TICKS,
 };

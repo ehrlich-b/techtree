@@ -84,16 +84,28 @@
   outrun brick supply. Producer death timing unchanged — bottleneck is
   brick-side, not money-side.
 
+- [x] Bottleneck-aware NPC growth. Added `growthTarget(actor, data)`:
+  computes per-item net flow (skill-scaled multiplier × workers /
+  seconds × output - input) across the actor's running slots; picks a
+  building producing the most-negative-flow item; falls back to
+  `growth_building` when no internal shortfall. `growthRunwayCost`
+  also fixed to count only MISSING materials (in-inventory ones don't
+  drain cash). 5k smoke @5000: player w:38 b:38, rival w:43 b:44
+  (both alive vs DEAD before), farm-co w:1028 b:257 (vs 38). Clay
+  trades emerge organically as actors with surplus sell to those
+  short. Brick still clears at $185 cap because farm-co cash growth
+  ($20M) still outpaces brick supply expansion.
+
 ### Next: organic loop tuning
 
-- [ ] Producer survival via bottleneck-aware NPC growth. Player +
-  rival die ~tick 5000 because they only build kilns, never clay-pits.
-  Their kilns starve as workers skill up (1 clay-pit ≤ 0.7 brick/tick
-  at high skill, 3+ kilns demand more). Make `npcGrow` pick whichever
-  building in the actor's recipe chain is the current bottleneck (via
-  produced-vs-demanded ratio across own slots), not just
-  `growth_building`. Or replace single `growth_building` with a list
-  the NPC rotates through.
+- [ ] Gov bid subsidy fuels inflation. Gov bids at 2×anchor ($100) so
+  midpoint with farm-co's belief-floored ask ($3.78) clears at $52,
+  paying farm-co ~7× the fair corn price. Combined with K=3 quantity
+  cap, farm-co net revenue/worker ≈ $18/tick vs $10 wages → 80%
+  compounding margin. With bid lowered to 1×anchor ($50), midpoint
+  drops to $27 (matches household trade price) → ~8% margin, slow
+  organic growth instead of hyperinflation. Keep ask at anchor so
+  households still buy at $50.
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult
