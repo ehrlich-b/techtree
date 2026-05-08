@@ -96,16 +96,26 @@
   short. Brick still clears at $185 cap because farm-co cash growth
   ($20M) still outpaces brick supply expansion.
 
+- [x] Gov bid lowered to 1×anchor. Both gov bid and ask now at $50;
+  gov is a flat market-maker without spread. Midpoint with farm-co's
+  belief-driven ask matches the household midpoint — no implicit
+  $52/$27 price subsidy. 5k smoke @5000: farm-co cash $8M (was
+  $19.8M, 60% drop); same building/worker counts (growth was
+  supply-bound, not cash-bound); corn clears uniformly at $29.
+  Farm-co belief drifted UP to 1.10 (from 0.5 floor) — the tighter
+  market made fill < 100%, so belief found a level instead of
+  saturating.
+
 ### Next: organic loop tuning
 
-- [ ] Gov bid subsidy fuels inflation. Gov bids at 2×anchor ($100) so
-  midpoint with farm-co's belief-floored ask ($3.78) clears at $52,
-  paying farm-co ~7× the fair corn price. Combined with K=3 quantity
-  cap, farm-co net revenue/worker ≈ $18/tick vs $10 wages → 80%
-  compounding margin. With bid lowered to 1×anchor ($50), midpoint
-  drops to $27 (matches household trade price) → ~8% margin, slow
-  organic growth instead of hyperinflation. Keep ask at anchor so
-  households still buy at $50.
+- [ ] Brick belief still pins at 2.0 cap. Even with bottleneck-aware
+  producer growth, brick supply lags farm-co's expansion demand for
+  the entire 5000-tick window. Either (a) cap MAX_BELIEF lower (1.5)
+  to reduce inflation pressure on the brick price specifically,
+  (b) accelerate producer growth (e.g., higher NPC_GROWTH_BUDGET_FRAC,
+  shorter NPC_GROWTH_RUNWAY_TICKS), or (c) accept that brick will
+  sit at cap during high-growth phases and iterate on whether the
+  cap is the right number for v0.
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult

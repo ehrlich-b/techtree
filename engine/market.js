@@ -22,14 +22,11 @@
  * at anchor) means the midpoint clears at anchor.
  *
  * governmentOrders: the 'government' actor ballasts only corn (the wage
- * staple). It posts a bid at 2× anchor capped at GOV_BID_BUFFER × current
- * household corn demand (so producer surplus beyond that doesn't clear at
- * the floor — keeps corn revenue bounded by employment, not by infinite
- * gov absorption), plus a deep ask at anchor. Midpoint with the household
- * corn bid still clears at anchor. Industry (brick, etc.) is not
- * subsidized — producers earn from actual build demand or die. Cash side
- * is suppressed in settle: gov is the money issuer; trades create money
- * for sellers and absorb it from buyers.
+ * staple). Bid + ask both at anchor (gov is a flat market-maker at $50)
+ * with bid quantity capped at GOV_BID_BUFFER × current household corn
+ * demand. This caps both the price and quantity dimensions of the gov
+ * subsidy. Cash side is suppressed in settle: gov is the money issuer;
+ * trades create money for sellers and absorb it from buyers.
  *
  * playerOrders: actor.priceBook → auto-asks of full inventory at the set
  * price; actor.pendingBids → one-shot bids drained by the tick caller.
@@ -67,11 +64,15 @@ const CORN_ANCHOR = 50;
 const STAPLES = [
     { item: 'corn',  rate: 0.1, bidPrice: CORN_ANCHOR },
 ];
-// Gov ballasts only the wage staple (corn). Bid 2× anchor + ask at anchor
-// keeps household corn spend pinned at ~anchor regardless of producer ask.
-// Industry (brick, etc.) floats on real demand.
+// Gov ballasts only the wage staple (corn). Both bid and ask at anchor:
+// gov is a market-maker at $50, no spread. Households trade with gov at
+// midpoint $50 (anchor preserved on the consumer side). Surplus-seller
+// farm-co trades with gov at midpoint $(50 + farm_ask)/2 — same price as
+// households pay, no implicit subsidy. Earlier 2×anchor bid created a
+// $52-per-corn payout vs $27 household price, generating ~10× the
+// money-supply expansion needed to fund farm-co wages — runaway inflation.
 const GOV_BALLAST = [
-    { item: 'corn', bidPrice: 2 * CORN_ANCHOR, askPrice: CORN_ANCHOR },
+    { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR },
 ];
 
 function fairPrice(data) {
