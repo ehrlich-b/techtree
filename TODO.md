@@ -122,9 +122,17 @@
   effectively a fixed-price commodity in equilibrium. Worth letting
   this be for v0 — the cap is a sanity bound, not a dynamic price.
 - [ ] Farm-co corn surplus accumulates with K=2 (107k corn @ 5000).
-  Could (a) make farms scale-back-aware (stop building farms when
-  surplus inventory > N), (b) introduce a corn export sink, or
-  (c) accept it as inert inventory.
+  Tried (a) belief-floor scale-back: skip growth when output belief sits
+  at MIN_BELIEF. Result: player+rival DEAD by @1000. Farm-co's runaway
+  growth is load-bearing — its construction-material demand (30 brick per
+  farm × N farms) is the brick market that funds player+rival. Killing
+  the runaway kills the closed loop. Surplus is structural: each new
+  farm adds +5.47 corn/tick of NET surplus (supply > demand growth) but
+  its workers expand gov's K-capped bid quantity, so each farm stays
+  profitable. Belief-at-floor correctly detects oversupply, but acting
+  on it breaks the broader system. Either (b) corn export sink (sterile
+  buyer outside the economy that doesn't feed back into demand growth),
+  or (c) accept the pile for v0.
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult
