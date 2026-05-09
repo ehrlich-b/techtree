@@ -19,10 +19,11 @@ actors:
       coal: 30
     starting_buildings: [clay-pit, kiln, coal-mine]
     starting_tech: [ceramic-kiln, coal-tar]
-    starting_workers: 2
+    starting_workers: 4
     starting_assignments:
       clay-pit: dig-clay
       kiln: fire-bricks
+      coal-mine: mine-coal
 
   farm-co:
     cash: 10000

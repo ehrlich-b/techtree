@@ -66,15 +66,20 @@ const CORN_ANCHOR = 50;
 const STAPLES = [
     { item: 'corn',  rate: 0.1, bidPrice: CORN_ANCHOR },
 ];
-// Gov ballasts only the wage staple (corn). Both bid and ask at anchor:
-// gov is a market-maker at $50, no spread. Households trade with gov at
-// midpoint $50 (anchor preserved on the consumer side). Surplus-seller
-// farm-co trades with gov at midpoint $(50 + farm_ask)/2 — same price as
-// households pay, no implicit subsidy. Earlier 2×anchor bid created a
-// $52-per-corn payout vs $27 household price, generating ~10× the
-// money-supply expansion needed to fund farm-co wages — runaway inflation.
+// Gov ballasts the wage staple (corn) and a few industrial goods. Corn
+// has both bid and ask at anchor (market-maker, midpoint preserves the
+// $50 anchor for households). Industrial entries are sterile sinks:
+// bid only, at a price slightly above producer ask-floor (fair × 0.525)
+// so cleared midpoint clears producer surplus without overshoot. Each
+// industrial entry has `qtyCap` (per-tick absolute) to bound money
+// creation; without a cap, gov could absorb unbounded supply at high
+// fair prices and inflate wildly. The industrial ballast is what lets
+// chain producers (coal, coke, etc.) survive when their downstream
+// consumers haven't ramped — analogous to gov buying steel for public
+// works in real economies.
 const GOV_BALLAST = [
     { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR },
+    { item: 'coal', bidPrice: 50, qtyCap: 5 },
 ];
 
 function fairPrice(data) {
@@ -289,11 +294,14 @@ function governmentOrders(actor, state) {
     for (const b of GOV_BALLAST) {
         const staple = STAPLES.find(s => s.item === b.item);
         const cashCap = Math.floor(cash / b.bidPrice);
-        const demandCap = staple ? Math.ceil(totalWorkers * staple.rate * GOV_BID_BUFFER) : cashCap;
+        let demandCap;
+        if (staple) demandCap = Math.ceil(totalWorkers * staple.rate * GOV_BID_BUFFER);
+        else if (b.qtyCap !== undefined) demandCap = b.qtyCap;
+        else demandCap = cashCap;
         const bidQty = Math.min(cashCap, demandCap);
         const askQty = actor.inventory[b.item] || 0;
         if (bidQty > 0) orders.bids.push({ actor: actor.id, item: b.item, side: 'bid', price: b.bidPrice, qty: bidQty });
-        if (askQty > 0) orders.asks.push({ actor: actor.id, item: b.item, side: 'ask', price: b.askPrice, qty: askQty });
+        if (askQty > 0 && b.askPrice !== undefined) orders.asks.push({ actor: actor.id, item: b.item, side: 'ask', price: b.askPrice, qty: askQty });
     }
     return orders;
 }
