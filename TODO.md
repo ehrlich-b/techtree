@@ -106,16 +106,25 @@
   market made fill < 100%, so belief found a level instead of
   saturating.
 
+- [x] Tighten gov bid cap K=3 → K=2. Cuts gov absorption to 2× household
+  per-tick demand. Smoke @5000: farm-co cash $4.7M (was $8M @ K=3, $19.8M
+  pre-fixes — total 76% inflation reduction). Side effect: farm-co
+  accumulates large unsold corn surplus (107k @ 5000) since production
+  outruns total demand. Producers stable at low cash. Same growth
+  trajectory (still supply-bound on brick).
+
 ### Next: organic loop tuning
 
-- [ ] Brick belief still pins at 2.0 cap. Even with bottleneck-aware
-  producer growth, brick supply lags farm-co's expansion demand for
-  the entire 5000-tick window. Either (a) cap MAX_BELIEF lower (1.5)
-  to reduce inflation pressure on the brick price specifically,
-  (b) accelerate producer growth (e.g., higher NPC_GROWTH_BUDGET_FRAC,
-  shorter NPC_GROWTH_RUNWAY_TICKS), or (c) accept that brick will
-  sit at cap during high-growth phases and iterate on whether the
-  cap is the right number for v0.
+- [ ] Brick belief still pins at 2.0 cap. Producer growth has caught up
+  on volume (player + rival together = 82 buildings vs farm-co's 255)
+  but brick price stays at the belief ceiling because farm-co's growth
+  bid 100%-fills each tick. Without raising MAX_BELIEF, brick is
+  effectively a fixed-price commodity in equilibrium. Worth letting
+  this be for v0 — the cap is a sanity bound, not a dynamic price.
+- [ ] Farm-co corn surplus accumulates with K=2 (107k corn @ 5000).
+  Could (a) make farms scale-back-aware (stop building farms when
+  surplus inventory > N), (b) introduce a corn export sink, or
+  (c) accept it as inert inventory.
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult

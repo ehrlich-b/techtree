@@ -48,7 +48,9 @@ const HOUSEHOLD_BID_BUDGET_FRAC = 0.5;
 // demand. Beyond that, producer surplus has no buyer at the floor; their
 // belief drifts down → ask drops → real-market clearing below floor. Caps
 // the money-creation rate so farm-co cash growth doesn't compound infinitely.
-const GOV_BID_BUFFER = 3;
+// At K=2, farm-co revenue/worker ≈ wages (slow growth equilibrium). Higher
+// K drives compounding inflation; lower K starves farm-co.
+const GOV_BID_BUFFER = 2;
 
 // NPCs grow by building more of their `growthBuilding` once cash clears a
 // runway threshold (covers materials at fair price + a wage cushion). Until
