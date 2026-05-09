@@ -115,27 +115,29 @@
 
 ### Next: organic loop tuning
 
-- [ ] Richer economy — chain expansion blocked by missing demand-side
-  ballast. Tried adding coke-co + ore-co + steel-co + machine-tool
-  construction demand: producers died within 1000-2500 ticks. Two failure
-  modes confirmed:
-  (1) Without an output buyer, each new actor's revenue is zero; wages
-  drain starting cash → bankruptcy. e.g., coke-co alone (no ore-co
-  consumer) dies @2500 even at $10k starting cash.
-  (2) With multiple growing NPCs, brick demand overwhelms player+rival
-  supply; brick belief stays moderate (no longer saturating to $185
-  ceiling) which exposes the skill-ramp trap (output_mult 0.5 vs wage
-  mult 1.0 = below break-even at fair price). Player+rival died @500.
-  The baseline economy's stability depends on belief-saturated brick
-  ($185 vs fair $88) implicitly subsidizing the skill-ramp loss period.
-  More producers → less saturation → no subsidy → death.
-  Fix path: extend gov ballast (or add a "world export" actor) to bid
-  for non-corn items at near-fair price, bounded quantity. Sterile sink
-  (cash-suppressed) so it doesn't compound. Required *before* adding
-  chain producers, not after. Activating rival-co's coal-mine alone is
-  also useless (no buyer; just drains rival-co with extra wages) until
-  a coal consumer can survive. Just activating coal-mine without
-  ecosystem support: rival-co cash $5556 → $1858 @5000.
+- [ ] Richer economy — partial: gov ballast extended to coal at $50,
+  qtyCap 5/tick (commit f029f99). rival-co coal-mine activated; coal
+  trades 5/tick @ $50, rival-co cash improves to $12881 from $5556
+  baseline. Adding coke + pig-iron ballast at $400/$1000 with coke-co
+  + ore-co failed: ore-co died @2500, coke-co @5000.
+  Root cause is the wage-output scaling mismatch: BASE_WAGE × (1+2×skill)
+  vs output_mult (0.5+1.5×skill, capped 2.0). Wage triples from skill 0
+  to 1; output only quadruples. Worse, ore-co has 7 workers but only 3
+  produce revenue (blast-furnace); other 4 (iron-mine + quarry) feed
+  internal inputs and are pure overhead. At full skill, ore-co labor
+  cost per pig-iron is ~$2386 vs $1000 gov bid → loss. Even at $1576
+  (1.2× fair) still loses. Break-even requires belief saturation
+  (~2× fair) — same dynamic that keeps brick producers alive.
+  Three structural options for v1:
+  (a) Pre-train starting workers (skill ~0.3) so producers start at
+  output_mult 1.0 while wages scale only 1.6×, restoring margin.
+  (b) Reduce wage scaling from (1+2×skill) to (1+0.5×skill) so output
+  growth outpaces wage growth.
+  (c) Restructure ore-co to a single-revenue chain (no internal-input
+  overhead) by buying iron-ore + limestone from gov-supplied asks
+  (gov as raw-material supplier, not just buyer).
+  Rejected: directly raising gov bids to 2× fair — money creation
+  becomes ~$15k/tick across non-corn items, runaway inflation.
 
 - [ ] Brick belief still pins at 2.0 cap. Producer growth has caught up
   on volume (player + rival together = 82 buildings vs farm-co's 255)
