@@ -96,6 +96,25 @@ per-actor cost basis:
 - [ ] **Drop the global `fair_price` and the [0.5, 2.0] belief clamp.**
   Each actor knows their own costs; the market clears via local cost
   basis without a global anchor.
+  - **Attempt 1 (2026-05-10):** prototyped Phase A (costBasis+lastPaid+
+    lastSold tracking, additive — no-op smoke @5000), then Phase B
+    (cost-based asks w/ inventory pressure) + Phase C (WTP-based bids,
+    growth bids via lastPaid). Result @5000: rival-co + coke-co + ore-co
+    DEAD by tick 500-3000 (3/5 NPCs dead). Worse than baseline.
+    Root cause: removing belief saturation drops effective markup from
+    ~2× (belief × spread = 1.05 × 2.0) to ~1.2 (markup only). At 1.2×
+    markup, brick clears at ~$92 (vs baseline $185); rival-co's
+    structural wage burden (6 workers × $5/tick = $30/tick) exceeds
+    brick margin (~$5/tick at 3 kilns × 0.083 brick/tick × $20 margin).
+    Belief saturation was a 2× price ratchet that hid structural
+    unprofitability. Raising MARKUP to 1.5 doesn't fix it (fairPrice
+    function uses MARKUP, so fair scales up proportionally —
+    machine-tool fair goes $28k → $54k, gov ballast still $30k, no
+    clear). Belief drop blocked on real-demand reforms (this section's
+    predecessor: capital depreciation, household staples) — without
+    persistent bid pressure pushing clearing above cost+small-margin,
+    cost-based asks can't generate enough margin to pay wages. Reverted
+    cleanly; tree matches baseline.
 
 ### Resilience: no cascading collapse
 
