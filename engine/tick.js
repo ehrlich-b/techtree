@@ -47,6 +47,11 @@ const {
 const HISTORY_LIMIT = 100;
 const BANKRUPTCY_TICKS = 30;
 const LIQUIDATION_RECOVERY = 0.5;
+// Credit facility: each actor can run negative cash up to a credit limit
+// before the bankruptcy clock starts. Limit = wage runway (CREDIT_RUNWAY_TICKS
+// of payroll). Buffers transient shortfalls — a single bad payroll cycle
+// shouldn't trigger the bankruptcy timer if revenue is incoming.
+const CREDIT_RUNWAY_TICKS = 60;
 
 // Per-actor-per-item price belief drifts from fill outcomes each tick:
 // fully filled ask → +PRICE_DRIFT (could've asked more); unfilled ask →
@@ -431,7 +436,8 @@ function tick(state, data) {
 
         consumeMaintenance(actor, data);
 
-        if (actor.cash < 0) actor.bankruptTicks++;
+        const creditLimit = totalWages * CREDIT_RUNWAY_TICKS;
+        if (actor.cash < -creditLimit) actor.bankruptTicks++;
         else actor.bankruptTicks = 0;
 
         if (actor.bankruptTicks > BANKRUPTCY_TICKS) dead.push(actor);

@@ -4,42 +4,56 @@ buildings:
     slots: 1
     construction:
       brick: 50
+    maintenance:
+      brick: 0.001
 
   coal-mine:
     name: "Coal Mine"
     slots: 1
     construction:
       brick: 50
+    maintenance:
+      brick: 0.001
 
   quarry:
     name: "Limestone Quarry"
     slots: 1
     construction:
       brick: 30
+    maintenance:
+      brick: 0.0005
 
   clay-pit:
     name: "Clay Pit"
     slots: 1
     construction:
       brick: 20
+    maintenance:
+      brick: 0.0005
 
   farm:
     name: "Farm"
     slots: 1
     construction:
       brick: 30
+    maintenance:
+      brick: 0.0005
 
   coke-oven:
     name: "Coke Oven"
     slots: 1
     construction:
       brick: 100
+    maintenance:
+      brick: 0.002
 
   kiln:
     name: "Brick Kiln"
     slots: 1
     construction:
       brick: 80
+    maintenance:
+      brick: 0.0015
 
   blast-furnace:
     name: "Blast Furnace"
@@ -47,6 +61,7 @@ buildings:
     construction:
       brick: 200
     maintenance:
+      brick: 0.003
       machine-tool: 0.0005
 
   machine-shop:
@@ -56,4 +71,6 @@ buildings:
       brick: 200
       steel: 50
     maintenance:
+      brick: 0.003
+      steel: 0.001
       machine-tool: 0.0005
