@@ -115,29 +115,41 @@
 
 ### Next: organic loop tuning
 
-- [ ] Richer economy — partial: gov ballast extended to coal at $50,
-  qtyCap 5/tick (commit f029f99). rival-co coal-mine activated; coal
-  trades 5/tick @ $50, rival-co cash improves to $12881 from $5556
-  baseline. Adding coke + pig-iron ballast at $400/$1000 with coke-co
-  + ore-co failed: ore-co died @2500, coke-co @5000.
-  Root cause is the wage-output scaling mismatch: BASE_WAGE × (1+2×skill)
-  vs output_mult (0.5+1.5×skill, capped 2.0). Wage triples from skill 0
-  to 1; output only quadruples. Worse, ore-co has 7 workers but only 3
-  produce revenue (blast-furnace); other 4 (iron-mine + quarry) feed
-  internal inputs and are pure overhead. At full skill, ore-co labor
-  cost per pig-iron is ~$2386 vs $1000 gov bid → loss. Even at $1576
-  (1.2× fair) still loses. Break-even requires belief saturation
-  (~2× fair) — same dynamic that keeps brick producers alive.
-  Three structural options for v1:
-  (a) Pre-train starting workers (skill ~0.3) so producers start at
-  output_mult 1.0 while wages scale only 1.6×, restoring margin.
-  (b) Reduce wage scaling from (1+2×skill) to (1+0.5×skill) so output
-  growth outpaces wage growth.
-  (c) Restructure ore-co to a single-revenue chain (no internal-input
-  overhead) by buying iron-ore + limestone from gov-supplied asks
-  (gov as raw-material supplier, not just buyer).
-  Rejected: directly raising gov bids to 2× fair — money creation
-  becomes ~$15k/tick across non-corn items, runaway inflation.
+- [x] Richer economy — chain producers viable. Reduced wage scaling
+  from `BASE_WAGE × (1+2×skill)` to `BASE_WAGE × (1+0.5×skill)`: wages
+  range $5–$7.5 (1.5×) while output still scales 4× (0.5→2.0). The wider
+  output/wage ratio gives chain producers (coke-co, ore-co) operating
+  margin without belief saturation. Added coke-co (1 oven, 1 worker,
+  coal-tar) and ore-co (1 mine + 1 quarry + 1 blast-furnace, 7 workers,
+  ironworking) with pig-iron gov ballast at $1300 qtyCap=2. 5k smoke:
+  player + rival ALIVE (96/94 buildings); coke-co + ore-co ALIVE; 6 items
+  trade (brick, corn, clay, coal, coke, pig-iron) up from 3.
+  Side benefit: brick economy stronger too — buildings 38 → 96 with
+  same starting cash, since wage burden cut 50% at full skill.
+
+- [ ] Steel-co attempt failed. Tried adding steel-co (1 blast-furnace,
+  3 workers, smelt-steel) with steel ballast at $2700 qtyCap=1 and
+  pig-iron bid lowered to $1100 to let steel-co compete for input.
+  Result: steel-co died @2500, ore-co died @5000. Root issue: fair
+  price for steel ($2706) is computed assuming inputs at *fair* prices,
+  but real market clears coke at ~$700 (above fair $533) and pig-iron
+  at $1098 (below fair $1313 — gov bid pinned it). Steel-co's actual
+  cost: 2×$1098 + 1×$700 + wages = $3402; sell at $2699 = -$703/steel.
+  Also lowering pig-iron bid to $1100 dropped ore-co below break-even.
+  Tried (a) full-skill assumption in fair price formula — when wage_mult
+  proportional to output_mult, ratio cancels and result identical to old
+  formula. Tried (b) raw material sinks (iron-ore $40, limestone $50)
+  — caused ore-co over-growth (4→5 buildings) and bankruptcy.
+  Conclusion: for v0, steel chain doesn't fit. Without belief
+  saturation cushion, steel-co's 3-worker recipe with 2 high-priced
+  inputs has no margin. Possible v1 paths:
+  (1) Gov as broker (bid + ask at different prices for pig-iron),
+  letting steel-co buy from gov at predictable price above ore-co's
+  clearing.
+  (2) Restructure recipes to reduce labor share (more output per
+  recipe firing).
+  (3) Belief drift floor at fair (not 0.5) so producers always ask >
+  fair, making chain math work.
 
 - [ ] Brick belief still pins at 2.0 cap. Producer growth has caught up
   on volume (player + rival together = 82 buildings vs farm-co's 255)
