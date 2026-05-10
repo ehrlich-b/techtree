@@ -127,29 +127,24 @@
   Side benefit: brick economy stronger too — buildings 38 → 96 with
   same starting cash, since wage burden cut 50% at full skill.
 
-- [ ] Steel-co attempt failed. Tried adding steel-co (1 blast-furnace,
-  3 workers, smelt-steel) with steel ballast at $2700 qtyCap=1 and
-  pig-iron bid lowered to $1100 to let steel-co compete for input.
-  Result: steel-co died @2500, ore-co died @5000. Root issue: fair
-  price for steel ($2706) is computed assuming inputs at *fair* prices,
-  but real market clears coke at ~$700 (above fair $533) and pig-iron
-  at $1098 (below fair $1313 — gov bid pinned it). Steel-co's actual
-  cost: 2×$1098 + 1×$700 + wages = $3402; sell at $2699 = -$703/steel.
-  Also lowering pig-iron bid to $1100 dropped ore-co below break-even.
-  Tried (a) full-skill assumption in fair price formula — when wage_mult
-  proportional to output_mult, ratio cancels and result identical to old
-  formula. Tried (b) raw material sinks (iron-ore $40, limestone $50)
-  — caused ore-co over-growth (4→5 buildings) and bankruptcy.
-  Conclusion: for v0, steel chain doesn't fit. Without belief
-  saturation cushion, steel-co's 3-worker recipe with 2 high-priced
-  inputs has no margin. Possible v1 paths:
-  (1) Gov as broker (bid + ask at different prices for pig-iron),
-  letting steel-co buy from gov at predictable price above ore-co's
-  clearing.
-  (2) Restructure recipes to reduce labor share (more output per
-  recipe firing).
-  (3) Belief drift floor at fair (not 0.5) so producers always ask >
-  fair, making chain math work.
+- [x] Tech tree fully walked. NPCs auto-pick research targets via
+  `npcResearch` (cheapest unresearched tech with prereqs met). Adoption
+  via `npcFillEmptySlots`: when a researched tech unlocks a recipe NEW
+  to the actor, fill an empty slot in an existing building of that
+  type, hiring workers and pre-training them to skill 0.5 in the tech
+  ("the actor has researched the know-how" — transferred to new hires).
+  `recipeForBuilding` now prefers highest research_cost recipe so new
+  buildings adopt the most-recent tech. Constrained `growthTarget` to
+  raw-extraction vertical integration only (coke-co can grow coal-mine
+  but ore-co can't grow coke-oven — preserves chain partners). Added
+  machine-co (1 machine-shop, all 4 tech pre-researched). Gov ballast
+  extended: steel @ $3000 qtyCap=1, machine-tool @ $30000 qtyCap=1.
+  Smoke @5000: all 5 NPCs alive (rival, farm, coke, ore, machine), 7
+  items trading (brick $185, corn $27, coal $50, coke $951, pig-iron
+  $1299, steel $4396, machine-tool $29992), ore-co adopted bessemer
+  via slot-fill (3 smelt-steel + 2 smelt-pig-iron in their 2 blast-
+  furnaces — they grew a 3rd blast-furnace too), coke-co vertically
+  integrated coal-mines (alive with 9 workers, 6 buildings).
 
 - [ ] Brick belief still pins at 2.0 cap. Producer growth has caught up
   on volume (player + rival together = 82 buildings vs farm-co's 255)
