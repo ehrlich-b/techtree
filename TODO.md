@@ -4,196 +4,147 @@
 
 ### Done
 
-- [x] `engine/load.js` — YAML loader (nested 2-space maps, inline arrays,
-  single-line scalars).
-- [x] `engine/schema.js` — refs, tech DAG cycles, productive-items rule,
-  actor `starting_workers` / `starting_assignments`.
-- [x] `engine/worker.js` — skill update, wage, output multiplier.
-- [x] `engine/state.js` — init, save/load, catch-up (24h cap), slot
-  allocation, starting assignments, `pendingBids`.
-- [x] `engine/tick.js` — production, skill gain, staples consumption
-  (drains corn from households by worker-count × rate; brick is not a
-  staple), orders → clearing → settlement (gov is money-issuer in settle:
-  inventory transfers normally but its cash side is suppressed — money
-  spawns when gov buys, is absorbed when gov sells), wages routed to
-  households (households + government exempt from paying), bankruptcy
-  counter, market history, research progress (flat 1 pt/tick when
-  `researchInProgress` is set; scientist concept deferred), liquidation
-  at `bankruptTicks > 30` (sell inventory and building construction at
-  `fair × 0.5`, drop the actor; households + government exempt).
-  Maintenance YAML fields are inert for v0 — no longer debited.
-- [x] `engine/market.js` — fixed-point fair price (`workers × BASE_WAGE
-  × seconds` for the wage term — `seconds` is ticks, not minutes), NPC
-  liquidity orders (surplus asks, input-buffer bids), player orders
-  (priceBook auto-asks + one-shot pendingBids), household staple bids
-  (anchor-priced; v0 only has corn at $50, rate 0.1/worker/tick → $5/tick
-  matches `BASE_WAGE`), government ballast (corn-only: deep bid at
-  2× anchor + ask at anchor pins the household corn midpoint to anchor
-  regardless of producer ask). Industry (brick, etc.) is not subsidized:
-  producers earn from real build demand or die. Per-item double-auction
-  `clear` — bids sorted desc / asks asc, each bid sweeps all asks
-  (lowest first) so self-trade-skipped asks remain available to other
-  bids.
-- [x] `cli/play.js` — status, workers, prices, market, tech, tick, hire,
+- Engine: `load.js`, `schema.js`, `worker.js`, `state.js`, `tick.js`, `market.js`.
+- CLI: `cli/play.js` with status, workers, prices, market, tech, tick, hire,
   fire, build, demolish, assign, unassign, set-price, set-bid, research,
   save, reset, quit.
-- [x] Seed data: 10 items, 10 recipes, 5 tech, 9 buildings, 5 actors
-  (player, rival-co, farm-co, households, government).
-- [x] Corn substrate + farm building + `farm-corn` recipe (raw extraction).
-- [x] Synthetic `households` actor: absorbs all employer wages each tick,
-  consumes one unit of each `STAPLES` item per worker per tick at its
-  rate, bids for staples to top up a buffer. Closes the cash loop —
-  wages recirculate via the staple markets instead of leaking.
-  Bankruptcy and liquidation skipped.
-- [x] Synthetic `government` actor: anchors corn (the wage staple) by
-  posting a deep bid at 2× anchor + ask at anchor; midpoint with the
-  household corn bid clears at anchor. Acts as the money issuer via
-  `settle` — its cash side is suppressed, so it can run indefinitely on
-  a fixed budget. Pays no wages, immune from bankruptcy. Corn inventory
-  accumulates as gov absorbs surplus farm output. Industry items are not
-  ballasted — producers stand or fall on real demand.
-- [x] `make validate`, `make play`.
-- [x] NPC growth strategy. Each actor with a `growth_building` and cash
-  above the runway threshold (materials at fair price + a wage cushion)
-  bids for missing construction materials at fair × (1 + spread) so the
-  growth bid actually crosses producer asks. When all materials are in
-  hand, `npcGrow` debits inventory, adds the new building, hires the
-  required workers, and auto-assigns them to the new slot. Drives
-  organic brick demand from rival/farm expansion. 10k-tick smoke shows
-  farm-co growing 1 → 16 farms over ~2500 ticks before brick supply
-  consolidates.
-- [x] Price discovery via per-actor `priceBelief`. Each actor (except
-  households + government) carries a per-item belief multiplier; npcOrders
-  uses `fair × (1 ± spread) × belief` for asks/bids/growth-bids. Each tick,
-  `applyPriceDrift` nudges belief from the actor's fill outcome:
-  fully filled ask / unfilled bid → drift up by PRICE_DRIFT (0.005);
-  unfilled ask / fully filled bid → drift down. Clamped to [0.5, 2.0].
-  10k-tick smoke: brick clears at $185 (vs static $93 baseline), farm-co
-  grows 1 → 38 farms (vs 16), player + rival survive ~2× longer. Beliefs
-  saturate at the 2.0 cap by tick 500 because farm-co has no demand
-  satiation (see "Demand satiation" item below).
+- Seed data: 10 items, 10 recipes, 5 tech, 9 buildings, 8 actors.
+- Synthetic households (wage absorber + corn consumer) and government (money
+  issuer + ballast).
+- NPC growth: bottleneck-aware; raw-extraction-only vertical integration
+  preserves chain partners.
+- Per-actor `priceBelief` drift on fill outcomes, clamped to [0.5, 2.0].
+- Money-supply leak at liquidation plugged (recovery routes to households).
+- NPC research (auto-pick cheapest unresearched tech) + adoption via
+  slot-fill (pre-trained skill 0.5 in newly-unlocked tech).
+- Smoke @5000: 7 items trade, 5/5 tech researched, all NPCs alive.
 
-- [x] Gov bid quantity cap. `governmentOrders` caps the corn bid at
-  `GOV_BID_BUFFER × totalWorkers × stapleRate` (currently 3× household
-  per-tick demand). Beyond the cap, producer surplus has no buyer at
-  the floor; farm-co's belief drifts to the 0.5 floor, ask drops to
-  fair × 1.05 × 0.5 = $3.78, household trades clear at midpoint $27
-  instead of the $50 anchor. 10k smoke: farm-co cash growth ~30%
-  slower ($7.1M vs $9.9M @ 5000), but brick belief still saturates at
-  cap because farm-co's residual cash growth is still fast enough to
-  outrun brick supply. Producer death timing unchanged — bottleneck is
-  brick-side, not money-side.
+### Accepted-as-v0 limitations (deferred to v1)
 
-- [x] Bottleneck-aware NPC growth. Added `growthTarget(actor, data)`:
-  computes per-item net flow (skill-scaled multiplier × workers /
-  seconds × output - input) across the actor's running slots; picks a
-  building producing the most-negative-flow item; falls back to
-  `growth_building` when no internal shortfall. `growthRunwayCost`
-  also fixed to count only MISSING materials (in-inventory ones don't
-  drain cash). 5k smoke @5000: player w:38 b:38, rival w:43 b:44
-  (both alive vs DEAD before), farm-co w:1028 b:257 (vs 38). Clay
-  trades emerge organically as actors with surplus sell to those
-  short. Brick still clears at $185 cap because farm-co cash growth
-  ($20M) still outpaces brick supply expansion.
+- Brick belief saturates at 2.0× cap; treated as sanity bound, not a
+  dynamic price.
+- Farm-co corn surplus accumulates structurally — gov absorbs without
+  bound, money supply on corn unbounded.
+- Skill ramp-up trap mitigated only at slot-fill (pre-trained 0.5).
+  Workers hired by `npcGrow` still ramp from skill 0.
 
-- [x] Gov bid lowered to 1×anchor. Both gov bid and ask now at $50;
-  gov is a flat market-maker without spread. Midpoint with farm-co's
-  belief-driven ask matches the household midpoint — no implicit
-  $52/$27 price subsidy. 5k smoke @5000: farm-co cash $8M (was
-  $19.8M, 60% drop); same building/worker counts (growth was
-  supply-bound, not cash-bound); corn clears uniformly at $29.
-  Farm-co belief drifted UP to 1.10 (from 0.5 floor) — the tighter
-  market made fill < 100%, so belief found a level instead of
-  saturating.
+## v1 — fix the scaffolding
 
-- [x] Tighten gov bid cap K=3 → K=2. Cuts gov absorption to 2× household
-  per-tick demand. Smoke @5000: farm-co cash $4.7M (was $8M @ K=3, $19.8M
-  pre-fixes — total 76% inflation reduction). Side effect: farm-co
-  accumulates large unsold corn surplus (107k @ 5000) since production
-  outruns total demand. Producers stable at low cash. Same growth
-  trajectory (still supply-bound on brick).
+### Adversarial findings (5000-tick smoke probes)
 
-### Next: organic loop tuning
+The v0 economy is held up by hand-tuned gov ballast. Evidence:
 
-- [x] Richer economy — chain producers viable. Reduced wage scaling
-  from `BASE_WAGE × (1+2×skill)` to `BASE_WAGE × (1+0.5×skill)`: wages
-  range $5–$7.5 (1.5×) while output still scales 4× (0.5→2.0). The wider
-  output/wage ratio gives chain producers (coke-co, ore-co) operating
-  margin without belief saturation. Added coke-co (1 oven, 1 worker,
-  coal-tar) and ore-co (1 mine + 1 quarry + 1 blast-furnace, 7 workers,
-  ironworking) with pig-iron gov ballast at $1300 qtyCap=2. 5k smoke:
-  player + rival ALIVE (96/94 buildings); coke-co + ore-co ALIVE; 6 items
-  trade (brick, corn, clay, coal, coke, pig-iron) up from 3.
-  Side benefit: brick economy stronger too — buildings 38 → 96 with
-  same starting cash, since wage burden cut 50% at full skill.
+- **Remove all gov ballast → all 5 NPCs die.** Most items never trade.
+- **Remove just machine-tool ballast → ore-co + coke-co also die** (cascade
+  from leaf demand removal). The chain hangs entirely from gov.
+- **Most prices saturate at the belief cap or floor**, not finding
+  equilibrium: brick 2.10× fair, iron-ore/coke/pig-iron/steel beliefs at
+  2.0 for major actors; limestone 0.50 (floor).
+- **Fully deterministic** — same starting state, identical outcome
+  bit-for-bit. No path dependence, no exploration of alternative equilibria.
+- **Hard-coded scaffolding**: gov ballast prices ($50/50/1300/3000/30000),
+  per-actor `growth_building`, K=2 gov bid multiplier, ADOPTION_RUNWAY=1000,
+  STARTING_SKILL=0.5, vertical-integration-only-for-raw-extraction rule,
+  recipe ratios + construction costs sized to make survival work.
 
-- [x] Tech tree fully walked. NPCs auto-pick research targets via
-  `npcResearch` (cheapest unresearched tech with prereqs met). Adoption
-  via `npcFillEmptySlots`: when a researched tech unlocks a recipe NEW
-  to the actor, fill an empty slot in an existing building of that
-  type, hiring workers and pre-training them to skill 0.5 in the tech
-  ("the actor has researched the know-how" — transferred to new hires).
-  `recipeForBuilding` now prefers highest research_cost recipe so new
-  buildings adopt the most-recent tech. Constrained `growthTarget` to
-  raw-extraction vertical integration only (coke-co can grow coal-mine
-  but ore-co can't grow coke-oven — preserves chain partners). Added
-  machine-co (1 machine-shop, all 4 tech pre-researched). Gov ballast
-  extended: steel @ $3000 qtyCap=1, machine-tool @ $30000 qtyCap=1.
-  Smoke @5000: all 5 NPCs alive (rival, farm, coke, ore, machine), 7
-  items trading (brick $185, corn $27, coal $50, coke $951, pig-iron
-  $1299, steel $4396, machine-tool $29992), ore-co adopted bessemer
-  via slot-fill (3 smelt-steel + 2 smelt-pig-iron in their 2 blast-
-  furnaces — they grew a 3rd blast-furnace too), coke-co vertically
-  integrated coal-mines (alive with 9 workers, 6 buildings).
+It's a simulation OF an economy, not an emergent one. The v1 work below
+replaces hand-tuned scaffolding with mechanisms that produce real emergence:
+prices find non-cap levels, supply chains survive single-actor loss, NPCs
+choose niches by observation, runs diverge across seeds.
 
-- [ ] Brick belief still pins at 2.0 cap. Producer growth has caught up
-  on volume (player + rival together = 82 buildings vs farm-co's 255)
-  but brick price stays at the belief ceiling because farm-co's growth
-  bid 100%-fills each tick. Without raising MAX_BELIEF, brick is
-  effectively a fixed-price commodity in equilibrium. Worth letting
-  this be for v0 — the cap is a sanity bound, not a dynamic price.
-- [ ] Farm-co corn surplus accumulates with K=2 (107k corn @ 5000).
-  Tried (a) belief-floor scale-back: skip growth when output belief sits
-  at MIN_BELIEF. Result: player+rival DEAD by @1000. Farm-co's runaway
-  growth is load-bearing — its construction-material demand (30 brick per
-  farm × N farms) is the brick market that funds player+rival. Killing
-  the runaway kills the closed loop. Surplus is structural: each new
-  farm adds +5.47 corn/tick of NET surplus (supply > demand growth) but
-  its workers expand gov's K-capped bid quantity, so each farm stays
-  profitable. Belief-at-floor correctly detects oversupply, but acting
-  on it breaks the broader system. Either (b) corn export sink (sterile
-  buyer outside the economy that doesn't feed back into demand growth),
-  or (c) accept the pile for v0.
-- [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
-  multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
-  fair price for fire-bricks. Workers reach productive skill (~mult
-  1.0) only after ~400 ticks. Producers survive on starting cash —
-  rival-co bottoms at $2,465 ~tick 1500 with current 0.5× wage scaling.
-  Tried (a) pre-train starting workers to skill=0.3 in their assigned
-  tech (output_mult 0.95, wage_mult 1.15). Result: rival/farm survival
-  margins improved slightly ($2.5K → $2.8K min for rival), but coke-co
-  + ore-co DIED @5000 — higher early productivity → faster growth →
-  oversupply on coke ($723 → $280 floor) → revenue collapsed.
-  Conclusion: the trap is real but the system has converged around it
-  via starting-cash buffers + brick belief saturation cushion. Curing
-  it disturbs the chain-producer balance. Accept for v0; revisit when
-  belief floor or recipe restructuring is in place (see steel-co paths).
-- [x] Clay-pit:kiln imbalance — resolved by `growthTarget`. 5k smoke:
-  rival-co organically grew 31 clay-pits + 59 kilns + 1 coal-mine
-  (started with 1 + 1 + 1) without any tuning to its `growth_building`
-  field. The bottleneck-aware target picks whichever input is most
-  starved per-tick, so kilns don't starve as workers skill up.
-- [x] Money supply leak at liquidation — fixed. Dying actor's residual
-  cash + fair × 0.5 recovery on inventory + construction is now routed
-  to households instead of vanishing. Smoke @5000 with one liquidation
-  (passive headless player) shows households cash bumped by ~$17K (the
-  player's residual) — money supply stays bounded by gov issuance.
-- [ ] Farm over-production. Farm produces 1.67 corn/tick but households
-  only consume 0.4–0.8 corn/tick at 4–8 workers. Gov absorbs the
-  surplus indefinitely (cash-free since it's the issuer), but corn
-  inventory in gov grows without bound.
+### Replace gov ballast with real demand
 
-## Spatial layer brainstorm (v1, parking lot)
+Every chain item (coke, pig-iron, steel, machine-tool) currently needs a
+gov bid to survive. Build real demand sinks, then drop ballast item by
+item from the leaf inward, verifying the chain holds.
+
+- [ ] **Building maintenance** (the YAML `maintenance` field is currently
+  inert — wire it up). Each building consumes upkeep items per tick:
+  furnaces consume coal, machine-shops consume machine-tools as wear,
+  blast-furnaces wear pig-iron / steel. Maintenance items become a real
+  ongoing demand source.
+- [ ] **Diversified household staples**. Households buy more than corn —
+  add brick (housing growth), coal (heat) per worker. Tier the consumption
+  so higher-tier items create demand once available.
+- [ ] **Capital depreciation**. Buildings wear out, requiring repair
+  materials over their lifetime. Drives ongoing brick/steel demand
+  independent of new growth.
+- [ ] **Drop ballast iteratively**: machine-tool first (highest tier),
+  then steel, pig-iron, coal — verifying chain survival at each step.
+  Keep corn ballast (wage staple anchor) for v1.
+
+### Cost-based price discovery (replace belief)
+
+`priceBelief` is a [0.5, 2.0] multiplier on a globally-computed
+`fair_price`. Most beliefs saturate at the cap or floor, so the
+multiplier doesn't find dynamic levels — it hits walls. Replace with
+per-actor cost basis:
+
+- [ ] **Per-actor cost tracker**: each actor records rolling input + wage
+  cost per output unit produced. Asks = cost × markup; bids = derived
+  willingness-to-pay from downstream margin.
+- [ ] **Inventory-pressure ask drift**: ask drops when inventory grows,
+  rises when inventory drains. Replaces "drift on fill outcome" with
+  "drift on stock level" — more direct signal than fill rates.
+- [ ] **Drop the global `fair_price` and the [0.5, 2.0] belief clamp.**
+  Each actor knows their own costs; the market clears via local cost
+  basis without a global anchor.
+
+### Resilience: no cascading collapse
+
+When one actor dies, the chain collapses. Fix:
+
+- [ ] **Multiple suppliers per item**: spawn a second coke-co, a
+  steel-co separate from ore-co (so single-actor death doesn't kill
+  downstream demand or upstream supply).
+- [ ] **Respawn**: dead actor's niche reseeds after a delay if the
+  observed clearing price holds above cost. Gov sponsors a new entrant
+  when an item's price stays elevated for N ticks (proxy for "profitable
+  niche unfilled").
+- [ ] **Inventory buffers**: actors hold N cycles of input/output buffer
+  to bridge transient supply gaps without immediate failure.
+
+### Goal-seeking NPCs (drop `growth_building`)
+
+`growth_building` is hand-coded per actor in `world.yml` — it steers
+each NPC's behavior to a specific output. NPCs don't choose niches.
+
+- [ ] **Margin-driven growth target**: NPC picks the recipe with the
+  highest observed (clearing_price - input_cost - wage_cost) margin
+  among recipes the actor has unlocked. Build the building that hosts
+  that recipe.
+- [ ] **Adoption without slot-fill heuristic**: when a recipe's margin
+  beats the actor's current best, switch a slot or build a new slot.
+  The v0 "fill empty slot with new tech" rule is a special case.
+- [ ] **Drop `growth_building` from `world.yml`.** Actors discover their
+  niche from observed prices.
+
+### Path dependence / variance
+
+Fully deterministic runs mean no exploration of alternative equilibria
+— same seed always produces ore-co dominating steel.
+
+- [ ] **Seeded RNG** in worker hire order, recipe-tie breaking, NPC
+  decision ordering. Reproducible per-seed; varies across seeds.
+- [ ] **Run 10 seeds @5000 ticks** as a smoke matrix. An emergent
+  economy should produce different surviving-actor sets and different
+  price levels per seed; if all 10 converge identically, the system
+  is still scaffold-bound.
+
+## v1+ — later (parking lot)
+
+- Loans, equity finance, insurance.
+- Strategic NPCs (cornering, undercut, tech race).
+- First-mover monopoly window for newly-researched tech.
+- Information era (semiconductors, computing).
+- Contemporary era (batteries, EVs, biotech).
+- Space/future era (orbital, fusion).
+- Web UI on top of the engine.
+- Finite/depleting deposits with mining claims.
+- Spatial layer (sparse city graph, distance-based transport — see notes
+  below).
+
+## Spatial layer brainstorm (v1+, parking lot)
 
 Replaces the implicit single-location world with a sparse graph of cities.
 Keep it abstract — scalar distances, no 2D grid, no pathfinding.
@@ -230,8 +181,8 @@ Keep it abstract — scalar distances, no 2D grid, no pathfinding.
 ### Markets and inventory
 
 - Inventory is per-actor-per-city.
-- Per-city order books. `fair_price` computed per-city — geographic
-  arbitrage falls out for free.
+- Per-city order books. Per-city cost basis (post-belief refactor) —
+  geographic arbitrage falls out for free.
 - Cross-city orders allowed; bid must beat local asks plus full transport
   stack to clear.
 - New `transfer <item> <qty> <from-city> <to-city>` command for intra-
@@ -250,18 +201,6 @@ Keep it abstract — scalar distances, no 2D grid, no pathfinding.
 - Schema-breaking shift (`inventory[city][item]`, building→lot refs,
   per-city `marketHistory`); worth doing as a clean v1 break, not a v0
   retrofit.
-
-## v1+ — later
-
-- [ ] Loans + equity finance.
-- [ ] Strategic NPCs (cornering, undercut, tech race) — current NPCs only
-  follow their starting assignments; no dynamic behavior.
-- [ ] First-mover monopoly window for newly-researched tech.
-- [ ] Information era recipes (semiconductors, computing).
-- [ ] Contemporary era (batteries, EVs, biotech).
-- [ ] Space/future era (orbital, fusion).
-- [ ] Web UI on top of the engine.
-- [ ] Finite/depleting deposits with mining claims.
 
 ## Conventions
 
