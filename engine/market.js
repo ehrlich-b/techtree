@@ -139,9 +139,14 @@ function recipeForBuilding(actor, data, type) {
 // Bottleneck-aware growth target: pick whichever building produces the item
 // with the most-negative net flow across the actor's running slots (skill-
 // scaled). Falls back to actor.growthBuilding when no internal shortfall.
-// Without this, an actor with growthBuilding=kiln keeps stacking kilns past
-// the point where their fixed clay-pit can feed them — kilns starve as
-// workers skill up.
+// Vertical integration is restricted: actors can grow into building types
+// they already own (internal scaling — add another clay-pit when kilns
+// starve), or into RAW EXTRACTION buildings (no recipe inputs — coal-mine,
+// iron-mine, quarry, clay-pit, farm). They CAN'T grow into processing
+// buildings of types they don't own (kiln, coke-oven, blast-furnace), since
+// that would consolidate chain producers — e.g., ore-co growing a coke-oven
+// kills coke-co's market. Raw extractors are foundational and don't displace
+// chain partners.
 function growthTarget(actor, data) {
     if (!actor.growthBuilding) return null;
     const recipes = data.recipes || {};
@@ -163,6 +168,7 @@ function growthTarget(actor, data) {
         }
     }
 
+    const haveTypes = new Set((actor.buildings || []).map(b => b.type));
     let worst = { item: null, val: 0 };
     for (const [item, f] of Object.entries(flow)) {
         if (f < worst.val) worst = { item, val: f };
@@ -171,6 +177,8 @@ function growthTarget(actor, data) {
         for (const r of Object.values(recipes)) {
             if (!((r.outputs || {})[worst.item])) continue;
             if (r.tech && !actor.researched.has(r.tech)) continue;
+            const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
+            if (!isRaw && !haveTypes.has(r.building)) continue;
             if (buildings[r.building]) return r.building;
         }
     }
