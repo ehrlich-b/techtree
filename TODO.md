@@ -172,9 +172,17 @@
 - [ ] Skill ramp-up trap. At skill 0, output multiplier is 0.5; wage
   multiplier is 1.0. Productivity-per-wage = 0.5, below break-even at
   fair price for fire-bricks. Workers reach productive skill (~mult
-  1.0) only after ~1000 ticks. Producers must survive the loss period
-  on starting cash. Either pre-train starting workers (skill > 0) or
-  delay wage scaling to ramp with output.
+  1.0) only after ~400 ticks. Producers survive on starting cash —
+  rival-co bottoms at $2,465 ~tick 1500 with current 0.5× wage scaling.
+  Tried (a) pre-train starting workers to skill=0.3 in their assigned
+  tech (output_mult 0.95, wage_mult 1.15). Result: rival/farm survival
+  margins improved slightly ($2.5K → $2.8K min for rival), but coke-co
+  + ore-co DIED @5000 — higher early productivity → faster growth →
+  oversupply on coke ($723 → $280 floor) → revenue collapsed.
+  Conclusion: the trap is real but the system has converged around it
+  via starting-cash buffers + brick belief saturation cushion. Curing
+  it disturbs the chain-producer balance. Accept for v0; revisit when
+  belief floor or recipe restructuring is in place (see steel-co paths).
 - [x] Clay-pit:kiln imbalance — resolved by `growthTarget`. 5k smoke:
   rival-co organically grew 31 clay-pits + 59 kilns + 1 coal-mine
   (started with 1 + 1 + 1) without any tuning to its `growth_building`
