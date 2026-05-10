@@ -58,11 +58,9 @@ Every chain item (coke, pig-iron, steel, machine-tool) currently needs a
 gov bid to survive. Build real demand sinks, then drop ballast item by
 item from the leaf inward, verifying the chain holds.
 
-- [ ] **Building maintenance** (the YAML `maintenance` field is currently
-  inert — wire it up). Each building consumes upkeep items per tick:
-  furnaces consume coal, machine-shops consume machine-tools as wear,
-  blast-furnaces wear pig-iron / steel. Maintenance items become a real
-  ongoing demand source.
+- [x] **Building maintenance** wired up: blast-furnace + machine-shop
+  consume machine-tools as wear (silent shortfall, NPC bids target a
+  200-tick maintenance buffer). Schema `maintenance: {item: rate}`.
 - [ ] **Diversified household staples**. Households buy more than corn —
   add brick (housing growth), coal (heat) per worker. Tier the consumption
   so higher-tier items create demand once available.
@@ -72,6 +70,15 @@ item from the leaf inward, verifying the chain holds.
 - [ ] **Drop ballast iteratively**: machine-tool first (highest tier),
   then steel, pig-iron, coal — verifying chain survival at each step.
   Keep corn ballast (wage staple anchor) for v1.
+  - **Attempt 1 (machine-tool drop, 2026-05-10):** cascade — machine-co
+    + ore-co + coke-co all die by tick 2500. Root cause: machine-co's
+    steel input belief saturates at 2.0× fair, making machine-tool COGS
+    (~$37.9k) > fair_price ($28.1k). Gov ballast at $30k was masking the
+    structural unprofitability. Drop blocked on belief-saturation reform
+    (cost-based price discovery, next section). Maintenance demand rate
+    is also supply-bottlenecked (machine-co produces 0.007/tick, demand
+    only 0.003/tick), so even fixing belief won't be enough without more
+    consumers — capital depreciation could fill the gap.
 
 ### Cost-based price discovery (replace belief)
 
