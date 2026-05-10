@@ -64,6 +64,19 @@ actors:
       quarry: quarry-limestone
       blast-furnace: smelt-pig-iron
 
+  machine-co:
+    cash: 30000
+    strategy: balanced
+    growth_building: machine-shop
+    starting_inventory:
+      brick: 200
+      steel: 50
+    starting_buildings: [machine-shop]
+    starting_tech: [ironworking, coal-tar, bessemer-process, precision-machining]
+    starting_workers: 2
+    starting_assignments:
+      machine-shop: forge-machine-tool
+
   households:
     cash: 5000
     strategy: households

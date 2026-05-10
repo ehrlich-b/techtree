@@ -201,6 +201,67 @@ function idleWorkerIds(actor) {
     return actor.workers.filter(w => !assigned.has(w.id)).map(w => w.id);
 }
 
+// Tech adoption: fill empty slots in existing buildings with the best
+// researched recipe — but ONLY if it's a recipe the actor isn't already
+// running. Empty slots are for adopting newly-researched tech, not for
+// duplicating existing production. New workers come pre-trained in the
+// recipe's tech (skill 0.5, output_mult 1.25) — justified as transfer of
+// the actor's accumulated know-how from research. Without pre-training,
+// the skill-0 ramp-up bleeds ~$30/tick × 1000 ticks before profitable,
+// which exceeds typical NPC cash buffers. Cash gate is also raised: 1000
+// ticks of wage runway, since adoption commits to ramp-up cost.
+const ADOPTION_SKILL = 0.5;
+const ADOPTION_RUNWAY_TICKS = 1000;
+function npcFillEmptySlots(state, data) {
+    for (const actor of Object.values(state.actors)) {
+        if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
+        const running = new Set();
+        for (const b of actor.buildings) {
+            for (const slot of b.slots) {
+                if (slot) running.add(slot.recipe);
+            }
+        }
+        let filled = false;
+        for (const bldg of actor.buildings) {
+            if (filled) break;
+            for (let s = 0; s < bldg.slots.length; s++) {
+                if (bldg.slots[s] !== null) continue;
+                const recipe = recipeForBuilding(actor, data, bldg.type);
+                if (!recipe) continue;
+                if (running.has(recipe.id)) continue;
+                const need = recipe.workers || 0;
+                if (need <= 0) continue;
+                const wageRunway = need * BASE_WAGE * ADOPTION_RUNWAY_TICKS;
+                if ((actor.cash || 0) < wageRunway) continue;
+                let idle = idleWorkerIds(actor);
+                const toHire = Math.max(0, need - idle.length);
+                for (let i = 0; i < toHire; i++) {
+                    actor.workers.push(newWorker(`${actor.id}-w${actor.workerCounter++}`));
+                }
+                idle = idleWorkerIds(actor);
+                const workerIds = idle.slice(0, need);
+                bldg.slots[s] = {
+                    recipe: recipe.id,
+                    progress: 0,
+                    workerIds,
+                };
+                if (recipe.tech) {
+                    const byId = new Map(actor.workers.map(w => [w.id, w]));
+                    for (const id of workerIds) {
+                        const w = byId.get(id);
+                        if (w) {
+                            const cur = w.skill[recipe.tech] || 0;
+                            if (cur < ADOPTION_SKILL) w.skill[recipe.tech] = ADOPTION_SKILL;
+                        }
+                    }
+                }
+                filled = true;
+                break;
+            }
+        }
+    }
+}
+
 function npcGrow(state, data, prices) {
     const buildings = data.buildings || {};
     for (const actor of Object.values(state.actors)) {
@@ -337,6 +398,7 @@ function tick(state, data) {
 
     for (const actor of Object.values(state.actors)) actor.pendingBids = [];
 
+    npcFillEmptySlots(state, data);
     npcGrow(state, data, prices);
 
     const households = state.actors[HOUSEHOLDS_ID];

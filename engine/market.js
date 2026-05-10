@@ -81,6 +81,8 @@ const GOV_BALLAST = [
     { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR },
     { item: 'coal', bidPrice: 50, qtyCap: 5 },
     { item: 'pig-iron', bidPrice: 1300, qtyCap: 2 },
+    { item: 'steel', bidPrice: 3000, qtyCap: 1 },
+    { item: 'machine-tool', bidPrice: 30000, qtyCap: 1 },
 ];
 
 function fairPrice(data) {
@@ -126,14 +128,26 @@ function inputDemand(actor, recipes) {
     return need;
 }
 
+// Prefer the highest-tier recipe (highest research_cost) the actor has
+// unlocked. Without this, blast-furnaces always assign smelt-pig-iron even
+// after bessemer is researched, so the tech tree is researched but never
+// adopted. Raw extractions (no tech) get cost 0 and are picked when no
+// tech-gated recipe is available.
 function recipeForBuilding(actor, data, type) {
     const recipes = data.recipes || {};
+    const tech = data.tech || {};
+    let best = null;
+    let bestCost = -1;
     for (const [id, r] of Object.entries(recipes)) {
         if (r.building !== type) continue;
         if (r.tech && !actor.researched.has(r.tech)) continue;
-        return { id, ...r };
+        const cost = r.tech ? ((tech[r.tech] || {}).research_cost || 0) : 0;
+        if (cost > bestCost) {
+            best = { id, ...r };
+            bestCost = cost;
+        }
     }
-    return null;
+    return best;
 }
 
 // Bottleneck-aware growth target: pick whichever building produces the item
