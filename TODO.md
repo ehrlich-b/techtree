@@ -64,9 +64,12 @@ item from the leaf inward, verifying the chain holds.
 - [ ] **Diversified household staples**. Households buy more than corn —
   add brick (housing growth), coal (heat) per worker. Tier the consumption
   so higher-tier items create demand once available.
-- [ ] **Capital depreciation**. Buildings wear out, requiring repair
-  materials over their lifetime. Drives ongoing brick/steel demand
-  independent of new growth.
+- [x] **Capital depreciation** wired up: every building has
+  `maintenance` rates proportional to construction cost (brick on all
+  building types; steel on machine-shop; machine-tool on blast-furnace
+  + machine-shop as before). 2026-05-10: smoke @5000 — modest impact
+  on the chain (ore-co lived longer, machine-co more stressed by added
+  maintenance costs).
 - [ ] **Drop ballast iteratively**: machine-tool first (highest tier),
   then steel, pig-iron, coal — verifying chain survival at each step.
   Keep corn ballast (wage staple anchor) for v1.
@@ -129,6 +132,13 @@ When one actor dies, the chain collapses. Fix:
   niche unfilled").
 - [ ] **Inventory buffers**: actors hold N cycles of input/output buffer
   to bridge transient supply gaps without immediate failure.
+- [x] **Credit facility** wired up: each actor can run negative cash up
+  to `CREDIT_RUNWAY_TICKS × current_wage_burden` ($150/tick for 30
+  workers × 60 ticks = $9k) before the bankruptcy clock starts.
+  Addresses the "first time their account goes to -$0.01 = death"
+  brittleness. Helps transient shortfalls (ore-co lives 500 ticks
+  longer); chronic-loss actors (coke-co with no buyer) still die,
+  since infinite credit can't save zero-revenue.
 
 ### Goal-seeking NPCs (drop `growth_building`)
 
