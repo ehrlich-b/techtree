@@ -54,6 +54,11 @@ function validate(data) {
         for (const item of Object.keys(b.construction || {})) {
             checkRef('building', id, 'construction', item, items, 'item');
         }
+        if (b.maintenance && typeof b.maintenance === 'object') {
+            for (const item of Object.keys(b.maintenance)) {
+                checkRef('building', id, 'maintenance', item, items, 'item');
+            }
+        }
     }
 
     // Recipes

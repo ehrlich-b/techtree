@@ -38,6 +38,7 @@ const MARKUP = 1.2;
 const NPC_SPREAD = 0.05;
 const FAIRPRICE_ITERATIONS = 8;
 const NPC_INPUT_BUFFER_CYCLES = 5;
+const NPC_MAINTENANCE_BUFFER_TICKS = 200;
 const NPC_BID_BUDGET_FRAC = 0.5;
 
 const HOUSEHOLDS_ID = 'households';
@@ -113,7 +114,7 @@ function fairPrice(data) {
     return prices;
 }
 
-function inputDemand(actor, recipes) {
+function inputDemand(actor, recipes, buildings) {
     const need = {};
     for (const b of actor.buildings) {
         for (const slot of b.slots) {
@@ -122,6 +123,12 @@ function inputDemand(actor, recipes) {
             if (!r) continue;
             for (const [item, amt] of Object.entries(r.inputs || {})) {
                 need[item] = (need[item] || 0) + amt * NPC_INPUT_BUFFER_CYCLES;
+            }
+        }
+        const def = buildings && buildings[b.type];
+        if (def && def.maintenance && typeof def.maintenance === 'object') {
+            for (const [item, rate] of Object.entries(def.maintenance)) {
+                need[item] = (need[item] || 0) + rate * NPC_MAINTENANCE_BUFFER_TICKS;
             }
         }
     }
@@ -236,7 +243,7 @@ function npcOrders(actor, data, prices) {
     const beliefOf = (item) => beliefs[item] || 1.0;
     const bids = [];
     const asks = [];
-    const inputNeed = inputDemand(actor, recipes);
+    const inputNeed = inputDemand(actor, recipes, data.buildings || {});
     const growthNeed = growthReserve(actor, data, prices);
     const reserve = { ...inputNeed };
     for (const [item, amt] of Object.entries(growthNeed)) {

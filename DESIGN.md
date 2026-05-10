@@ -55,7 +55,10 @@ Hosts recipe slots.
 
 - `slots` — concurrent recipe instances.
 - `construction` — `{item_id: amount}` to build.
-- `maintenance` — cash per tick whether running or idle.
+- `maintenance` — `{item_id: rate_per_tick}` consumed by the building each
+  tick (running or idle). Silent shortfall: missing items don't stop
+  production; demand pressure shows up via the actor's bids targeting a
+  rolling buffer of maintenance items.
 - `accepts` — optional list of recipe tags or eras to filter what can run here.
 
 ### Worker
@@ -195,7 +198,8 @@ buildings:
     construction:
       brick: 200
       iron-bar: 50
-    maintenance: 10
+    maintenance:
+      machine-tool: 0.0015
 ```
 
 ```yaml

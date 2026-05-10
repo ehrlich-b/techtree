@@ -27,7 +27,10 @@
  *      hiring + auto-assigning workers to the new slot.
  *   6. Wages: transferred from each employer to the households actor
  *      (closes the cash loop). Households and government are exempt
- *      from paying wages. Maintenance YAML fields are inert for v0.
+ *      from paying wages.
+ *   6a. Maintenance: each building debits its maintenance items per tick
+ *      (silent shortfall — building still operates if items missing; demand
+ *      pressure comes from NPC bids targeting a maintenance buffer).
  *   7. Bankruptcy counter (households and government exempt).
  *   8. Liquidation: actors with bankruptTicks > BANKRUPTCY_TICKS recover
  *      inventory and building construction at fair × 0.5, then drop from
@@ -348,6 +351,22 @@ function applyPriceDrift(state, orders, trades) {
     }
 }
 
+// Buildings consume maintenance items per tick (kilns burn coal, blast-
+// furnaces and machine-shops wear machine-tools). Silent shortfall — no
+// idle penalty; the operating cost shows up via NPC bids that target a
+// rolling buffer of maintenance items (see maintenanceDemand in market.js).
+function consumeMaintenance(actor, data) {
+    const buildings = data.buildings || {};
+    for (const b of actor.buildings) {
+        const def = buildings[b.type];
+        if (!def || !def.maintenance || typeof def.maintenance !== 'object') continue;
+        for (const [item, rate] of Object.entries(def.maintenance)) {
+            const have = actor.inventory[item] || 0;
+            actor.inventory[item] = Math.max(0, have - rate);
+        }
+    }
+}
+
 function liquidate(state, data, actor, prices) {
     const buildings = data.buildings || {};
     let recovery = 0;
@@ -409,6 +428,8 @@ function tick(state, data) {
         for (const w of actor.workers) totalWages += wage(w);
         actor.cash -= totalWages;
         if (households) households.cash += totalWages;
+
+        consumeMaintenance(actor, data);
 
         if (actor.cash < 0) actor.bankruptTicks++;
         else actor.bankruptTicks = 0;
