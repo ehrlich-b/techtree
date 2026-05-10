@@ -80,6 +80,7 @@ const STAPLES = [
 const GOV_BALLAST = [
     { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR },
     { item: 'coal', bidPrice: 50, qtyCap: 5 },
+    { item: 'pig-iron', bidPrice: 1300, qtyCap: 2 },
 ];
 
 function fairPrice(data) {

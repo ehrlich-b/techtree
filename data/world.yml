@@ -36,6 +36,34 @@ actors:
     starting_assignments:
       farm: farm-corn
 
+  coke-co:
+    cash: 15000
+    strategy: balanced
+    growth_building: coke-oven
+    starting_inventory:
+      brick: 100
+      coal: 50
+    starting_buildings: [coke-oven]
+    starting_tech: [coal-tar]
+    starting_workers: 1
+    starting_assignments:
+      coke-oven: bake-coke
+
+  ore-co:
+    cash: 25000
+    strategy: balanced
+    growth_building: blast-furnace
+    starting_inventory:
+      brick: 200
+      coke: 20
+    starting_buildings: [iron-mine, quarry, blast-furnace]
+    starting_tech: [ironworking]
+    starting_workers: 7
+    starting_assignments:
+      iron-mine: mine-iron-ore
+      quarry: quarry-limestone
+      blast-furnace: smelt-pig-iron
+
   households:
     cash: 5000
     strategy: households

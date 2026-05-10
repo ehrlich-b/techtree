@@ -3,7 +3,11 @@
  *
  * Skill is in [0, 1] per tech. Output multiplier on a recipe is
  * 0.5 + 1.5 * avg_skill_in_tech across assigned workers, clamped to [0.5, 2.0].
- * Wage scales with the worker's max skill across all techs.
+ * Wage scales gently with max skill: BASE_WAGE × (1 + 0.5 × max_skill), so
+ * wages range $5–$7.5 (1.5×) while output scales 4× (0.5→2.0). That gap is
+ * what lets producers with labor-heavy recipes (pig-iron: 3 workers/2 output)
+ * achieve positive margin without belief saturation. Earlier (1 + 2×skill)
+ * scaling broke chain producers — break-even required ~2× fair price.
  */
 
 const BASE_WAGE = 5;
@@ -12,7 +16,7 @@ const LEARNING_RATE = 0.001;
 function wage(worker, baseWage = BASE_WAGE) {
     let max = 0;
     for (const v of Object.values(worker.skill || {})) if (v > max) max = v;
-    return baseWage * (1 + 2 * max);
+    return baseWage * (1 + 0.5 * max);
 }
 
 function gainSkill(worker, techId, rate = LEARNING_RATE) {
