@@ -175,15 +175,16 @@
   1.0) only after ~1000 ticks. Producers must survive the loss period
   on starting cash. Either pre-train starting workers (skill > 0) or
   delay wage scaling to ramp with output.
-- [ ] Clay-pit:kiln imbalance. 1 clay-pit (multiplier 0.5, no tech-skill
-  scaling) supplies ~3 kilns at low skill but only ~0.7 at max skill
-  — kilns starve as they skill up. NPC growth_building is a single
-  type, so player and rival keep building kilns and never add a new
-  clay-pit. Either (a) make growth pick the bottleneck building each
-  tick, or (b) let `growth_building` be a list/ratio.
-- [ ] Money supply leak at liquidation. Recovered cash (`fair × 0.5`
-  on inventory + construction) is added to the dead actor's cash, then
-  the actor is dropped — that cash leaves the system entirely.
+- [x] Clay-pit:kiln imbalance — resolved by `growthTarget`. 5k smoke:
+  rival-co organically grew 31 clay-pits + 59 kilns + 1 coal-mine
+  (started with 1 + 1 + 1) without any tuning to its `growth_building`
+  field. The bottleneck-aware target picks whichever input is most
+  starved per-tick, so kilns don't starve as workers skill up.
+- [x] Money supply leak at liquidation — fixed. Dying actor's residual
+  cash + fair × 0.5 recovery on inventory + construction is now routed
+  to households instead of vanishing. Smoke @5000 with one liquidation
+  (passive headless player) shows households cash bumped by ~$17K (the
+  player's residual) — money supply stays bounded by gov issuance.
 - [ ] Farm over-production. Farm produces 1.67 corn/tick but households
   only consume 0.4–0.8 corn/tick at 4–8 workers. Gov absorbs the
   surplus indefinitely (cash-free since it's the issuer), but corn

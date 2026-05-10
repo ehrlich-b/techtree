@@ -271,7 +271,11 @@ function liquidate(state, data, actor, prices) {
             if (prices[item] > 0) recovery += amt * prices[item] * LIQUIDATION_RECOVERY;
         }
     }
-    actor.cash += recovery;
+    // Route dying actor's residual cash + recovery proceeds to households so
+    // money supply stays bounded by gov issuance. Without this, every dead
+    // actor's cash (often non-trivial) vanishes from the system.
+    const households = state.actors[HOUSEHOLDS_ID];
+    if (households) households.cash += (actor.cash || 0) + recovery;
     delete state.actors[actor.id];
 }
 
