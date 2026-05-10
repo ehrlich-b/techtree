@@ -64,6 +64,13 @@ item from the leaf inward, verifying the chain holds.
 - [ ] **Diversified household staples**. Households buy more than corn —
   add brick (housing growth), coal (heat) per worker. Tier the consumption
   so higher-tier items create demand once available.
+  - **Parameter constraint (2026-05-10):** household brick bidPrice must
+    sit below NPC max bid (fair × 0.95 × 2.0 = $167 for brick) or
+    households outbid NPCs and coke-co/ore-co can't get brick to expand,
+    dying mid-game. Tried bidPrice $200 (cascade), $120 (still cascade
+    from low coke price). The right level + rate combination has to
+    keep brick clearing high enough for kiln margin AND let NPCs win
+    brick at high belief.
 - [x] **Capital depreciation** wired up: every building has
   `maintenance` rates proportional to construction cost (brick on all
   building types; steel on machine-shop; machine-tool on blast-furnace
@@ -139,6 +146,32 @@ When one actor dies, the chain collapses. Fix:
   brittleness. Helps transient shortfalls (ore-co lives 500 ticks
   longer); chronic-loss actors (coke-co with no buyer) still die,
   since infinite credit can't save zero-revenue.
+
+### Bound farm-co exponential growth
+
+By @10k farm-co grows to 2400+ buildings as the gov corn bid scales
+with totalWorkers (which includes farm-co's own hires) — positive
+feedback loop. Chain eventually collapses around it.
+
+- [ ] **Output-saturation growth gate** (attempted, blocked):
+  growthTarget returns null when actor stockpile of growth target's
+  output exceeds N ticks of production rate. **Attempt 1 (2026-05-10):**
+  any reasonable threshold (30-50 ticks) caps farm-co correctly but
+  cascades the chain — kiln operators depend on farm-co's brick
+  demand for new farm construction. With farm-co gated, brick belief
+  drops to floor, brick clears at $26, kilns insolvent. Tried adding
+  gov brick ballast ($185 × qtyCap 5) as replacement demand: player +
+  rival survive but coke-co + ore-co still die (coke-co builds coal-
+  mines aggressively early, drains cash, hits stress before coke
+  demand from ore-co can ramp; ore-co cascades). The gate works
+  mechanically but the chain is too brittle to perturbations of
+  farm-co's brick demand. Solution likely requires real demand
+  diversification (household brick + coal) tuned carefully + perhaps
+  slower NPC growth pace (longer wage-runway threshold) so chronic
+  bleeders don't dig themselves into a hole early.
+- [ ] **Decouple gov corn bid from farm-co's own workforce**: gov bid
+  cap = `(totalWorkers - farm-co_workers) × rate × buffer` breaks the
+  positive feedback without removing gov ballast outright.
 
 ### Goal-seeking NPCs (drop `growth_building`)
 
