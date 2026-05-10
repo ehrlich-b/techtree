@@ -120,6 +120,7 @@ function credit(inventory, outputs) {
 
 function runProduction(actor, data) {
     const recipes = data.recipes || {};
+    const insolvent = (actor.stress || 0) >= 4;
     for (const bldg of actor.buildings) {
         for (let s = 0; s < bldg.slots.length; s++) {
             const slot = bldg.slots[s];
@@ -130,6 +131,10 @@ function runProduction(actor, data) {
             if (workers.length < (recipe.workers || 0)) continue;
 
             if (slot.progress === 0) {
+                // Insolvent: idle plants. Don't start new cycles — preserves
+                // input inventory for fire-sale and stops wage burn from
+                // converting raw materials into stockpiled output nobody wants.
+                if (insolvent) continue;
                 if (!hasInputs(actor.inventory, recipe.inputs)) continue;
                 debit(actor.inventory, recipe.inputs);
             }
@@ -254,6 +259,7 @@ const ADOPTION_RUNWAY_TICKS = 1000;
 function npcFillEmptySlots(state, data) {
     for (const actor of Object.values(state.actors)) {
         if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
+        if ((actor.stress || 0) >= 2) continue; // hiring freeze when stressed
         const running = new Set();
         for (const b of actor.buildings) {
             for (const slot of b.slots) {
@@ -305,6 +311,7 @@ function npcGrow(state, data, prices) {
     const buildings = data.buildings || {};
     for (const actor of Object.values(state.actors)) {
         if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
+        if ((actor.stress || 0) >= 1) continue; // growth freeze when squeezed
         const target = growthTarget(actor, data);
         if (!target) continue;
         const def = buildings[target];
@@ -407,6 +414,26 @@ function consumeMaintenance(actor, data) {
 // graduated behaviors: growth freeze, hiring freeze, layoffs, fire-sale.
 // Stored on actor so order generation and tick logic can read consistent
 // per-tick state.
+// Distressed actor lays off one idle (unassigned) worker per tick. Cuts
+// wage burn without disrupting production. Real firms shed payroll as
+// cash dries up — this is the operational equivalent.
+function layoffOneIdle(actor) {
+    const assigned = new Set();
+    for (const b of actor.buildings) {
+        for (const slot of b.slots) {
+            if (slot) for (const id of slot.workerIds) assigned.add(id);
+        }
+    }
+    for (let i = 0; i < actor.workers.length; i++) {
+        if (!assigned.has(actor.workers[i].id)) {
+            actor.workers.splice(i, 1);
+            actor._workerIndex = null;
+            return true;
+        }
+    }
+    return false;
+}
+
 function computeStress(actor) {
     if (actor.strategy === 'households' || actor.strategy === 'government') return 0;
     let totalWages = 0;
@@ -488,6 +515,11 @@ function tick(state, data) {
         consumeMaintenance(actor, data);
 
         actor.stress = computeStress(actor);
+
+        // Distressed/insolvent: shed one idle worker per tick to cut payroll.
+        // Running production is preserved (assigned workers untouched); only
+        // bench workers go. Matches real firms' first-line cost-cutting.
+        if (actor.stress >= 3) layoffOneIdle(actor);
 
         // Stress 4 (insolvent): bankruptcy clock runs. Below clock,
         // distressed actors deteriorate visibly (handled in order
