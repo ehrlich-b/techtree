@@ -41,6 +41,13 @@ const NPC_INPUT_BUFFER_CYCLES = 5;
 const NPC_MAINTENANCE_BUFFER_TICKS = 200;
 const NPC_BID_BUDGET_FRAC = 0.5;
 
+// Fire-sale discount on ask prices when the actor is in stress. Distressed
+// (cash on credit) actors halve their ask to attract buyers; insolvent
+// actors slash further. Bypasses the belief-floor clamp — a dying seller
+// will take almost anything for inventory.
+const FIRE_SALE_DISCOUNT_DISTRESSED = 0.5;
+const FIRE_SALE_DISCOUNT_INSOLVENT = 0.2;
+
 const HOUSEHOLDS_ID = 'households';
 const GOVERNMENT_ID = 'government';
 const HOUSEHOLD_BUFFER_TICKS = 10;
@@ -86,7 +93,10 @@ const GOV_BALLAST = [
     { item: 'machine-tool', bidPrice: 30000, qtyCap: 1 },
 ];
 
+// fairPrice depends only on `data` (immutable during a game), so we memoize
+// it on `data._fairPriceCache`. Saves ~6400 inner-loop iterations per tick.
 function fairPrice(data) {
+    if (data._fairPriceCache) return data._fairPriceCache;
     const items = data.items || {};
     const recipes = data.recipes || {};
     const prices = {};
@@ -111,6 +121,7 @@ function fairPrice(data) {
         }
         Object.assign(prices, next);
     }
+    data._fairPriceCache = prices;
     return prices;
 }
 
@@ -172,7 +183,15 @@ function growthTarget(actor, data) {
     if (!actor.growthBuilding) return null;
     const recipes = data.recipes || {};
     const buildings = data.buildings || {};
-    const byId = new Map((actor.workers || []).map(w => [w.id, w]));
+    // Reuse the worker index that tick.js builds at top of tick (saves
+    // allocating a fresh Map per call). Fall back to building one if absent.
+    let byId = actor._workerIndex;
+    if (!byId || actor._workerIndexCount !== actor.workers.length) {
+        byId = {};
+        for (const w of actor.workers) byId[w.id] = w;
+        actor._workerIndex = byId;
+        actor._workerIndexCount = actor.workers.length;
+    }
     const flow = {};
 
     for (const b of actor.buildings || []) {
@@ -180,9 +199,14 @@ function growthTarget(actor, data) {
             if (!slot) continue;
             const r = recipes[slot.recipe];
             if (!r) continue;
-            const workers = (slot.workerIds || []).map(id => byId.get(id)).filter(Boolean);
-            if (workers.length < (r.workers || 0)) continue;
-            const mult = outputMultiplier(workers, r.tech);
+            const workerIds = slot.workerIds || [];
+            const slotWorkers = [];
+            for (const id of workerIds) {
+                const w = byId[id];
+                if (w) slotWorkers.push(w);
+            }
+            if (slotWorkers.length < (r.workers || 0)) continue;
+            const mult = outputMultiplier(slotWorkers, r.tech);
             const rate = mult / (r.seconds || 1);
             for (const [item, amt] of Object.entries(r.outputs || {})) flow[item] = (flow[item] || 0) + amt * rate;
             for (const [item, amt] of Object.entries(r.inputs || {})) flow[item] = (flow[item] || 0) - amt * rate;
@@ -250,11 +274,21 @@ function npcOrders(actor, data, prices) {
         reserve[item] = (reserve[item] || 0) + amt;
     }
 
+    const stress = actor.stress || 0;
+    let stressDiscount = 1.0;
+    if (stress >= 4) stressDiscount = FIRE_SALE_DISCOUNT_INSOLVENT;
+    else if (stress >= 3) stressDiscount = FIRE_SALE_DISCOUNT_DISTRESSED;
     for (const [item, qty] of Object.entries(actor.inventory || {})) {
         if (qty <= 0) continue;
-        const surplus = qty - (reserve[item] || 0);
+        // Stressed actors release reserved inventory too — survival beats
+        // future growth. Distressed: sell down to half reserve. Insolvent:
+        // sell everything.
+        let effectiveReserve = reserve[item] || 0;
+        if (stress >= 4) effectiveReserve = 0;
+        else if (stress >= 3) effectiveReserve = effectiveReserve / 2;
+        const surplus = qty - effectiveReserve;
         if (surplus <= 0) continue;
-        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item);
+        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item) * stressDiscount;
         if (price <= 0) continue;
         asks.push({ actor: actor.id, item, side: 'ask', price, qty: surplus });
     }

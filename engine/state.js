@@ -43,6 +43,8 @@ function initState(data, opts = {}) {
             strategy: a.strategy || null,
             growthBuilding: a.growth_building || null,
             bankruptTicks: 0,
+            stress: 0,
+            evictionServed: false,
         };
         applyStartingAssignments(actor, a.starting_assignments || {}, data);
         actors[id] = actor;

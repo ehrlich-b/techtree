@@ -45,13 +45,25 @@ const {
 } = require('./market.js');
 
 const HISTORY_LIMIT = 100;
-const BANKRUPTCY_TICKS = 30;
+// Organic stress timeline: insolvent actors don't die immediately — they
+// deteriorate over BANKRUPTCY_TICKS while observable as `stress` state.
+// EVICTION_TICKS midway is a forced fire-sale of inventory + non-core
+// assets. Final liquidation at BANKRUPTCY_TICKS.
+const BANKRUPTCY_TICKS = 500;
+const EVICTION_TICKS = 250;
 const LIQUIDATION_RECOVERY = 0.5;
 // Credit facility: each actor can run negative cash up to a credit limit
-// before the bankruptcy clock starts. Limit = wage runway (CREDIT_RUNWAY_TICKS
-// of payroll). Buffers transient shortfalls — a single bad payroll cycle
-// shouldn't trigger the bankruptcy timer if revenue is incoming.
+// before insolvency. Limit = wage runway (CREDIT_RUNWAY_TICKS of payroll).
 const CREDIT_RUNWAY_TICKS = 60;
+
+// Stress levels per actor, recomputed each tick from cash-vs-wage-runway:
+//   0 healthy:    cash >= GROWTH_RUNWAY ticks of wages — grows aggressively
+//   1 squeezed:   cash 50-GROWTH_RUNWAY ticks — growth freeze
+//   2 stressed:   cash 0-50 ticks — hiring freeze
+//   3 distressed: cash 0 to -credit_limit — layoffs, ask discount
+//   4 insolvent:  cash < -credit_limit — bankruptcy clock running
+const STRESS_SQUEEZED_TICKS = 200;
+const STRESS_STRESSED_TICKS = 50;
 
 // Per-actor-per-item price belief drifts from fill outcomes each tick:
 // fully filled ask → +PRICE_DRIFT (could've asked more); unfilled ask →
@@ -63,9 +75,28 @@ const PRICE_DRIFT = 0.005;
 const MIN_BELIEF = 0.5;
 const MAX_BELIEF = 2.0;
 
+// Worker lookup is hot: called per slot per tick. Cache the id-map on the
+// actor, invalidated whenever actor.workers grows/shrinks. Same cache is
+// also used by growthTarget in market.js.
+function ensureWorkerIndex(actor) {
+    if (actor._workerIndex && actor._workerIndexCount === actor.workers.length) {
+        return actor._workerIndex;
+    }
+    const byId = {};
+    for (const w of actor.workers) byId[w.id] = w;
+    actor._workerIndex = byId;
+    actor._workerIndexCount = actor.workers.length;
+    return byId;
+}
+
 function workersForSlot(actor, slot) {
-    const byId = new Map(actor.workers.map(w => [w.id, w]));
-    return slot.workerIds.map(id => byId.get(id)).filter(Boolean);
+    const byId = ensureWorkerIndex(actor);
+    const out = [];
+    for (const id of slot.workerIds) {
+        const w = byId[id];
+        if (w) out.push(w);
+    }
+    return out;
 }
 
 function hasInputs(inventory, inputs) {
@@ -372,6 +403,26 @@ function consumeMaintenance(actor, data) {
     }
 }
 
+// Cash-vs-wage-runway → stress level (0 healthy ... 4 insolvent). Drives
+// graduated behaviors: growth freeze, hiring freeze, layoffs, fire-sale.
+// Stored on actor so order generation and tick logic can read consistent
+// per-tick state.
+function computeStress(actor) {
+    if (actor.strategy === 'households' || actor.strategy === 'government') return 0;
+    let totalWages = 0;
+    for (const w of actor.workers) totalWages += wage(w);
+    if (totalWages <= 0) {
+        return actor.cash < 0 ? 4 : 0;
+    }
+    const runway = actor.cash / totalWages;
+    const creditLimit = totalWages * CREDIT_RUNWAY_TICKS;
+    if (runway >= STRESS_SQUEEZED_TICKS) return 0;
+    if (runway >= STRESS_STRESSED_TICKS) return 1;
+    if (runway >= 0) return 2;
+    if (actor.cash >= -creditLimit) return 3;
+    return 4;
+}
+
 function liquidate(state, data, actor, prices) {
     const buildings = data.buildings || {};
     let recovery = 0;
@@ -436,13 +487,40 @@ function tick(state, data) {
 
         consumeMaintenance(actor, data);
 
-        const creditLimit = totalWages * CREDIT_RUNWAY_TICKS;
-        if (actor.cash < -creditLimit) actor.bankruptTicks++;
+        actor.stress = computeStress(actor);
+
+        // Stress 4 (insolvent): bankruptcy clock runs. Below clock,
+        // distressed actors deteriorate visibly (handled in order
+        // generation) but stay alive. Clears clock if recovery happens.
+        if (actor.stress >= 4) actor.bankruptTicks++;
         else actor.bankruptTicks = 0;
+
+        // Eviction notice: forced inventory fire-sale midway through the
+        // bankruptcy window. Sells half of held inventory at liquidation
+        // recovery rate. Buys the actor some cash to delay death.
+        if (actor.bankruptTicks === EVICTION_TICKS && !actor.evictionServed) {
+            actor.evictionServed = true;
+            evictionFireSale(state, actor, prices);
+        }
 
         if (actor.bankruptTicks > BANKRUPTCY_TICKS) dead.push(actor);
     }
     for (const a of dead) liquidate(state, data, a, prices);
+}
+
+// One-shot fire sale triggered by eviction notice: sell half of every
+// inventory item at liquidation recovery rate. Cash injection delays
+// death; if the underlying business recovers, the actor can survive.
+function evictionFireSale(state, actor, prices) {
+    let proceeds = 0;
+    for (const [item, qty] of Object.entries(actor.inventory || {})) {
+        if (qty <= 0) continue;
+        const sell = qty / 2;
+        const price = (prices[item] || 0) * LIQUIDATION_RECOVERY;
+        proceeds += sell * price;
+        actor.inventory[item] = qty - sell;
+    }
+    actor.cash += proceeds;
 }
 
 module.exports = { tick, runProduction, BANKRUPTCY_TICKS };
