@@ -169,9 +169,38 @@ feedback loop. Chain eventually collapses around it.
   diversification (household brick + coal) tuned carefully + perhaps
   slower NPC growth pace (longer wage-runway threshold) so chronic
   bleeders don't dig themselves into a hole early.
-- [ ] **Decouple gov corn bid from farm-co's own workforce**: gov bid
-  cap = `(totalWorkers - farm-co_workers) × rate × buffer` breaks the
-  positive feedback without removing gov ballast outright.
+  - **Attempt 2 (belief-floor gate, 2026-05-10):** gate only fires
+    when actor's priceBelief for the fallback recipe's output has
+    pinned at floor (≤ 0.55) — uses existing belief-drift signal as
+    "oversupply" proxy. Bounds farm-co cleanly at b:4 (belief floors
+    early when farm-co outproduces real corn demand). But same chain
+    cascade: player+rival keep growing kilns assuming brick demand,
+    overshoot real demand by @500, brick belief floors, both die by
+    @1000. Gate is correct mechanism, but ALL fallback-growth actors
+    need it active simultaneously, and chain currently depends on
+    farm-co's pre-bound brick demand to keep kilns solvent.
+- [ ] **Decouple gov corn bid from farm-co's own workforce**
+  (attempted, blocked): gov bid cap = `(totalWorkers - farm-co_workers)
+  × rate × buffer` breaks the positive feedback without removing gov
+  ballast outright.
+  - **Attempt 1 (2026-05-10):** implemented as: subtract workers of
+    actors whose growthBuilding hosts a recipe outputting the staple.
+    Drops gov corn purchases ~200/tick → ~15/tick (10× contraction in
+    money creation). Chain cascades by @3000 — coke-co dies first
+    (revenue drops as ore-co weakens, ore-co weakens because pig-iron
+    market thinned), then ore-co, then brick crashes ($185→$26),
+    then player+rival+farm-co die. The gov corn subsidy was a major
+    money-creation channel (~$5400/tick); removing it deflated the
+    chain's cash flow even though no actor was specifically targeted.
+  - **Attempt 2 (qtyCap=200 on gov corn, 2026-05-10):** preserves
+    money creation rate at baseline peak (~$5400/tick) but caps it
+    flat. @5000 indistinguishable from baseline (farm-co at 211
+    buildings, all NPCs alive). @10000 farm-co blows up to 1000
+    buildings, -$1.3M cash — household corn demand scales with
+    totalWorkers (real economics), so farm-co's hires still feed
+    its own demand via the wage→household→corn loop. qtyCap on gov
+    isn't enough; the household feedback also needs bounding (or
+    farm-co's growth needs gating separately).
 
 ### Goal-seeking NPCs (drop `growth_building`)
 
