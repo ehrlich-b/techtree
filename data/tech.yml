@@ -43,3 +43,9 @@ tech:
     era: industrial
     prereqs: [precision-machining]
     research_cost: 4000
+
+  steam-engineering:
+    name: "Steam Engineering"
+    era: industrial
+    prereqs: [gear-cutting, bessemer-process]
+    research_cost: 6000

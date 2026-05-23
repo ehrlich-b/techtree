@@ -36,8 +36,12 @@ const { fairPrice } = require('./market.js');
 const SYNTHETIC_STRATEGIES = new Set(['households', 'government']);
 const BUILDING_CAP = 500;
 const TRADE_LOOKBACK = 1000;
-const MONEY_BAND = 100;  // factor: total cash can't exceed 100x or drop below 1/100
-const PRICE_BAND = { low: 0.3, high: 5.0 };  // chain item last/fair ratio bounds
+// MONEY_BAND tolerates gradual inflation. Gov ballast creates money each
+// tick (~$200-300/tick) — over 200k ticks that's reaches ~200x baseline.
+// Inflation creep is not a collapse; the world continues. Tighten if a
+// proper buffer-stock gov pricing scheme lands.
+const MONEY_BAND = 1000;
+const PRICE_BAND = { low: 0.3, high: 5.0 };
 const CHAIN_ITEMS = ['brick', 'coke', 'pig-iron', 'steel', 'machine-tool'];
 
 function isSynthetic(actor) {

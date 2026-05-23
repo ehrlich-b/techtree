@@ -64,6 +64,7 @@ buildings:
       brick: 0.006
       machine-tool: 0.0005
       glass: 0.0005
+      engine: 0.00005
 
   machine-shop:
     name: "Machine Shop"
@@ -107,3 +108,16 @@ buildings:
       brick: 0.004
       steel: 0.0005
       glass: 0.001
+
+  assembly-line:
+    name: "Assembly Line"
+    slots: 2
+    construction:
+      brick: 300
+      steel: 80
+      gear: 5
+    maintenance:
+      brick: 0.01
+      steel: 0.002
+      gear: 0.001
+      machine-tool: 0.0005

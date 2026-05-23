@@ -547,6 +547,27 @@ function respawnDead(state, data) {
     state.respawnQueue = remaining;
 }
 
+// Staggered actor entry: actors with data.actors[id].start_tick > 0 are
+// skipped in initState and spawn here when state.tick reaches start_tick.
+// Creates visible tech-era progression — engineering-co appears @5000
+// alongside steam-engineering unlock, simulating the spread of new tech
+// into the economy via a fresh specialist. Funded from households like
+// respawn (same accounting symmetry).
+function spawnPendingActors(state, data) {
+    for (const [id, def] of Object.entries(data.actors || {})) {
+        const startTick = def.start_tick || 0;
+        if (startTick <= 0) continue;
+        if (state.tick !== startTick) continue;
+        if (state.actors[id]) continue;
+        const actor = createActor(data, id);
+        if (!actor) continue;
+        const seed = actor.cash || 0;
+        const households = state.actors[HOUSEHOLDS_ID];
+        if (households && households.cash >= seed) households.cash -= seed;
+        state.actors[id] = actor;
+    }
+}
+
 function tick(state, data) {
     state.tick++;
     state.lastTickAt = Date.now();
@@ -615,6 +636,7 @@ function tick(state, data) {
     }
     for (const a of dead) liquidate(state, data, a, prices);
     respawnDead(state, data);
+    spawnPendingActors(state, data);
 }
 
 // One-shot fire sale triggered by eviction notice: sell half of every

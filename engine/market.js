@@ -103,7 +103,13 @@ const STAPLES = [
 // consumers haven't ramped — analogous to gov buying steel for public
 // works in real economies.
 const GOV_BALLAST = [
-    { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR },
+    // Corn qtyCap caps gov's per-tick money creation rate. Without it, gov
+    // bid quantity scales with totalWorkers (via STAPLES.rate), so as the
+    // economy grows the money supply inflates linearly. At 8 corn/tick ×
+    // ~$30 vwap = ~$240/tick of fresh money — enough to keep farm-co
+    // profitable without unbounded inflation. Households still buy the
+    // rest of farm-co's output (transfer, not creation).
+    { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR, qtyCap: 8 },
     { item: 'coal', bidPrice: 50, qtyCap: 5 },
     { item: 'pig-iron', bidPrice: 1300, qtyCap: 2 },
     { item: 'steel', bidPrice: 3000, qtyCap: 1 },
@@ -389,9 +395,12 @@ function governmentOrders(actor, state) {
     for (const b of GOV_BALLAST) {
         const staple = STAPLES.find(s => s.item === b.item);
         const cashCap = Math.floor(cash / b.bidPrice);
+        // Order matters: explicit qtyCap wins over worker-scaled staple
+        // demand. Worker-scaled corn made money creation grow with the
+        // economy, which inflated indefinitely. qtyCap caps the rate.
         let demandCap;
-        if (staple) demandCap = Math.ceil(totalWorkers * staple.rate * GOV_BID_BUFFER);
-        else if (b.qtyCap !== undefined) demandCap = b.qtyCap;
+        if (b.qtyCap !== undefined) demandCap = b.qtyCap;
+        else if (staple) demandCap = Math.ceil(totalWorkers * staple.rate * GOV_BID_BUFFER);
         else demandCap = cashCap;
         const bidQty = Math.min(cashCap, demandCap);
         const askQty = actor.inventory[b.item] || 0;

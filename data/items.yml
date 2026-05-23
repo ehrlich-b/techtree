@@ -82,3 +82,9 @@ items:
     era: industrial
     tier: 4
     unit: count
+
+  engine:
+    name: "Steam Engine"
+    era: industrial
+    tier: 5
+    unit: count

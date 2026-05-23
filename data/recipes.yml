@@ -138,3 +138,17 @@ recipes:
       gear: 1
     seconds: 90
     workers: 2
+
+  assemble-engine:
+    name: "Assemble Steam Engine"
+    tech: steam-engineering
+    building: assembly-line
+    inputs:
+      gear: 1
+      machine-tool: 1
+      steel: 4
+      coal: 4
+    outputs:
+      engine: 1
+    seconds: 240
+    workers: 3

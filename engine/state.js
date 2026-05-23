@@ -52,7 +52,12 @@ function createActor(data, id) {
 function initState(data, opts = {}) {
     const tickRateMs = opts.tickRateMs || 1000;
     const actors = {};
-    for (const id of Object.keys(data.actors || {})) {
+    for (const [id, def] of Object.entries(data.actors || {})) {
+        // Actors with start_tick > 0 enter the world later via the spawn
+        // queue (see entryQueue in tick.js). This staggers the appearance
+        // of higher-tier specialists — engineering-co won't show up until
+        // mid-game, creating visible tech-era progression.
+        if ((def.start_tick || 0) > 0) continue;
         actors[id] = createActor(data, id);
     }
     return {

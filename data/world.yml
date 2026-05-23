@@ -105,6 +105,22 @@ actors:
     starting_assignments:
       bottling-plant: make-bottle
 
+  engineering-co:
+    start_tick: 5000
+    cash: 50000
+    strategy: balanced
+    growth_building: assembly-line
+    starting_inventory:
+      brick: 300
+      steel: 50
+      gear: 5
+      machine-tool: 2
+    starting_buildings: [assembly-line]
+    starting_tech: [ironworking, coal-tar, bessemer-process, precision-machining, gear-cutting, steam-engineering]
+    starting_workers: 3
+    starting_assignments:
+      assembly-line: assemble-engine
+
   households:
     cash: 5000
     strategy: households
