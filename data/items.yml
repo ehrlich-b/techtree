@@ -28,6 +28,9 @@ items:
     era: industrial
     tier: 1
     unit: kg
+    household:
+      rate: 0.1
+      bid_price: 50
 
   coke:
     name: "Coke"
@@ -46,6 +49,9 @@ items:
     era: industrial
     tier: 2
     unit: count
+    household:
+      rate: 0.01
+      bid_price: 120
 
   steel:
     name: "Steel"
@@ -70,12 +76,18 @@ items:
     era: industrial
     tier: 2
     unit: kg
+    household:
+      rate: 0.001
+      bid_price: 400
 
   bottle:
     name: "Bottle"
     era: industrial
     tier: 3
     unit: count
+    household:
+      rate: 0.005
+      bid_price: 300
 
   gear:
     name: "Gear"
@@ -94,6 +106,9 @@ items:
     era: industrial
     tier: 1
     unit: kg
+    household:
+      rate: 0.003
+      bid_price: 40
 
   thread:
     name: "Thread"
@@ -106,12 +121,18 @@ items:
     era: industrial
     tier: 3
     unit: count
+    household:
+      rate: 0.001
+      bid_price: 1500
 
   sulfur:
     name: "Sulfur"
     era: industrial
     tier: 1
     unit: kg
+    household:
+      rate: 0.003
+      bid_price: 70
 
   sulfuric-acid:
     name: "Sulfuric Acid"
@@ -124,6 +145,9 @@ items:
     era: industrial
     tier: 1
     unit: kg
+    household:
+      rate: 0.003
+      bid_price: 50
 
   wire:
     name: "Wire"

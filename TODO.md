@@ -30,6 +30,37 @@
 
 ## v1 — fix the scaffolding
 
+### Household consumption config in items.yml (2026-05-23) — DONE
+
+Moved household demand config from a hardcoded `STAPLES` list in
+`market.js` to per-item blocks in `data/items.yml`:
+
+```yaml
+corn:
+  ...
+  household:
+    rate: 0.1
+    bid_price: 50
+    elasticity: 0.2   # optional, default by tier
+```
+
+`market.js` exports a `staples(data)` function that derives the list at
+runtime from items declaring a `household` block. Cached on
+`data._staplesCache`. Sorted by `rate × bidPrice` descending so the
+biggest-spend items get priority when household budget tightens.
+
+Added income-elastic demand mechanism: when an item's `elasticity > 0`,
+target demand scales by `(workers / BASELINE_WORKERS)^elasticity`. Means
+luxury items can grow demand faster than necessities as the economy
+grows. Defaults to 0 per tier — first tier-defaulted attempt at 0.2–0.4
+destabilized the chain (modest worker growth caused demand spikes that
+producers couldn't match). Mechanism stays available for future tuning
+or per-item overrides; current items all have 0 effective elasticity.
+
+Harness: PASS @50k preserved, 14/14 alive at end. New items can now
+opt into household demand with a single `household:` block in
+items.yml — no engine changes needed.
+
 ### Diminishing returns on raw extraction (2026-05-23) — DONE
 
 Per-actor raw-extraction yield is now `1/sqrt(N)` where N is the count

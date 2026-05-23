@@ -40,8 +40,8 @@
 const { wage, gainSkill, outputMultiplier, newWorker, BASE_WAGE } = require('./worker.js');
 const {
     fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
-    growthTarget, recipeForBuilding,
-    HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, NPC_GROWTH_RUNWAY_TICKS,
+    growthTarget, recipeForBuilding, staples,
+    HOUSEHOLDS_ID, GOVERNMENT_ID, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
 const { createActor } = require('./state.js');
 
@@ -272,17 +272,17 @@ function npcResearch(actor, data) {
 
 function gatherOrders(actor, data, prices, state) {
     if (actor.strategy === 'households') return householdOrders(actor, data, prices, state);
-    if (actor.strategy === 'government') return governmentOrders(actor, state);
+    if (actor.strategy === 'government') return governmentOrders(actor, state, data);
     if (actor.strategy) return npcOrders(actor, data, prices);
     return playerOrders(actor);
 }
 
-function consumeStaples(state) {
+function consumeStaples(state, data) {
     const h = state.actors[HOUSEHOLDS_ID];
     if (!h) return;
     let totalWorkers = 0;
     for (const a of Object.values(state.actors)) totalWorkers += (a.workers || []).length;
-    for (const s of STAPLES) {
+    for (const s of staples(data)) {
         const need = totalWorkers * s.rate;
         const have = h.inventory[s.item] || 0;
         h.inventory[s.item] = Math.max(0, have - need);
@@ -614,7 +614,7 @@ function tick(state, data) {
         npcResearch(actor, data);
     }
 
-    consumeStaples(state);
+    consumeStaples(state, data);
 
     const prices = fairPrice(data);
     const orders = [];

@@ -74,38 +74,46 @@ const NPC_GROWTH_BUDGET_FRAC = 0.7;
 const GROWTH_FLOOR_BELIEF = 0.55;
 
 const CORN_ANCHOR = 50;
-const BOTTLE_ANCHOR = 300;
-const BRICK_ANCHOR = 120;
-const GLASS_ANCHOR = 400;
-const COTTON_ANCHOR = 40;
-const CLOTH_ANCHOR = 1500;
-const SULFUR_ANCHOR = 70;
-const COPPER_ANCHOR = 50;
-// Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
-// Bottle at 0.005/worker/tick × $300 = $1.5/tick — minor secondary demand
-// for the sand→glass→bottle chain. Brick at 0.01/worker/tick × $120 = $1.2/
-// tick — housing wear, gives kiln operators a durable demand sink so they
-// don't cycle death-respawn from anemic build-only demand. Glass at 0.001/
-// worker/tick × $400 — windows, absorbs glass-co surplus. Cotton at 0.003/
-// worker/tick × $40 — bedding/raw fiber, gives cotton-co a demand sink
-// beyond just textile-co's single spinning-mill (otherwise 5× oversupply
-// → cotton-co dies). Cloth at 0.001/worker/tick × $1500 — clothing,
-// absorbs textile-co's woven output. Sulfur at 0.003/worker/tick × $70 —
-// matches/preservatives, gives sulfur-co dual demand alongside chemical-
-// co's acid distillation (single-consumer dependency caused chronic
-// sulfur-co death-cycle). All bidPrices stay below NPC max bid (fair ×
-// 0.95 × 2.0) so NPCs win when they need the item for construction/
-// maintenance.
-const STAPLES = [
-    { item: 'corn',   rate: 0.1,   bidPrice: CORN_ANCHOR },
-    { item: 'bottle', rate: 0.005, bidPrice: BOTTLE_ANCHOR },
-    { item: 'brick',  rate: 0.01,  bidPrice: BRICK_ANCHOR },
-    { item: 'glass',  rate: 0.001, bidPrice: GLASS_ANCHOR },
-    { item: 'cotton', rate: 0.003, bidPrice: COTTON_ANCHOR },
-    { item: 'cloth',  rate: 0.001, bidPrice: CLOTH_ANCHOR },
-    { item: 'sulfur', rate: 0.003, bidPrice: SULFUR_ANCHOR },
-    { item: 'copper', rate: 0.003, bidPrice: COPPER_ANCHOR },
-];
+// Household demand config lives on each item (data/items.yml,
+// `household: { rate, bid_price, elasticity? }`). `staples(data)` reads
+// that block and yields per-tick consumption + bid anchor for every item
+// flagged as household-consumed. Adding a new staple is now a one-line
+// schema edit on the item; no engine changes needed.
+//
+// Elasticity: when set on an item, demand scales with the population
+// ratio so luxury items grow faster than necessities as the economy
+// thrives. Per-tier defaults are all 0 — items opt in via
+// `household.elasticity`. Early experiments at tier-based defaults
+// 0.2–0.4 destabilized the chain (modest worker growth produced
+// significant demand spikes that producers couldn't keep up with).
+// Leaving the mechanism available without defaulting to it.
+const DEFAULT_TIER_ELASTICITY = { 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0 };
+
+function staples(data) {
+    if (data._staplesCache) return data._staplesCache;
+    const list = [];
+    for (const [id, item] of Object.entries(data.items || {})) {
+        const h = item && item.household;
+        if (!h || !(h.rate > 0)) continue;
+        const tier = item.tier || 1;
+        const elasticity = h.elasticity !== undefined
+            ? h.elasticity
+            : (DEFAULT_TIER_ELASTICITY[tier] || 0);
+        list.push({
+            item: id,
+            rate: h.rate,
+            bidPrice: h.bid_price || 0,
+            elasticity,
+        });
+    }
+    // Sort by spending impact (rate × bidPrice) descending. Order matters
+    // because households iterate the list and deplete a shared budget;
+    // putting the biggest-spend items first ensures necessities get funded
+    // before luxuries when the budget tightens.
+    list.sort((a, b) => (b.rate * b.bidPrice) - (a.rate * a.bidPrice));
+    data._staplesCache = list;
+    return list;
+}
 // Gov ballasts the wage staple (corn) and a few industrial goods. Corn
 // has both bid and ask at anchor (market-maker, midpoint preserves the
 // $50 anchor for households). Industrial entries are sterile sinks:
@@ -391,13 +399,23 @@ function npcOrders(actor, data, prices) {
     return { bids, asks };
 }
 
+// Income-elastic demand: luxury items scale faster than necessities as the
+// economy grows. The scaling input is total worker count (population
+// proxy) — using household cash directly created runaway multipliers
+// since gov subsidies inflate household cash faster than economy size.
+// BASELINE_WORKERS is the initial worker count at game start; at that
+// size every multiplier is 1.0.
+const BASELINE_WORKERS = 30;
+
 function householdOrders(actor, data, prices, state) {
     let totalWorkers = 0;
     for (const a of Object.values(state.actors)) totalWorkers += (a.workers || []).length;
     const bids = [];
     let budget = Math.max(0, (actor.cash || 0) * HOUSEHOLD_BID_BUDGET_FRAC);
-    for (const s of STAPLES) {
-        const target = totalWorkers * s.rate * HOUSEHOLD_BUFFER_TICKS;
+    const ratio = Math.max(1, totalWorkers / BASELINE_WORKERS);
+    for (const s of staples(data)) {
+        const elast = Math.pow(ratio, s.elasticity || 0);
+        const target = totalWorkers * s.rate * elast * HOUSEHOLD_BUFFER_TICKS;
         const have = actor.inventory[s.item] || 0;
         const short = Math.max(0, target - have);
         if (short <= 0) continue;
@@ -410,15 +428,16 @@ function householdOrders(actor, data, prices, state) {
     return { bids, asks: [] };
 }
 
-function governmentOrders(actor, state) {
+function governmentOrders(actor, state, data) {
     const orders = { bids: [], asks: [] };
     const cash = Math.max(0, actor.cash || 0);
     let totalWorkers = 0;
     for (const a of Object.values((state && state.actors) || {})) {
         totalWorkers += (a.workers || []).length;
     }
+    const stapleList = data ? staples(data) : [];
     for (const b of GOV_BALLAST) {
-        const staple = STAPLES.find(s => s.item === b.item);
+        const staple = stapleList.find(s => s.item === b.item);
         const cashCap = Math.floor(cash / b.bidPrice);
         // Order matters: explicit qtyCap wins over worker-scaled staple
         // demand. Worker-scaled corn made money creation grow with the
@@ -493,7 +512,7 @@ function clear(orders) {
 
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
-    growthTarget, recipeForBuilding,
-    MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, CORN_ANCHOR,
+    growthTarget, recipeForBuilding, staples,
+    MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID, CORN_ANCHOR,
     NPC_GROWTH_RUNWAY_TICKS,
 };
