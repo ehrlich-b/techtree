@@ -96,3 +96,34 @@ recipes:
       machine-tool: 1
     seconds: 180
     workers: 2
+
+  mine-sand:
+    name: "Mine Sand"
+    building: sand-pit
+    outputs:
+      sand: 6
+    seconds: 30
+    workers: 1
+
+  blow-glass:
+    name: "Blow Glass"
+    tech: glassmaking
+    building: glass-furnace
+    inputs:
+      sand: 2
+      coke: 1
+    outputs:
+      glass: 3
+    seconds: 60
+    workers: 2
+
+  make-bottle:
+    name: "Make Bottle"
+    tech: container-mfg
+    building: bottling-plant
+    inputs:
+      glass: 1
+    outputs:
+      bottle: 5
+    seconds: 60
+    workers: 2

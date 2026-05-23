@@ -273,6 +273,43 @@ function runScenario(opts = {}) {
         console.log(`  ${item.padEnd(14)} ${fair.padStart(10)}  ${vwap.padStart(10)}  ${String(qty).padStart(6)}  ${ratio.padStart(6)}`);
     }
 
+    // Tech tree walk view
+    const allTechs = Object.keys(data.tech || {});
+    const allRecipes = Object.keys(data.recipes || {});
+    const techByActor = {};
+    const recipeRunCounts = {};
+    const inProgress = {};
+    for (const [aid, a] of Object.entries(state.actors)) {
+        if (isSynthetic(a)) continue;
+        techByActor[aid] = Array.from(a.researched || []);
+        if (a.researchInProgress) inProgress[aid] = a.researchInProgress.tech;
+        for (const b of a.buildings || []) {
+            for (const slot of b.slots || []) {
+                if (slot && slot.recipe) {
+                    recipeRunCounts[slot.recipe] = (recipeRunCounts[slot.recipe] || 0) + 1;
+                }
+            }
+        }
+    }
+    console.log('');
+    console.log('tech walk:');
+    for (const tech of allTechs) {
+        const owners = Object.entries(techByActor).filter(([, ts]) => ts.includes(tech)).map(([id]) => id);
+        const ipOwners = Object.entries(inProgress).filter(([, t]) => t === tech).map(([id]) => id);
+        const ownerStr = owners.length ? owners.join(',') : '(none)';
+        const ipStr = ipOwners.length ? ` [in-progress: ${ipOwners.join(',')}]` : '';
+        console.log(`  ${tech.padEnd(20)}  ${ownerStr}${ipStr}`);
+    }
+    console.log('');
+    console.log('recipe activity (active slots across all actors):');
+    for (const rid of allRecipes) {
+        const r = data.recipes[rid];
+        const count = recipeRunCounts[rid] || 0;
+        const techTag = r.tech ? `[${r.tech}]` : '[raw]';
+        const status = count > 0 ? `${count} slot(s)` : '(idle)';
+        console.log(`  ${rid.padEnd(22)} ${techTag.padEnd(22)} ${status}`);
+    }
+
     console.log('');
     if (finalSnap.invariants.length === 0) {
         console.log(`PASS @${ticks}`);

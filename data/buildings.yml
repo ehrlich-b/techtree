@@ -74,3 +74,30 @@ buildings:
       brick: 0.003
       steel: 0.001
       machine-tool: 0.0005
+      glass: 0.0005
+
+  sand-pit:
+    name: "Sand Pit"
+    slots: 1
+    construction:
+      brick: 20
+    maintenance:
+      brick: 0.0005
+
+  glass-furnace:
+    name: "Glass Furnace"
+    slots: 1
+    construction:
+      brick: 120
+    maintenance:
+      brick: 0.002
+
+  bottling-plant:
+    name: "Bottling Plant"
+    slots: 1
+    construction:
+      brick: 100
+      steel: 20
+    maintenance:
+      brick: 0.0015
+      steel: 0.0005

@@ -74,11 +74,15 @@ const NPC_GROWTH_BUDGET_FRAC = 0.7;
 const GROWTH_FLOOR_BELIEF = 0.55;
 
 const CORN_ANCHOR = 50;
+const BOTTLE_ANCHOR = 300;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
-// Brick is not a staple — it's a construction good. Producers earn from real
-// build demand (player or NPC), not from a synthetic household appetite.
+// Bottle at 0.005/worker/tick × $300 = $1.5/tick — minor secondary demand
+// that creates a sink for the sand→glass→bottle chain. Brick is not a
+// staple — it's a construction good. Producers earn from real build demand
+// (player or NPC), not from a synthetic household appetite.
 const STAPLES = [
-    { item: 'corn',  rate: 0.1, bidPrice: CORN_ANCHOR },
+    { item: 'corn',  rate: 0.1,   bidPrice: CORN_ANCHOR },
+    { item: 'bottle', rate: 0.005, bidPrice: BOTTLE_ANCHOR },
 ];
 // Gov ballasts the wage staple (corn) and a few industrial goods. Corn
 // has both bid and ask at anchor (market-maker, midpoint preserves the

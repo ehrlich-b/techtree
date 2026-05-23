@@ -77,11 +77,40 @@ actors:
     starting_assignments:
       machine-shop: forge-machine-tool
 
+  glass-co:
+    cash: 18000
+    strategy: balanced
+    growth_building: glass-furnace
+    starting_inventory:
+      brick: 150
+      coke: 20
+    starting_buildings: [sand-pit, glass-furnace]
+    starting_tech: [coal-tar, glassmaking]
+    starting_workers: 3
+    starting_assignments:
+      sand-pit: mine-sand
+      glass-furnace: blow-glass
+
+  bottle-co:
+    cash: 22000
+    strategy: balanced
+    growth_building: bottling-plant
+    starting_inventory:
+      brick: 100
+      steel: 20
+      glass: 30
+    starting_buildings: [bottling-plant]
+    starting_tech: [coal-tar, glassmaking, container-mfg]
+    starting_workers: 2
+    starting_assignments:
+      bottling-plant: make-bottle
+
   households:
     cash: 5000
     strategy: households
     starting_inventory:
       corn: 100
+      bottle: 50
 
   government:
     cash: 1000000

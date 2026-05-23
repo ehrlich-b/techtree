@@ -178,16 +178,22 @@ function advanceResearch(actor, data) {
     }
 }
 
-// NPCs auto-pick research targets so the tech tree gets walked. Pick the
-// cheapest tech the actor hasn't researched yet whose prereqs are met and
-// which unlocks at least one recipe. Research is free (1 pt/tick), so no
-// cash gating needed — the cost is opportunity, not money.
+// NPCs auto-pick research targets so the tech tree gets walked. Preference:
+//   1. Tech that unlocks a recipe in a building the actor already owns
+//      (immediately useful — they have a slot to adopt it in).
+//   2. Otherwise the cheapest available tech that unlocks any recipe.
+// Without preference (1), actors waste research on irrelevant tech — e.g.,
+// ore-co researching ceramic-kiln before bessemer-process. The owned-
+// building preference makes the tech walk semantically meaningful: each
+// actor progresses up the tier of recipes their current buildings support.
 function npcResearch(actor, data) {
     if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') return;
     if (actor.researchInProgress) return;
     const tech = data.tech || {};
     const recipes = data.recipes || {};
-    let best = null;
+    const ownedBuildings = new Set((actor.buildings || []).map(b => b.type));
+    let bestForOwned = null;
+    let bestAny = null;
     for (const [techId, def] of Object.entries(tech)) {
         if (actor.researched.has(techId)) continue;
         const prereqs = def.prereqs || [];
@@ -197,14 +203,22 @@ function npcResearch(actor, data) {
         }
         if (!prereqsMet) continue;
         let unlocksRecipe = false;
+        let unlocksForOwned = false;
         for (const r of Object.values(recipes)) {
-            if (r.tech === techId) { unlocksRecipe = true; break; }
+            if (r.tech === techId) {
+                unlocksRecipe = true;
+                if (ownedBuildings.has(r.building)) unlocksForOwned = true;
+            }
         }
         if (!unlocksRecipe) continue;
         const cost = def.research_cost || 0;
-        if (!best || cost < best.cost) best = { techId, cost };
+        if (unlocksForOwned && (!bestForOwned || cost < bestForOwned.cost)) {
+            bestForOwned = { techId, cost };
+        }
+        if (!bestAny || cost < bestAny.cost) bestAny = { techId, cost };
     }
-    if (best) actor.researchInProgress = { tech: best.techId, progress: 0 };
+    const pick = bestForOwned || bestAny;
+    if (pick) actor.researchInProgress = { tech: pick.techId, progress: 0 };
 }
 
 function gatherOrders(actor, data, prices, state) {

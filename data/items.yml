@@ -58,3 +58,21 @@ items:
     era: industrial
     tier: 4
     unit: count
+
+  sand:
+    name: "Sand"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  glass:
+    name: "Glass"
+    era: industrial
+    tier: 2
+    unit: kg
+
+  bottle:
+    name: "Bottle"
+    era: industrial
+    tier: 3
+    unit: count
