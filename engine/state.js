@@ -10,44 +10,50 @@
 const fs = require('fs');
 const { newWorker } = require('./worker.js');
 
+function createActor(data, id) {
+    const def = (data.actors || {})[id];
+    if (!def) return null;
+    const buildings = data.buildings || {};
+    const builtBuildings = (def.starting_buildings || []).map((bid, i) => {
+        const bdef = buildings[bid] || {};
+        const numSlots = bdef.slots || 1;
+        return {
+            id: `${id}-${bid}-${i}`,
+            type: bid,
+            slots: Array(numSlots).fill(null),
+        };
+    });
+    const workers = [];
+    const startingWorkers = def.starting_workers || 0;
+    for (let i = 0; i < startingWorkers; i++) workers.push(newWorker(`${id}-w${i}`));
+    const actor = {
+        id,
+        cash: def.cash || 0,
+        inventory: { ...(def.starting_inventory || {}) },
+        workers,
+        workerCounter: startingWorkers,
+        buildings: builtBuildings,
+        buildingCounter: builtBuildings.length,
+        researched: new Set(def.starting_tech || []),
+        researchInProgress: null,
+        priceBook: {},
+        priceBelief: {},
+        pendingBids: [],
+        strategy: def.strategy || null,
+        growthBuilding: def.growth_building || null,
+        bankruptTicks: 0,
+        stress: 0,
+        evictionServed: false,
+    };
+    applyStartingAssignments(actor, def.starting_assignments || {}, data);
+    return actor;
+}
+
 function initState(data, opts = {}) {
     const tickRateMs = opts.tickRateMs || 1000;
-    const buildings = data.buildings || {};
     const actors = {};
-    for (const [id, a] of Object.entries(data.actors || {})) {
-        const builtBuildings = (a.starting_buildings || []).map((bid, i) => {
-            const def = buildings[bid] || {};
-            const numSlots = def.slots || 1;
-            return {
-                id: `${id}-${bid}-${i}`,
-                type: bid,
-                slots: Array(numSlots).fill(null),
-            };
-        });
-        const workers = [];
-        const startingWorkers = a.starting_workers || 0;
-        for (let i = 0; i < startingWorkers; i++) workers.push(newWorker(`${id}-w${i}`));
-        const actor = {
-            id,
-            cash: a.cash || 0,
-            inventory: { ...(a.starting_inventory || {}) },
-            workers,
-            workerCounter: startingWorkers,
-            buildings: builtBuildings,
-            buildingCounter: builtBuildings.length,
-            researched: new Set(a.starting_tech || []),
-            researchInProgress: null,
-            priceBook: {},
-            priceBelief: {},
-            pendingBids: [],
-            strategy: a.strategy || null,
-            growthBuilding: a.growth_building || null,
-            bankruptTicks: 0,
-            stress: 0,
-            evictionServed: false,
-        };
-        applyStartingAssignments(actor, a.starting_assignments || {}, data);
-        actors[id] = actor;
+    for (const id of Object.keys(data.actors || {})) {
+        actors[id] = createActor(data, id);
     }
     return {
         tick: 0,
@@ -56,6 +62,7 @@ function initState(data, opts = {}) {
         lastTickAt: Date.now(),
         actors,
         marketHistory: {},
+        respawnQueue: [],
     };
 }
 
@@ -90,6 +97,7 @@ function save(state, filePath) {
 function load(filePath) {
     const raw = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     if (!raw.marketHistory) raw.marketHistory = {};
+    if (!raw.respawnQueue) raw.respawnQueue = [];
     for (const a of Object.values(raw.actors || {})) {
         a.researched = new Set(a.researched);
         if (!a.priceBook) a.priceBook = {};
@@ -107,4 +115,4 @@ function catchUp(state, data, elapsedSeconds, tickFn) {
     return ticks;
 }
 
-module.exports = { initState, save, load, catchUp };
+module.exports = { initState, createActor, save, load, catchUp };

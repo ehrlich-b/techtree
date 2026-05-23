@@ -66,6 +66,12 @@ const GOV_BID_BUFFER = 2;
 // they already hold.
 const NPC_GROWTH_RUNWAY_TICKS = 200;
 const NPC_GROWTH_BUDGET_FRAC = 0.7;
+// Growth gate: if the actor's belief for their growthBuilding's output has
+// drifted to (or near) the floor of [MIN_BELIEF, MAX_BELIEF], they're
+// overproducing — block fallback growth. Set slightly above MIN_BELIEF
+// (0.5) so the gate fires once belief has hit the floor and hasn't yet
+// drifted back up.
+const GROWTH_FLOOR_BELIEF = 0.55;
 
 const CORN_ANCHOR = 50;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
@@ -225,6 +231,20 @@ function growthTarget(actor, data) {
             const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
             if (!isRaw && !haveTypes.has(r.building)) continue;
             if (buildings[r.building]) return r.building;
+        }
+    }
+    // Falling back to default growthBuilding — gate on oversupply. If the
+    // actor's belief for the fallback recipe's output has pinned at floor,
+    // they're overproducing relative to demand; don't grow further.
+    // Resilience: when demand returns, belief drifts up and growth resumes.
+    // Cluster damage from this gate (e.g., kilns starve when farm-co stops
+    // building farms → brick demand drops) is absorbed by respawn.
+    const fallbackRecipe = recipeForBuilding(actor, data, actor.growthBuilding);
+    if (fallbackRecipe) {
+        const beliefs = actor.priceBelief || {};
+        for (const item of Object.keys(fallbackRecipe.outputs || {})) {
+            const b = beliefs[item];
+            if (b !== undefined && b <= GROWTH_FLOOR_BELIEF) return null;
         }
     }
     return actor.growthBuilding;

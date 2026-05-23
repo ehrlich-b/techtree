@@ -43,6 +43,7 @@ const {
     growthTarget, recipeForBuilding,
     HOUSEHOLDS_ID, GOVERNMENT_ID, STAPLES, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
+const { createActor } = require('./state.js');
 
 const HISTORY_LIMIT = 100;
 // Organic stress timeline: insolvent actors don't die immediately — they
@@ -55,6 +56,14 @@ const LIQUIDATION_RECOVERY = 0.5;
 // Credit facility: each actor can run negative cash up to a credit limit
 // before insolvency. Limit = wage runway (CREDIT_RUNWAY_TICKS of payroll).
 const CREDIT_RUNWAY_TICKS = 60;
+// Respawn: dead NPCs reseed after RESPAWN_DELAY ticks from their data.actors
+// spec (starting cash + buildings + workers + tech). Funded from households
+// first (sink for the wage cycle), else minted. Player is never respawned.
+// This is the safety net that breaks cascade collapse: when machine-co dies,
+// the chain has K ticks to reorganize without producer demand, then a fresh
+// machine-co rejoins. The same niche may die again; that's allowed and
+// expected when it's structurally unprofitable.
+const RESPAWN_DELAY = 200;
 
 // Stress levels per actor, recomputed each tick from cash-vs-wage-runway:
 //   0 healthy:    cash >= GROWTH_RUNWAY ticks of wages — grows aggressively
@@ -469,6 +478,34 @@ function liquidate(state, data, actor, prices) {
     const households = state.actors[HOUSEHOLDS_ID];
     if (households) households.cash += (actor.cash || 0) + recovery;
     delete state.actors[actor.id];
+    // Queue for respawn unless this is the player. The player is the human's
+    // company — its death ends the game, not the world.
+    if (actor.id !== 'player' && (data.actors || {})[actor.id]) {
+        if (!state.respawnQueue) state.respawnQueue = [];
+        state.respawnQueue.push({ actorId: actor.id, deathTick: state.tick });
+    }
+}
+
+function respawnDead(state, data) {
+    if (!state.respawnQueue || state.respawnQueue.length === 0) return;
+    const remaining = [];
+    for (const entry of state.respawnQueue) {
+        if (state.tick - entry.deathTick < RESPAWN_DELAY) {
+            remaining.push(entry);
+            continue;
+        }
+        if (state.actors[entry.actorId]) continue; // already alive (shouldn't happen)
+        const actor = createActor(data, entry.actorId);
+        if (!actor) continue;
+        // Funding source: take seed cash from households (the cycle's cash
+        // sink) when possible, else mint. Gov is exempt — gov cash is fiat
+        // anchor and we don't want respawns to drain it.
+        const seed = actor.cash || 0;
+        const households = state.actors[HOUSEHOLDS_ID];
+        if (households && households.cash >= seed) households.cash -= seed;
+        state.actors[entry.actorId] = actor;
+    }
+    state.respawnQueue = remaining;
 }
 
 function tick(state, data) {
@@ -538,6 +575,7 @@ function tick(state, data) {
         if (actor.bankruptTicks > BANKRUPTCY_TICKS) dead.push(actor);
     }
     for (const a of dead) liquidate(state, data, a, prices);
+    respawnDead(state, data);
 }
 
 // One-shot fire sale triggered by eviction notice: sell half of every

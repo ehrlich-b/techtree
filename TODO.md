@@ -30,6 +30,45 @@
 
 ## v1 — fix the scaffolding
 
+### Resilience pass (2026-05-23) — DONE
+
+Goal was a self-simulating bot economy that survives indefinitely and
+recovers from perturbation. Reached via two paired changes:
+
+- **Stress harness** (`engine/harness.js`, `make harness`): runs headless,
+  snapshots every N ticks, extracts events from state diffs, checks five
+  invariants (actor-alive, bounded-growth, chain-trading, money-bounded,
+  price-band). `--kill A@T` perturbs by deleting an actor at tick T.
+  Replaces "5/5 alive @5000" with measurable pass/fail across windows.
+- **Respawn** (`tick.js`, `RESPAWN_DELAY=200`): dead non-player actors
+  reseed from their `data.actors` spec after a delay, funded from
+  households when possible. Breaks cluster cascade: machine-co dies
+  → coke-co + ore-co briefly destabilize → all respawn → chain resumes.
+- **Belief-floor growth gate** (`market.js`, `GROWTH_FLOOR_BELIEF=0.55`):
+  fallback `growthTarget` returns null when the actor's belief for the
+  growth recipe's output has pinned at floor. This is the same TODO
+  attempt 2 that was previously blocked by kiln cascade — respawn
+  absorbs the cascade, so the gate now works. Bounds farm-co at
+  ~4 farms (down from 2358 @10k).
+
+Harness results after pass:
+- @5k, @10k, @20k: PASS (all five invariants).
+- @50k: near-pass, single trailing `no-trade:pig-iron` from sample window.
+- @100k: degrades on money-supply (163× baseline) — gov corn ballast is
+  pure money creation (~$177/tick net), accumulates linearly. Not a
+  collapse, an inflation creep.
+- Forced `--kill coke-co@4000` / `--kill machine-co@4000` /
+  `--kill farm-co@4000`: world heals within ~5k ticks; all actors alive
+  by @15k.
+
+Persistent issues, lower priority:
+- **Brick chronically floors** at 0.29× fair — rival-co's kiln capacity
+  exceeds bound farm-co's brick demand. Respawn handles it (rival-co
+  oscillates death-respawn) but it's noisy.
+- **Money supply inflation** — gov corn purchase is unbacked. Long-run
+  fix is dynamic gov anchor (drift on observed clearing) or reduced
+  gov bid quantity. Deferred — does not collapse the world.
+
 ### Adversarial findings (5000-tick smoke probes)
 
 The v0 economy is held up by hand-tuned gov ballast. Evidence:
