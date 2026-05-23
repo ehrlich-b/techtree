@@ -123,3 +123,33 @@ buildings:
       gear: 0.001
       machine-tool: 0.0005
       engine: 0.0002
+
+  cotton-field:
+    name: "Cotton Field"
+    slots: 1
+    construction:
+      brick: 30
+    maintenance:
+      brick: 0.002
+
+  spinning-mill:
+    name: "Spinning Mill"
+    slots: 2
+    construction:
+      brick: 100
+      steel: 20
+    maintenance:
+      brick: 0.005
+      steel: 0.0005
+
+  loom:
+    name: "Loom"
+    slots: 2
+    construction:
+      brick: 150
+      steel: 30
+      gear: 3
+    maintenance:
+      brick: 0.006
+      steel: 0.001
+      gear: 0.0005

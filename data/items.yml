@@ -88,3 +88,21 @@ items:
     era: industrial
     tier: 5
     unit: count
+
+  cotton:
+    name: "Cotton"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  thread:
+    name: "Thread"
+    era: industrial
+    tier: 2
+    unit: kg
+
+  cloth:
+    name: "Cloth"
+    era: industrial
+    tier: 3
+    unit: count

@@ -152,3 +152,33 @@ recipes:
       engine: 1
     seconds: 240
     workers: 3
+
+  harvest-cotton:
+    name: "Harvest Cotton"
+    building: cotton-field
+    outputs:
+      cotton: 4
+    seconds: 30
+    workers: 1
+
+  spin-thread:
+    name: "Spin Thread"
+    tech: textile-spinning
+    building: spinning-mill
+    inputs:
+      cotton: 3
+    outputs:
+      thread: 4
+    seconds: 60
+    workers: 2
+
+  weave-cloth:
+    name: "Weave Cloth"
+    tech: mechanical-loom
+    building: loom
+    inputs:
+      thread: 2
+    outputs:
+      cloth: 1
+    seconds: 90
+    workers: 2

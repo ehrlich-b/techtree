@@ -30,6 +30,43 @@
 
 ## v1 — fix the scaffolding
 
+### Textile branch (2026-05-23) — DONE
+
+Parallel tech branch added to widen the walking surface. Before, only one
+linear branch (metals) was actively walked by NPCs; glass branch existed
+but actors started with the tech pre-researched. Textile is a real walker:
+
+- **3 items, 2 tech, 3 buildings, 3 recipes** added: cotton (t1 raw),
+  thread (t2), cloth (t3); textile-spinning (600) → mechanical-loom
+  (1500); cotton-field, spinning-mill, loom; harvest-cotton, spin-thread,
+  weave-cloth.
+- **2 new actors**: cotton-co (raw cotton), textile-co (starts with
+  spinning-mill + loom + textile-spinning but NO mechanical-loom — they
+  must research it before their loom comes online).
+- **Cotton dual-use**: household staple ($40, rate 0.003) + textile
+  input. Without the staple, cotton-co dies (textile-co's single
+  spinning-mill can't absorb cotton-co's supply). With the staple
+  calibrated tighter, cotton-co stabilizes at 1-2 fields.
+- **Cloth staple**: $1500, rate 0.001 — gives weave-cloth output a
+  demand sink at full chain depth.
+- **Cross-branch dep**: loom maintenance includes gear (cross-pulls
+  machine-co's output).
+
+Harness results:
+- @5k: textile-co researched mechanical-loom by ~tick 1500, cloth
+  clearing at 0.93× fair. Whole textile chain active.
+- @20k: 7 NPCs at bessemer-process, 4 at gear-cutting, 4 at mechanical-
+  loom. farm-co (no targets, WALK fallback) accidentally researches the
+  entire tree — wasted cash but visually shows full traversal.
+- @50k: 10/10 actors alive at final tick, all 18 recipes running.
+
+Persistent issue (pre-existing, made visible by harness):
+- **machine-tool no-trade** — belief × spread asymmetry at belief
+  saturation. Ask at fair × 1.05 × belief_max (=$59k) > max NPC bid
+  at fair × 0.95 × belief_max (=$53k). No clear. Real fix is cost-based
+  price discovery (TODO section below). Doesn't collapse the chain
+  because gov ballast at $30k creates some demand.
+
 ### Resilience pass (2026-05-23) — DONE
 
 Goal was a self-simulating bot economy that survives indefinitely and

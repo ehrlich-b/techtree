@@ -121,6 +121,31 @@ actors:
     starting_assignments:
       assembly-line: assemble-engine
 
+  cotton-co:
+    cash: 8000
+    strategy: balanced
+    growth_building: cotton-field
+    starting_inventory:
+      brick: 100
+    starting_buildings: [cotton-field]
+    starting_workers: 1
+    starting_assignments:
+      cotton-field: harvest-cotton
+
+  textile-co:
+    cash: 28000
+    strategy: balanced
+    growth_building: spinning-mill
+    starting_inventory:
+      brick: 200
+      steel: 30
+      gear: 3
+    starting_buildings: [spinning-mill, loom]
+    starting_tech: [textile-spinning]
+    starting_workers: 4
+    starting_assignments:
+      spinning-mill: spin-thread
+
   households:
     cash: 5000
     strategy: households
@@ -129,6 +154,8 @@ actors:
       bottle: 50
       brick: 100
       glass: 30
+      cotton: 50
+      cloth: 10
 
   government:
     cash: 1000000

@@ -49,3 +49,14 @@ tech:
     era: industrial
     prereqs: [gear-cutting, bessemer-process]
     research_cost: 6000
+
+  textile-spinning:
+    name: "Textile Spinning"
+    era: industrial
+    research_cost: 600
+
+  mechanical-loom:
+    name: "Mechanical Loom"
+    era: industrial
+    prereqs: [textile-spinning]
+    research_cost: 1500
