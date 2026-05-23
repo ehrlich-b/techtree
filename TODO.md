@@ -30,6 +30,41 @@
 
 ## v1 — fix the scaffolding
 
+### Chemistry branch (2026-05-23) — DONE
+
+Third parallel tech branch: sulfur → sulfuric-acid. Walks
+industrial-chemistry independently of metals + textiles trees.
+
+- **2 items, 1 tech, 2 buildings, 2 recipes**: sulfur (t1 raw),
+  sulfuric-acid (t2); industrial-chemistry (800, no prereq);
+  sulfur-mine, acid-plant; mine-sulfur, distill-acid.
+- **2 new actors**: sulfur-co (raw extraction, 1 mine, 1 worker),
+  chemical-co (acid-plant + industrial-chemistry, 2 workers).
+- **Acid maintenance**: blast-furnace, machine-shop, glass-furnace
+  (only the heavy industrial users — initial broad distribution
+  including kiln/bottling-plant/assembly-line destabilized the
+  chain).
+- **Sulfur dual-use**: industrial input (distill-acid) + household
+  staple ($70, rate 0.003). Without staple, sulfur-co dies in the
+  same single-consumer-dependency pattern that nearly killed
+  cotton-co. With it, sulfur-co stabilizes at 2-3 mines.
+
+Harness results:
+- @5k: PASS. 12/12 actors alive. Sulfur and acid both trading.
+- @20k: PASS. industrial-chemistry researched by 7 actors, walked
+  in-progress by another 3. 6 deaths total (cluster damage,
+  respawn heals).
+- @50k: 7 deaths over run (slightly better than 9 baseline pre-
+  chemistry), but final-window cascade — rival-co + ore-co + coke-co
+  + cotton-co die in last 5000 ticks. Chain still recovers via
+  respawn but ends mid-cycle.
+
+Persistent issues (pre-existing, not fixed here):
+- **machine-tool no-trade** — same belief saturation issue.
+- **Long-run cascades** — chains decoupling at @50k due to money
+  inflation (farm-co at $6M, households at $1.7M, total cash 7×
+  baseline). Buffer-stock gov pricing (TODO task #11) would help.
+
 ### Textile branch (2026-05-23) — DONE
 
 Parallel tech branch added to widen the walking surface. Before, only one

@@ -182,3 +182,23 @@ recipes:
       cloth: 1
     seconds: 90
     workers: 2
+
+  mine-sulfur:
+    name: "Mine Sulfur"
+    building: sulfur-mine
+    outputs:
+      sulfur: 2
+    seconds: 30
+    workers: 1
+
+  distill-acid:
+    name: "Distill Sulfuric Acid"
+    tech: industrial-chemistry
+    building: acid-plant
+    inputs:
+      sulfur: 3
+      coal: 1
+    outputs:
+      sulfuric-acid: 1
+    seconds: 120
+    workers: 2

@@ -106,3 +106,15 @@ items:
     era: industrial
     tier: 3
     unit: count
+
+  sulfur:
+    name: "Sulfur"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  sulfuric-acid:
+    name: "Sulfuric Acid"
+    era: industrial
+    tier: 2
+    unit: kg

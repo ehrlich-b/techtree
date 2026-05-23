@@ -79,18 +79,22 @@ const BRICK_ANCHOR = 120;
 const GLASS_ANCHOR = 400;
 const COTTON_ANCHOR = 40;
 const CLOTH_ANCHOR = 1500;
+const SULFUR_ANCHOR = 70;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
 // Bottle at 0.005/worker/tick × $300 = $1.5/tick — minor secondary demand
 // for the sand→glass→bottle chain. Brick at 0.01/worker/tick × $120 = $1.2/
 // tick — housing wear, gives kiln operators a durable demand sink so they
 // don't cycle death-respawn from anemic build-only demand. Glass at 0.001/
-// worker/tick × $400 — windows, absorbs glass-co surplus. Cotton at 0.01/
+// worker/tick × $400 — windows, absorbs glass-co surplus. Cotton at 0.003/
 // worker/tick × $40 — bedding/raw fiber, gives cotton-co a demand sink
 // beyond just textile-co's single spinning-mill (otherwise 5× oversupply
 // → cotton-co dies). Cloth at 0.001/worker/tick × $1500 — clothing,
-// absorbs textile-co's woven output. All bidPrices stay below NPC max
-// bid (fair × 0.95 × 2.0) so NPCs win when they need the item for
-// construction/maintenance.
+// absorbs textile-co's woven output. Sulfur at 0.003/worker/tick × $70 —
+// matches/preservatives, gives sulfur-co dual demand alongside chemical-
+// co's acid distillation (single-consumer dependency caused chronic
+// sulfur-co death-cycle). All bidPrices stay below NPC max bid (fair ×
+// 0.95 × 2.0) so NPCs win when they need the item for construction/
+// maintenance.
 const STAPLES = [
     { item: 'corn',   rate: 0.1,   bidPrice: CORN_ANCHOR },
     { item: 'bottle', rate: 0.005, bidPrice: BOTTLE_ANCHOR },
@@ -98,6 +102,7 @@ const STAPLES = [
     { item: 'glass',  rate: 0.001, bidPrice: GLASS_ANCHOR },
     { item: 'cotton', rate: 0.003, bidPrice: COTTON_ANCHOR },
     { item: 'cloth',  rate: 0.001, bidPrice: CLOTH_ANCHOR },
+    { item: 'sulfur', rate: 0.003, bidPrice: SULFUR_ANCHOR },
 ];
 // Gov ballasts the wage staple (corn) and a few industrial goods. Corn
 // has both bid and ask at anchor (market-maker, midpoint preserves the

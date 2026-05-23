@@ -65,6 +65,7 @@ buildings:
       machine-tool: 0.0005
       glass: 0.0005
       engine: 0.0001
+      sulfuric-acid: 0.001
 
   machine-shop:
     name: "Machine Shop"
@@ -80,6 +81,7 @@ buildings:
       glass: 0.001
       gear: 0.0005
       engine: 0.0001
+      sulfuric-acid: 0.001
 
   sand-pit:
     name: "Sand Pit"
@@ -97,6 +99,7 @@ buildings:
     maintenance:
       brick: 0.005
       glass: 0.001
+      sulfuric-acid: 0.001
 
   bottling-plant:
     name: "Bottling Plant"
@@ -153,3 +156,23 @@ buildings:
       brick: 0.006
       steel: 0.001
       gear: 0.0005
+
+  sulfur-mine:
+    name: "Sulfur Mine"
+    slots: 1
+    construction:
+      brick: 40
+    maintenance:
+      brick: 0.002
+
+  acid-plant:
+    name: "Acid Plant"
+    slots: 1
+    construction:
+      brick: 120
+      steel: 25
+      glass: 20
+    maintenance:
+      brick: 0.005
+      steel: 0.001
+      glass: 0.001

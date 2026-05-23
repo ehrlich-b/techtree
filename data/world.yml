@@ -146,6 +146,32 @@ actors:
     starting_assignments:
       spinning-mill: spin-thread
 
+  sulfur-co:
+    cash: 8000
+    strategy: balanced
+    growth_building: sulfur-mine
+    starting_inventory:
+      brick: 80
+    starting_buildings: [sulfur-mine]
+    starting_workers: 1
+    starting_assignments:
+      sulfur-mine: mine-sulfur
+
+  chemical-co:
+    cash: 12000
+    strategy: balanced
+    growth_building: acid-plant
+    starting_inventory:
+      brick: 100
+      steel: 15
+      glass: 15
+      coal: 30
+    starting_buildings: [acid-plant]
+    starting_tech: [coal-tar, industrial-chemistry]
+    starting_workers: 2
+    starting_assignments:
+      acid-plant: distill-acid
+
   households:
     cash: 5000
     strategy: households
@@ -156,6 +182,7 @@ actors:
       glass: 30
       cotton: 50
       cloth: 10
+      sulfur: 30
 
   government:
     cash: 1000000
