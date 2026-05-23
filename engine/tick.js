@@ -178,46 +178,71 @@ function advanceResearch(actor, data) {
     }
 }
 
-// NPCs auto-pick research targets so the tech tree gets walked. Preference:
-//   1. Tech that unlocks a recipe in a building the actor already owns
-//      (immediately useful — they have a slot to adopt it in).
-//   2. Otherwise the cheapest available tech that unlocks any recipe.
-// Without preference (1), actors waste research on irrelevant tech — e.g.,
-// ore-co researching ceramic-kiln before bessemer-process. The owned-
-// building preference makes the tech walk semantically meaningful: each
-// actor progresses up the tier of recipes their current buildings support.
+// NPCs auto-pick research targets so the tech tree gets walked. Three-tier
+// preference (in priority order):
+//   1. Target: a tech that unlocks a recipe in a building the actor owns
+//      AND whose prereqs are met (ready to research right now).
+//   2. Path: a tech that's a prereq (direct or transitive) for some target,
+//      AND whose own prereqs are met (clears the path to target).
+//   3. Walk: any available tech (cheapest), to keep the tree progressing.
+// Without (2), an actor researches irrelevant tech first because they're
+// cheaper — e.g., ore-co spent ~1900 ticks on ceramic-kiln + coal-tar +
+// bessemer before reaching steel, but kept dying mid-walk and losing
+// progress. With path priority, ore-co goes straight to coal-tar (prereq
+// for bessemer) then bessemer, halving time-to-steel.
 function npcResearch(actor, data) {
     if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') return;
     if (actor.researchInProgress) return;
     const tech = data.tech || {};
     const recipes = data.recipes || {};
     const ownedBuildings = new Set((actor.buildings || []).map(b => b.type));
-    let bestForOwned = null;
-    let bestAny = null;
+
+    // Identify TARGET techs: unlocks a recipe in an owned building.
+    const targets = new Set();
+    for (const [techId] of Object.entries(tech)) {
+        if (actor.researched.has(techId)) continue;
+        for (const r of Object.values(recipes)) {
+            if (r.tech === techId && ownedBuildings.has(r.building)) {
+                targets.add(techId);
+                break;
+            }
+        }
+    }
+    // Collect PATH techs: all prereqs (transitive) of any target.
+    const onPath = new Set();
+    function addPrereqs(t) {
+        if (onPath.has(t)) return;
+        onPath.add(t);
+        const def = tech[t];
+        if (def) for (const p of def.prereqs || []) addPrereqs(p);
+    }
+    for (const t of targets) addPrereqs(t);
+
+    // Build available list (prereqs met, not researched, unlocks recipe).
+    const available = [];
     for (const [techId, def] of Object.entries(tech)) {
         if (actor.researched.has(techId)) continue;
         const prereqs = def.prereqs || [];
-        let prereqsMet = true;
-        for (const p of prereqs) {
-            if (!actor.researched.has(p)) { prereqsMet = false; break; }
-        }
-        if (!prereqsMet) continue;
+        if (!prereqs.every(p => actor.researched.has(p))) continue;
         let unlocksRecipe = false;
-        let unlocksForOwned = false;
         for (const r of Object.values(recipes)) {
-            if (r.tech === techId) {
-                unlocksRecipe = true;
-                if (ownedBuildings.has(r.building)) unlocksForOwned = true;
-            }
+            if (r.tech === techId) { unlocksRecipe = true; break; }
         }
         if (!unlocksRecipe) continue;
-        const cost = def.research_cost || 0;
-        if (unlocksForOwned && (!bestForOwned || cost < bestForOwned.cost)) {
-            bestForOwned = { techId, cost };
-        }
-        if (!bestAny || cost < bestAny.cost) bestAny = { techId, cost };
+        available.push({ techId, cost: def.research_cost || 0 });
     }
-    const pick = bestForOwned || bestAny;
+
+    const pickCheapest = (filter) => {
+        let best = null;
+        for (const a of available) {
+            if (!filter(a)) continue;
+            if (!best || a.cost < best.cost) best = a;
+        }
+        return best;
+    };
+    const pick = pickCheapest(a => targets.has(a.techId))
+        || pickCheapest(a => onPath.has(a.techId))
+        || pickCheapest(() => true);
     if (pick) actor.researchInProgress = { tech: pick.techId, progress: 0 };
 }
 

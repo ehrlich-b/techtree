@@ -127,3 +127,14 @@ recipes:
       bottle: 5
     seconds: 60
     workers: 2
+
+  cut-gears:
+    name: "Cut Gears"
+    tech: gear-cutting
+    building: machine-shop
+    inputs:
+      steel: 2
+    outputs:
+      gear: 1
+    seconds: 90
+    workers: 2

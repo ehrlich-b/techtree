@@ -112,6 +112,7 @@ actors:
       corn: 100
       bottle: 50
       brick: 100
+      glass: 30
 
   government:
     cash: 1000000

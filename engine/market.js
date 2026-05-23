@@ -76,17 +76,20 @@ const GROWTH_FLOOR_BELIEF = 0.55;
 const CORN_ANCHOR = 50;
 const BOTTLE_ANCHOR = 300;
 const BRICK_ANCHOR = 120;
+const GLASS_ANCHOR = 400;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
 // Bottle at 0.005/worker/tick × $300 = $1.5/tick — minor secondary demand
 // for the sand→glass→bottle chain. Brick at 0.01/worker/tick × $120 = $1.2/
 // tick — housing wear, gives kiln operators a durable demand sink so they
-// don't cycle death-respawn from anemic build-only demand. bidPrice $120
-// stays below NPC max bid (fair × 0.95 × 2.0 = $167) so NPCs win brick
-// auctions when they need it for construction/maintenance.
+// don't cycle death-respawn from anemic build-only demand. Glass at 0.001/
+// worker/tick × $400 — windows, absorbs glass-co surplus. All bidPrices
+// stay below NPC max bid (fair × 0.95 × 2.0) so NPCs win when they need
+// the item for construction/maintenance.
 const STAPLES = [
     { item: 'corn',   rate: 0.1,   bidPrice: CORN_ANCHOR },
     { item: 'bottle', rate: 0.005, bidPrice: BOTTLE_ANCHOR },
     { item: 'brick',  rate: 0.01,  bidPrice: BRICK_ANCHOR },
+    { item: 'glass',  rate: 0.001, bidPrice: GLASS_ANCHOR },
 ];
 // Gov ballasts the wage staple (corn) and a few industrial goods. Corn
 // has both bid and ask at anchor (market-maker, midpoint preserves the

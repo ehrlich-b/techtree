@@ -76,3 +76,9 @@ items:
     era: industrial
     tier: 3
     unit: count
+
+  gear:
+    name: "Gear"
+    era: industrial
+    tier: 4
+    unit: count

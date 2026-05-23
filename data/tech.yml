@@ -37,3 +37,9 @@ tech:
     era: industrial
     prereqs: [glassmaking]
     research_cost: 3000
+
+  gear-cutting:
+    name: "Gear Cutting"
+    era: industrial
+    prereqs: [precision-machining]
+    research_cost: 4000
