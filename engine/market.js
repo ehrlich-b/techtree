@@ -232,11 +232,39 @@ function recipeForBuilding(actor, data, type) {
 // owned building types or raw extraction only.
 const MIN_GROWTH_MARGIN_PER_TICK = 1.0;
 
+// Per-tick belief-weighted margin for one recipe. For raw extraction
+// (no inputs), output is scaled by 1/sqrt(postBuildCount) to match
+// runProduction's diminishing-returns factor — otherwise margin
+// over-estimates and actors keep building money-losing raw extractors.
+// postBuildCount is the number of same-type buildings AFTER adding one
+// more (so the caller can ask "would building one more be profitable?").
+function recipeMarginPerTick(r, actor, prices, postBuildCount) {
+    const beliefs = actor.priceBelief || {};
+    const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
+    const drFactor = isRaw ? 1.0 / Math.sqrt(postBuildCount || 1) : 1.0;
+    let rev = 0;
+    for (const [item, qty] of Object.entries(r.outputs || {})) {
+        const fairP = prices[item] || 0;
+        const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
+        rev += qty * drFactor * fairP * belief;
+    }
+    let inputCost = 0;
+    for (const [item, qty] of Object.entries(r.inputs || {})) {
+        const fairP = prices[item] || 0;
+        const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
+        inputCost += qty * fairP * belief;
+    }
+    const wageCost = (r.workers || 0) * BASE_WAGE * (r.seconds || 0);
+    const cycleMargin = rev - inputCost - wageCost;
+    return cycleMargin / (r.seconds || 1);
+}
+
 function marginRecipe(actor, data, prices) {
     const recipes = data.recipes || {};
     const buildings = data.buildings || {};
-    const beliefs = actor.priceBelief || {};
     const haveTypes = new Set((actor.buildings || []).map(b => b.type));
+    const countByType = {};
+    for (const b of actor.buildings || []) countByType[b.type] = (countByType[b.type] || 0) + 1;
     let best = { building: null, margin: 0 };
     for (const r of Object.values(recipes)) {
         if (r.tech && !actor.researched.has(r.tech)) continue;
@@ -247,21 +275,8 @@ function marginRecipe(actor, data, prices) {
         // to the bottleneck + growth_building paths below.
         if (!haveTypes.has(r.building)) continue;
         if (!buildings[r.building]) continue;
-        let rev = 0;
-        for (const [item, qty] of Object.entries(r.outputs || {})) {
-            const fairP = prices[item] || 0;
-            const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
-            rev += qty * fairP * belief;
-        }
-        let inputCost = 0;
-        for (const [item, qty] of Object.entries(r.inputs || {})) {
-            const fairP = prices[item] || 0;
-            const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
-            inputCost += qty * fairP * belief;
-        }
-        const wageCost = (r.workers || 0) * BASE_WAGE * (r.seconds || 0);
-        const cycleMargin = rev - inputCost - wageCost;
-        const perTick = cycleMargin / (r.seconds || 1);
+        const postBuildCount = (countByType[r.building] || 0) + 1;
+        const perTick = recipeMarginPerTick(r, actor, prices, postBuildCount);
         if (perTick > best.margin) {
             best = { building: r.building, margin: perTick };
         }
@@ -338,14 +353,20 @@ function growthTarget(actor, data, prices) {
             if (buildings[r.building]) return r.building;
         }
     }
-    // Falling back to default growthBuilding — gate on oversupply. If the
-    // actor's belief for the fallback recipe's output has pinned at floor,
-    // they're overproducing relative to demand; don't grow further.
+    // Falling back to default growthBuilding — gate on oversupply.
+    // Primary gate: post-build margin. If building one more would lose
+    // money per tick (after DR for raw extraction), don't grow. Catches
+    // raw extractors before they bankrupt themselves (belief 0.8-0.95
+    // range where margin is negative but belief-floor hasn't fired).
+    // Secondary gate: belief floor (existing) as a strict safety bound.
     // Resilience: when demand returns, belief drifts up and growth resumes.
-    // Cluster damage from this gate (e.g., kilns starve when farm-co stops
-    // building farms → brick demand drops) is absorbed by respawn.
     const fallbackRecipe = recipeForBuilding(actor, data, actor.growthBuilding);
-    if (fallbackRecipe) {
+    if (fallbackRecipe && prices) {
+        const countByType = {};
+        for (const b of actor.buildings || []) countByType[b.type] = (countByType[b.type] || 0) + 1;
+        const postBuildCount = (countByType[actor.growthBuilding] || 0) + 1;
+        const margin = recipeMarginPerTick(fallbackRecipe, actor, prices, postBuildCount);
+        if (margin < MIN_GROWTH_MARGIN_PER_TICK) return null;
         const beliefs = actor.priceBelief || {};
         for (const item of Object.keys(fallbackRecipe.outputs || {})) {
             const b = beliefs[item];
