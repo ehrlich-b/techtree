@@ -195,14 +195,26 @@ function npcResearch(actor, data) {
     if (actor.researchInProgress) return;
     const tech = data.tech || {};
     const recipes = data.recipes || {};
+    const buildings = data.buildings || {};
     const ownedBuildings = new Set((actor.buildings || []).map(b => b.type));
 
-    // Identify TARGET techs: unlocks a recipe in an owned building.
+    // Identify TARGET techs: either unlocks a recipe in an owned building,
+    // OR gates a tech_maintenance entry for an owned building (modernization
+    // — researching the tech ramps the actor's bid demand for the gated
+    // items, which incentivizes producers to keep supplying them).
     const targets = new Set();
     for (const [techId] of Object.entries(tech)) {
         if (actor.researched.has(techId)) continue;
         for (const r of Object.values(recipes)) {
             if (r.tech === techId && ownedBuildings.has(r.building)) {
+                targets.add(techId);
+                break;
+            }
+        }
+        if (targets.has(techId)) continue;
+        for (const bldgType of ownedBuildings) {
+            const def = buildings[bldgType];
+            if (def && def.tech_maintenance && def.tech_maintenance[techId]) {
                 targets.add(techId);
                 break;
             }
@@ -448,12 +460,24 @@ function applyPriceDrift(state, orders, trades) {
 // rolling buffer of maintenance items (see maintenanceDemand in market.js).
 function consumeMaintenance(actor, data) {
     const buildings = data.buildings || {};
+    const researched = actor.researched || new Set();
     for (const b of actor.buildings) {
         const def = buildings[b.type];
-        if (!def || !def.maintenance || typeof def.maintenance !== 'object') continue;
-        for (const [item, rate] of Object.entries(def.maintenance)) {
-            const have = actor.inventory[item] || 0;
-            actor.inventory[item] = Math.max(0, have - rate);
+        if (!def) continue;
+        if (def.maintenance && typeof def.maintenance === 'object') {
+            for (const [item, rate] of Object.entries(def.maintenance)) {
+                const have = actor.inventory[item] || 0;
+                actor.inventory[item] = Math.max(0, have - rate);
+            }
+        }
+        if (def.tech_maintenance && typeof def.tech_maintenance === 'object') {
+            for (const [techId, items] of Object.entries(def.tech_maintenance)) {
+                if (!researched.has(techId)) continue;
+                for (const [item, rate] of Object.entries(items || {})) {
+                    const have = actor.inventory[item] || 0;
+                    actor.inventory[item] = Math.max(0, have - rate);
+                }
+            }
         }
     }
 }

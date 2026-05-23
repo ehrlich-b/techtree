@@ -59,6 +59,16 @@ function validate(data) {
                 checkRef('building', id, 'maintenance', item, items, 'item');
             }
         }
+        if (b.tech_maintenance && typeof b.tech_maintenance === 'object') {
+            for (const [techId, entries] of Object.entries(b.tech_maintenance)) {
+                checkRef('building', id, 'tech_maintenance', techId, tech, 'tech');
+                if (entries && typeof entries === 'object') {
+                    for (const item of Object.keys(entries)) {
+                        checkRef('building', id, `tech_maintenance.${techId}`, item, items, 'item');
+                    }
+                }
+            }
+        }
     }
 
     // Recipes

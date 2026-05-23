@@ -30,6 +30,57 @@
 
 ## v1 — fix the scaffolding
 
+### Tech-gated maintenance (2026-05-23) — DONE
+
+First endogenous-demand mechanism. Buildings get a new optional schema
+field `tech_maintenance: { tech-id: { item: rate } }`. The actor consumes
+and bids for these items only if researched. `npcResearch` also targets
+techs that gate tech_maintenance for owned buildings — researching the
+tech is incentivized by the modernization demand pattern it unlocks.
+
+Schema:
+```yaml
+machine-shop:
+  maintenance:
+    brick: 0.008
+    ...
+  tech_maintenance:
+    industrial-chemistry: { sulfuric-acid: 0.001 }
+    electrical-engineering: { electric-motor: 0.0001 }
+```
+
+Code:
+- `market.js inputDemand`: filters tech_maintenance entries by `actor.researched`
+- `tick.js consumeMaintenance`: same filter on inventory draw
+- `tick.js npcResearch`: TARGET set now includes techs that gate any
+  tech_maintenance entry for an owned building
+- `schema.js validate`: cross-checks tech_maintenance items and tech refs
+
+Migration (existing buildings):
+- `sulfuric-acid` (was on blast-furnace, machine-shop, glass-furnace as
+  baseline maintenance) → moved to `tech_maintenance.industrial-chemistry`
+- `electric-motor` (new tech-gated entry) → added to machine-shop and
+  assembly-line as `tech_maintenance.electrical-engineering`
+- `engine` stays in baseline maintenance — foundational, not gating
+  by adoption.
+
+Harness results:
+- @20k: industrial-chemistry researched by 7 actors (vs 4 pre-change via
+  WALK fallback). ore-co + glass-co in-progress, specifically targeting
+  it for blast-furnace/glass-furnace modernization.
+- @50k: electrical-engineering reached by farm-co; textile-co in-progress.
+  machine-co walks gear-cutting on its way to electrical-engineering
+  via machine-shop modernization target.
+- Chain stability comparable to pre-change (12 deaths vs ~11). The
+  pattern doesn't fix raw-extractor death cycle (cotton-co/sulfur-co/
+  copper-co) — that's an orthogonal issue (income-elastic household
+  demand or diminishing-returns extraction).
+
+Why this matters: future new items can plug into existing buildings as
+`tech_maintenance` entries. Demand emerges automatically as tech
+adoption ramps. No more "manually add to STAPLES + manually add to N
+building maintenance entries" routine.
+
 ### Electrical sub-branch (2026-05-23) — DONE
 
 Tier-5 extension above steam-engineering. Gives actors who reach

@@ -165,6 +165,7 @@ function fairPrice(data) {
 
 function inputDemand(actor, recipes, buildings) {
     const need = {};
+    const researched = actor.researched || new Set();
     for (const b of actor.buildings) {
         for (const slot of b.slots) {
             if (!slot) continue;
@@ -175,9 +176,18 @@ function inputDemand(actor, recipes, buildings) {
             }
         }
         const def = buildings && buildings[b.type];
-        if (def && def.maintenance && typeof def.maintenance === 'object') {
+        if (!def) continue;
+        if (def.maintenance && typeof def.maintenance === 'object') {
             for (const [item, rate] of Object.entries(def.maintenance)) {
                 need[item] = (need[item] || 0) + rate * NPC_MAINTENANCE_BUFFER_TICKS;
+            }
+        }
+        if (def.tech_maintenance && typeof def.tech_maintenance === 'object') {
+            for (const [techId, items] of Object.entries(def.tech_maintenance)) {
+                if (!researched.has(techId)) continue;
+                for (const [item, rate] of Object.entries(items || {})) {
+                    need[item] = (need[item] || 0) + rate * NPC_MAINTENANCE_BUFFER_TICKS;
+                }
             }
         }
     }
