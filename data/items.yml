@@ -10,6 +10,9 @@ items:
     era: industrial
     tier: 1
     unit: kg
+    gov_ballast:
+      bid_price: 50
+      qty_cap: 5
 
   limestone:
     name: "Limestone"
@@ -31,6 +34,10 @@ items:
     household:
       rate: 0.1
       bid_price: 50
+    gov_ballast:
+      bid_price: 50
+      ask_price: 50
+      qty_cap: 8
 
   coke:
     name: "Coke"
@@ -43,6 +50,9 @@ items:
     era: industrial
     tier: 2
     unit: kg
+    gov_ballast:
+      bid_price: 1300
+      qty_cap: 2
 
   brick:
     name: "Brick"
@@ -58,12 +68,18 @@ items:
     era: industrial
     tier: 3
     unit: kg
+    gov_ballast:
+      bid_price: 3000
+      qty_cap: 1
 
   machine-tool:
     name: "Machine Tool"
     era: industrial
     tier: 4
     unit: count
+    gov_ballast:
+      bid_price: 30000
+      qty_cap: 1
 
   sand:
     name: "Sand"

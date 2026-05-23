@@ -21,12 +21,13 @@
  * bids each tick at the staple's anchor price; gov's matching ask (also
  * at anchor) means the midpoint clears at anchor.
  *
- * governmentOrders: the 'government' actor ballasts only corn (the wage
- * staple). Bid + ask both at anchor (gov is a flat market-maker at $50)
- * with bid quantity capped at GOV_BID_BUFFER × current household corn
- * demand. This caps both the price and quantity dimensions of the gov
- * subsidy. Cash side is suppressed in settle: gov is the money issuer;
- * trades create money for sellers and absorb it from buyers.
+ * governmentOrders: the 'government' actor ballasts items declaring a
+ * `gov_ballast: { bid_price, ask_price?, qty_cap }` block in items.yml.
+ * Corn has both bid and ask at anchor (market-maker); other entries are
+ * bid-only "buyer of last resort" — they only clear when producer ask
+ * has drifted below gov bid (i.e., real demand failed). Cash side is
+ * suppressed in settle: gov is the money issuer; trades create money for
+ * sellers and absorb it from buyers.
  *
  * playerOrders: actor.priceBook → auto-asks of full inventory at the set
  * price; actor.pendingBids → one-shot bids drained by the tick caller.
@@ -73,7 +74,6 @@ const NPC_GROWTH_BUDGET_FRAC = 0.7;
 // drifted back up.
 const GROWTH_FLOOR_BELIEF = 0.55;
 
-const CORN_ANCHOR = 50;
 // Household demand config lives on each item (data/items.yml,
 // `household: { rate, bid_price, elasticity? }`). `staples(data)` reads
 // that block and yields per-tick consumption + bid anchor for every item
@@ -114,30 +114,28 @@ function staples(data) {
     data._staplesCache = list;
     return list;
 }
-// Gov ballasts the wage staple (corn) and a few industrial goods. Corn
-// has both bid and ask at anchor (market-maker, midpoint preserves the
-// $50 anchor for households). Industrial entries are sterile sinks:
-// bid only, at a price slightly above producer ask-floor (fair × 0.525)
-// so cleared midpoint clears producer surplus without overshoot. Each
-// industrial entry has `qtyCap` (per-tick absolute) to bound money
+// Gov ballasts items declaring a `gov_ballast` block in items.yml. Corn
+// has both bid_price and ask_price (market-maker, midpoint preserves the
+// $50 anchor for households). Industrial entries are sterile sinks: bid
+// only. Each entry has `qty_cap` (per-tick absolute) to bound money
 // creation; without a cap, gov could absorb unbounded supply at high
 // fair prices and inflate wildly. The industrial ballast is what lets
 // chain producers (coal, coke, etc.) survive when their downstream
 // consumers haven't ramped — analogous to gov buying steel for public
 // works in real economies.
-const GOV_BALLAST = [
-    // Corn qtyCap caps gov's per-tick money creation rate. Without it, gov
-    // bid quantity scales with totalWorkers (via STAPLES.rate), so as the
-    // economy grows the money supply inflates linearly. At 8 corn/tick ×
-    // ~$30 vwap = ~$240/tick of fresh money — enough to keep farm-co
-    // profitable without unbounded inflation. Households still buy the
-    // rest of farm-co's output (transfer, not creation).
-    { item: 'corn', bidPrice: CORN_ANCHOR, askPrice: CORN_ANCHOR, qtyCap: 8 },
-    { item: 'coal', bidPrice: 50, qtyCap: 5 },
-    { item: 'pig-iron', bidPrice: 1300, qtyCap: 2 },
-    { item: 'steel', bidPrice: 3000, qtyCap: 1 },
-    { item: 'machine-tool', bidPrice: 30000, qtyCap: 1 },
-];
+function govBallast(data) {
+    if (data._govBallastCache) return data._govBallastCache;
+    const list = [];
+    for (const [id, item] of Object.entries(data.items || {})) {
+        const g = item && item.gov_ballast;
+        if (!g || !(g.bid_price > 0) || !(g.qty_cap > 0)) continue;
+        const entry = { item: id, bidPrice: g.bid_price, qtyCap: g.qty_cap };
+        if (g.ask_price !== undefined) entry.askPrice = g.ask_price;
+        list.push(entry);
+    }
+    data._govBallastCache = list;
+    return list;
+}
 
 // fairPrice depends only on `data` (immutable during a game), so we memoize
 // it on `data._fairPriceCache`. Saves ~6400 inner-loop iterations per tick.
@@ -512,7 +510,8 @@ function governmentOrders(actor, state, data) {
         totalWorkers += (a.workers || []).length;
     }
     const stapleList = data ? staples(data) : [];
-    for (const b of GOV_BALLAST) {
+    const ballast = data ? govBallast(data) : [];
+    for (const b of ballast) {
         const staple = stapleList.find(s => s.item === b.item);
         const cashCap = Math.floor(cash / b.bidPrice);
         // Order matters: explicit qtyCap wins over worker-scaled staple
@@ -589,6 +588,6 @@ function clear(orders) {
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
     growthTarget, recipeForBuilding, staples,
-    MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID, CORN_ANCHOR,
+    MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID,
     NPC_GROWTH_RUNWAY_TICKS,
 };
