@@ -130,6 +130,16 @@ function credit(inventory, outputs) {
 function runProduction(actor, data) {
     const recipes = data.recipes || {};
     const insolvent = (actor.stress || 0) >= 4;
+    // Diminishing-returns yield on raw extraction: per-building output scales
+    // by 1/sqrt(N) where N is the actor's count of same-type buildings.
+    // Total output across N buildings = sqrt(N) — sublinear, so each
+    // additional building is less profitable than the last. Caps natural
+    // growth of raw extractors without a hard belief-gate. Only applies
+    // to recipes with NO inputs (true raw extraction); processing recipes
+    // are bound by input availability so DR there would just starve the
+    // chain.
+    const countByType = {};
+    for (const b of actor.buildings) countByType[b.type] = (countByType[b.type] || 0) + 1;
     for (const bldg of actor.buildings) {
         for (let s = 0; s < bldg.slots.length; s++) {
             const slot = bldg.slots[s];
@@ -149,7 +159,9 @@ function runProduction(actor, data) {
             }
 
             const mult = outputMultiplier(workers, recipe.tech);
-            slot.progress += mult / recipe.seconds;
+            const isRaw = !recipe.inputs || Object.keys(recipe.inputs).length === 0;
+            const yieldFactor = isRaw ? 1.0 / Math.sqrt(countByType[bldg.type] || 1) : 1.0;
+            slot.progress += (mult * yieldFactor) / recipe.seconds;
 
             for (const w of workers) {
                 if (recipe.tech) gainSkill(w, recipe.tech);

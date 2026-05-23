@@ -30,6 +30,32 @@
 
 ## v1 — fix the scaffolding
 
+### Diminishing returns on raw extraction (2026-05-23) — DONE
+
+Per-actor raw-extraction yield is now `1/sqrt(N)` where N is the count
+of same-type buildings owned. Total output scales as `sqrt(N)` —
+sublinear, so each additional raw building is less profitable than the
+last. Caps natural supply growth without hard belief gates.
+
+Applies only to recipes with NO inputs (true raw extraction:
+mine-iron-ore, dig-clay, harvest-cotton, mine-sulfur, mine-copper,
+etc.). Processing recipes unaffected — they're already bound by input
+availability.
+
+Code change: `runProduction` caches `countByType` at top and multiplies
+slot progress by `1/sqrt(count)` for raw recipes.
+
+Harness @50k: **first PASS @50k this session**.
+- farm-co reduced from 5 farms to 3 (DR equilibrium). Corn still
+  flowing — total output `sqrt(3)×base ≈ 7.2/tick` matches demand.
+- sulfur-co stabilizes at ~2-4 mines (was cycling deaths).
+- cotton-co still volatile at 5 fields (DR didn't prevent overgrowth
+  from initial high-clearing window; future fix is tighter growth-
+  floor-belief gate or marginal-yield-aware growth decision).
+- 14/14 NPCs alive at end.
+- Tech walk wider than ever: 12 at ironworking, 6 at industrial-
+  chemistry, 2 at steam-engineering, farm-co at electrical-engineering.
+
 ### Tech-gated maintenance (2026-05-23) — DONE
 
 First endogenous-demand mechanism. Buildings get a new optional schema
