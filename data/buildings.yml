@@ -64,7 +64,7 @@ buildings:
       brick: 0.006
       machine-tool: 0.0005
       glass: 0.0005
-      engine: 0.00005
+      engine: 0.0001
 
   machine-shop:
     name: "Machine Shop"
@@ -79,6 +79,7 @@ buildings:
       machine-tool: 0.0005
       glass: 0.001
       gear: 0.0005
+      engine: 0.0001
 
   sand-pit:
     name: "Sand Pit"
@@ -121,3 +122,4 @@ buildings:
       steel: 0.002
       gear: 0.001
       machine-tool: 0.0005
+      engine: 0.0002
