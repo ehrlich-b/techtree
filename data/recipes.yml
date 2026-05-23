@@ -202,3 +202,37 @@ recipes:
       sulfuric-acid: 1
     seconds: 120
     workers: 2
+
+  mine-copper:
+    name: "Mine Copper"
+    building: copper-mine
+    outputs:
+      copper: 4
+    seconds: 30
+    workers: 1
+
+  draw-wire:
+    name: "Draw Wire"
+    tech: copper-smelting
+    building: wire-mill
+    inputs:
+      copper: 3
+      coal: 1
+    outputs:
+      wire: 2
+    seconds: 60
+    workers: 2
+
+  assemble-motor:
+    name: "Assemble Electric Motor"
+    tech: electrical-engineering
+    building: assembly-line
+    inputs:
+      wire: 4
+      gear: 1
+      steel: 3
+      coal: 2
+    outputs:
+      electric-motor: 1
+    seconds: 240
+    workers: 3

@@ -30,6 +30,37 @@
 
 ## v1 — fix the scaffolding
 
+### Electrical sub-branch (2026-05-23) — DONE
+
+Tier-5 extension above steam-engineering. Gives actors who reach
+steam-engineering a new target (electrical-engineering, 8000 cost) so
+walking continues past the prior apex.
+
+- **3 items, 2 tech, 2 buildings, 3 recipes**: copper (t1 raw), wire
+  (t2), electric-motor (t5); copper-smelting (prereq ironworking, 1500),
+  electrical-engineering (prereq copper-smelting + steam-engineering,
+  8000); copper-mine, wire-mill; mine-copper, draw-wire, assemble-motor.
+- **2 new actors**: copper-co (raw extraction), electric-co (start_tick:
+  8000, wire-mill + copper-smelting, supplies wire for downstream).
+- **Copper dual-use**: industrial input + household staple ($50, rate
+  0.003) — same dual-use pattern as cotton/sulfur to keep copper-co
+  viable.
+- **Assemble-motor on assembly-line**: tier-5 endpoint, same building
+  as assemble-engine but higher tech tier. recipeForBuilding prefers
+  higher-tech, so engineering-co will switch from engines to motors
+  once electrical-engineering completes.
+
+Harness @20k:
+- 17 actors, 14/14 NPCs alive at final tick.
+- electric-co integrates (wire-mill running draw-wire). engineering-co
+  walks electrical-engineering (path-aware research targets it via
+  assembly-line ownership).
+- copper trading at 0.89× fair. wire fair $484 (no external trades —
+  electric-co consumes some internally; market trades develop once
+  motor production starts).
+- electric-motor: idle until engineering-co finishes electrical-
+  engineering (~tick 12000-16000 depending on starting cash burn).
+
 ### Chemistry branch (2026-05-23) — DONE
 
 Third parallel tech branch: sulfur → sulfuric-acid. Walks

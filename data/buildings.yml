@@ -176,3 +176,22 @@ buildings:
       brick: 0.005
       steel: 0.001
       glass: 0.001
+
+  copper-mine:
+    name: "Copper Mine"
+    slots: 1
+    construction:
+      brick: 50
+    maintenance:
+      brick: 0.003
+
+  wire-mill:
+    name: "Wire Mill"
+    slots: 2
+    construction:
+      brick: 150
+      steel: 40
+    maintenance:
+      brick: 0.006
+      steel: 0.001
+      gear: 0.0005

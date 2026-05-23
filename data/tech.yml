@@ -65,3 +65,15 @@ tech:
     name: "Industrial Chemistry"
     era: industrial
     research_cost: 800
+
+  copper-smelting:
+    name: "Copper Smelting"
+    era: industrial
+    prereqs: [ironworking]
+    research_cost: 1500
+
+  electrical-engineering:
+    name: "Electrical Engineering"
+    era: industrial
+    prereqs: [copper-smelting, steam-engineering]
+    research_cost: 8000

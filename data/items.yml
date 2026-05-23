@@ -118,3 +118,21 @@ items:
     era: industrial
     tier: 2
     unit: kg
+
+  copper:
+    name: "Copper"
+    era: industrial
+    tier: 1
+    unit: kg
+
+  wire:
+    name: "Wire"
+    era: industrial
+    tier: 2
+    unit: kg
+
+  electric-motor:
+    name: "Electric Motor"
+    era: industrial
+    tier: 5
+    unit: count

@@ -80,6 +80,7 @@ const GLASS_ANCHOR = 400;
 const COTTON_ANCHOR = 40;
 const CLOTH_ANCHOR = 1500;
 const SULFUR_ANCHOR = 70;
+const COPPER_ANCHOR = 50;
 // Households consume corn at 0.1/worker/tick × $50 anchor = $5/tick = wage.
 // Bottle at 0.005/worker/tick × $300 = $1.5/tick — minor secondary demand
 // for the sand→glass→bottle chain. Brick at 0.01/worker/tick × $120 = $1.2/
@@ -103,6 +104,7 @@ const STAPLES = [
     { item: 'cotton', rate: 0.003, bidPrice: COTTON_ANCHOR },
     { item: 'cloth',  rate: 0.001, bidPrice: CLOTH_ANCHOR },
     { item: 'sulfur', rate: 0.003, bidPrice: SULFUR_ANCHOR },
+    { item: 'copper', rate: 0.003, bidPrice: COPPER_ANCHOR },
 ];
 // Gov ballasts the wage staple (corn) and a few industrial goods. Corn
 // has both bid and ask at anchor (market-maker, midpoint preserves the

@@ -172,6 +172,32 @@ actors:
     starting_assignments:
       acid-plant: distill-acid
 
+  copper-co:
+    cash: 8000
+    strategy: balanced
+    growth_building: copper-mine
+    starting_inventory:
+      brick: 100
+    starting_buildings: [copper-mine]
+    starting_workers: 1
+    starting_assignments:
+      copper-mine: mine-copper
+
+  electric-co:
+    start_tick: 8000
+    cash: 40000
+    strategy: balanced
+    growth_building: wire-mill
+    starting_inventory:
+      brick: 200
+      steel: 40
+      coal: 30
+    starting_buildings: [wire-mill]
+    starting_tech: [ironworking, copper-smelting]
+    starting_workers: 4
+    starting_assignments:
+      wire-mill: draw-wire
+
   households:
     cash: 5000
     strategy: households
@@ -183,6 +209,7 @@ actors:
       cotton: 50
       cloth: 10
       sulfur: 30
+      copper: 40
 
   government:
     cash: 1000000
