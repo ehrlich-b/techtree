@@ -30,6 +30,54 @@
 
 ## v1 — fix the scaffolding
 
+### Gov ballast migrated to items.yml (2026-05-23) — DONE
+
+Moved the hardcoded `GOV_BALLAST` list to per-item `gov_ballast:` blocks
+in `data/items.yml`, parallel to the `household:` block pattern.
+
+```yaml
+corn:
+  gov_ballast:
+    bid_price: 50
+    ask_price: 50
+    qty_cap: 8
+```
+
+`market.js` exports `govBallast(data)` — derives the list at runtime
+from items declaring a `gov_ballast` block. Cached on
+`data._govBallastCache`. Behavior-preserving refactor; smoke output
+identical to pre-migration.
+
+Experimented with extending coverage to processor outputs (brick,
+coke, glass, sulfuric-acid). Result: marginal death-rate improvement
+@5000 (25→22) but introduced new issues @50k (deaths up to 91 from 84,
+ore-co dying earlier than baseline). Ballast above market clearing
+creates extra demand pressure that destabilizes the chain (e.g. glass
+at $400 with vwap ~$397). Below-market floors (brick $75 vs vwap $169,
+coke $450 vs vwap $543) rarely activated and didn't move the needle.
+Reverted the extension; mechanism remains available for future tuning.
+
+### DR-aware growth margin gate (2026-05-23) — DONE
+
+`marginRecipe` and the fallback `growthBuilding` gate now apply
+`1/sqrt(postBuildCount)` to raw-recipe output in the margin calc —
+matching `runProduction`'s DR factor. Pre-change, marginRecipe
+over-estimated raw-extractor revenue at default belief 1.0, so actors
+kept building raw-extraction past break-even (belief 0.8-0.95 zone
+where the existing belief-floor gate at 0.55 hadn't fired yet).
+
+Pulled the margin computation into a shared helper
+`recipeMarginPerTick(r, actor, prices, postBuildCount)`. Used by:
+- `marginRecipe` — best owned-niche recipe selection (priority 1)
+- Fallback gate — gates `actor.growthBuilding` when post-build margin
+  would be < `MIN_GROWTH_MARGIN_PER_TICK` ($1/tick), in addition to
+  the existing belief-floor gate
+
+Harness @5000: 25 deaths (was 29 pre-change). @50k: 14/14 alive at
+end, 84 deaths over run (was ~95). Chain still has processor-cascade
+churn (single-buyer fragility), but raw extractors no longer
+self-bankrupt by over-building.
+
 ### Margin-driven growth target (2026-05-23) — DONE
 
 Added belief-weighted per-recipe margin as the primary signal in
