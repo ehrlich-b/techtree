@@ -5,7 +5,7 @@ buildings:
     construction:
       brick: 50
     maintenance:
-      brick: 0.001
+      brick: 0.003
 
   coal-mine:
     name: "Coal Mine"
@@ -13,7 +13,7 @@ buildings:
     construction:
       brick: 50
     maintenance:
-      brick: 0.001
+      brick: 0.003
 
   quarry:
     name: "Limestone Quarry"
@@ -21,7 +21,7 @@ buildings:
     construction:
       brick: 30
     maintenance:
-      brick: 0.0005
+      brick: 0.002
 
   clay-pit:
     name: "Clay Pit"
@@ -29,7 +29,7 @@ buildings:
     construction:
       brick: 20
     maintenance:
-      brick: 0.0005
+      brick: 0.002
 
   farm:
     name: "Farm"
@@ -37,7 +37,7 @@ buildings:
     construction:
       brick: 30
     maintenance:
-      brick: 0.0005
+      brick: 0.002
 
   coke-oven:
     name: "Coke Oven"
@@ -45,7 +45,7 @@ buildings:
     construction:
       brick: 100
     maintenance:
-      brick: 0.002
+      brick: 0.006
 
   kiln:
     name: "Brick Kiln"
@@ -53,7 +53,7 @@ buildings:
     construction:
       brick: 80
     maintenance:
-      brick: 0.0015
+      brick: 0.004
 
   blast-furnace:
     name: "Blast Furnace"
@@ -61,8 +61,9 @@ buildings:
     construction:
       brick: 200
     maintenance:
-      brick: 0.003
+      brick: 0.008
       machine-tool: 0.0005
+      glass: 0.0005
 
   machine-shop:
     name: "Machine Shop"
@@ -70,11 +71,12 @@ buildings:
     construction:
       brick: 200
       steel: 50
+      glass: 20
     maintenance:
-      brick: 0.003
+      brick: 0.008
       steel: 0.001
       machine-tool: 0.0005
-      glass: 0.0005
+      glass: 0.001
 
   sand-pit:
     name: "Sand Pit"
@@ -82,7 +84,7 @@ buildings:
     construction:
       brick: 20
     maintenance:
-      brick: 0.0005
+      brick: 0.002
 
   glass-furnace:
     name: "Glass Furnace"
@@ -90,7 +92,8 @@ buildings:
     construction:
       brick: 120
     maintenance:
-      brick: 0.002
+      brick: 0.005
+      glass: 0.001
 
   bottling-plant:
     name: "Bottling Plant"
@@ -98,6 +101,8 @@ buildings:
     construction:
       brick: 100
       steel: 20
+      glass: 15
     maintenance:
-      brick: 0.0015
+      brick: 0.004
       steel: 0.0005
+      glass: 0.001

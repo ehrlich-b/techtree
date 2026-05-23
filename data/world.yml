@@ -111,6 +111,7 @@ actors:
     starting_inventory:
       corn: 100
       bottle: 50
+      brick: 100
 
   government:
     cash: 1000000
