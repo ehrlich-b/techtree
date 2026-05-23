@@ -224,19 +224,74 @@ function recipeForBuilding(actor, data, type) {
     return best;
 }
 
-// Bottleneck-aware growth target: pick whichever building produces the item
-// with the most-negative net flow across the actor's running slots (skill-
-// scaled). Falls back to actor.growthBuilding when no internal shortfall.
-// Vertical integration is restricted: actors can grow into building types
-// they already own (internal scaling — add another clay-pit when kilns
-// starve), or into RAW EXTRACTION buildings (no recipe inputs — coal-mine,
-// iron-mine, quarry, clay-pit, farm). They CAN'T grow into processing
-// buildings of types they don't own (kiln, coke-oven, blast-furnace), since
-// that would consolidate chain producers — e.g., ore-co growing a coke-oven
-// kills coke-co's market. Raw extractors are foundational and don't displace
-// chain partners.
-function growthTarget(actor, data) {
+// Belief-weighted margin per recipe: estimate how profitable each recipe
+// the actor could run would be, using fair_price × actor.priceBelief as
+// the actor's price expectation for each item. Returns highest-margin
+// recipe whose margin exceeds MIN_GROWTH_MARGIN_PER_TICK. Same vertical-
+// integration restriction as bottleneck path — actors can grow into
+// owned building types or raw extraction only.
+const MIN_GROWTH_MARGIN_PER_TICK = 1.0;
+
+function marginRecipe(actor, data, prices) {
+    const recipes = data.recipes || {};
+    const buildings = data.buildings || {};
+    const beliefs = actor.priceBelief || {};
+    const haveTypes = new Set((actor.buildings || []).map(b => b.type));
+    let best = { building: null, margin: 0 };
+    for (const r of Object.values(recipes)) {
+        if (r.tech && !actor.researched.has(r.tech)) continue;
+        // Margin path refines OWNED niches only. Without this guard, the
+        // fair-price-baseline margin signal pulls every actor into the
+        // same handful of "best at default belief" recipes (farms,
+        // mines), collapsing niche diversity. New-chain entry is left
+        // to the bottleneck + growth_building paths below.
+        if (!haveTypes.has(r.building)) continue;
+        if (!buildings[r.building]) continue;
+        let rev = 0;
+        for (const [item, qty] of Object.entries(r.outputs || {})) {
+            const fairP = prices[item] || 0;
+            const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
+            rev += qty * fairP * belief;
+        }
+        let inputCost = 0;
+        for (const [item, qty] of Object.entries(r.inputs || {})) {
+            const fairP = prices[item] || 0;
+            const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
+            inputCost += qty * fairP * belief;
+        }
+        const wageCost = (r.workers || 0) * BASE_WAGE * (r.seconds || 0);
+        const cycleMargin = rev - inputCost - wageCost;
+        const perTick = cycleMargin / (r.seconds || 1);
+        if (perTick > best.margin) {
+            best = { building: r.building, margin: perTick };
+        }
+    }
+    return best;
+}
+
+// Growth target priority:
+// 1. Margin-driven: highest belief-weighted per-tick margin recipe.
+//    Picks up new opportunities (researched techs, items clearing high)
+//    and prunes oversupplied recipes (belief drifts down → margin
+//    negative → ignored).
+// 2. Bottleneck: most-negative net flow item drives expansion of a
+//    recipe producing it. Useful for internal supply chain (e.g., need
+//    more clay for kilns).
+// 3. Fallback to actor.growthBuilding (hand-coded seed direction).
+// Vertical integration is restricted in all paths: actors can grow into
+// owned building types or raw extraction. Can't grow into processing
+// buildings they don't own — that would consolidate chain producers.
+function growthTarget(actor, data, prices) {
     if (!actor.growthBuilding) return null;
+    // 1. Margin-driven: pick the highest-margin recipe the actor could
+    //    run. Belief drift makes this self-correcting — oversupplied
+    //    items belief-floor → margin negative → drop. New techs unlock
+    //    recipes at default belief 1.0 → positive margin (cost × markup
+    //    spread) → adoption.
+    if (prices) {
+        const m = marginRecipe(actor, data, prices);
+        if (m.building && m.margin >= MIN_GROWTH_MARGIN_PER_TICK) return m.building;
+    }
     const recipes = data.recipes || {};
     const buildings = data.buildings || {};
     // Reuse the worker index that tick.js builds at top of tick (saves
@@ -301,7 +356,7 @@ function growthTarget(actor, data) {
 }
 
 function growthRunwayCost(actor, data, prices) {
-    const target = growthTarget(actor, data);
+    const target = growthTarget(actor, data, prices);
     if (!target) return 0;
     const def = (data.buildings || {})[target];
     if (!def || !def.construction) return 0;
@@ -320,7 +375,7 @@ function growthRunwayCost(actor, data, prices) {
 
 function growthReserve(actor, data, prices) {
     const reserve = {};
-    const target = growthTarget(actor, data);
+    const target = growthTarget(actor, data, prices);
     if (!target) return reserve;
     if ((actor.cash || 0) < growthRunwayCost(actor, data, prices)) return reserve;
     const def = (data.buildings || {})[target];

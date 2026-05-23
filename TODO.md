@@ -30,6 +30,40 @@
 
 ## v1 — fix the scaffolding
 
+### Margin-driven growth target (2026-05-23) — DONE
+
+Added belief-weighted per-recipe margin as the primary signal in
+`growthTarget`. The actor computes margin = `Σ(out × fair × belief_out)
+- Σ(in × fair × belief_in) - workers × wage × cycle_time` for each
+recipe they could run, picks the highest-margin building. Falls back
+to the existing bottleneck + `growthBuilding` path when no margin
+exceeds `MIN_GROWTH_MARGIN_PER_TICK` ($1/tick).
+
+**Restricted to OWNED building types only.** The first attempt let
+actors enter any recipe (including raw extraction) — at default belief
+1.0, every fair-priced recipe shows positive margin (the markup
+spread), and farm-corn had the highest per-cycle margin, so EVERY
+actor wanted to build farms. Result: 13 farm slots across actors,
+chain destabilized. Restricting to owned types preserves niche
+diversity — margin refines existing chains rather than pulling actors
+into new niches. New-niche entry still happens via bottleneck +
+growth_building.
+
+Self-correction expected via belief drift:
+- Output belief drifts down when supply exceeds demand → margin
+  shrinks → growth stops.
+- Input belief drifts up when demand exceeds supply → margin shrinks
+  for downstream → growth stops.
+
+Caveat: internally-consumed intermediates (textile-co's thread) don't
+trade externally → belief stays at default 1.0 → margin signal stale.
+textile-co over-grew spinning-mills @50k due to this. Future fix could
+use downstream-chain valuation or cap growth on internally-consumed
+outputs.
+
+Harness @50k: 13 alive, 9 deaths (similar to DR-only baseline). Tech
+walk preserved — farm-co reaches electrical-engineering.
+
 ### Household consumption config in items.yml (2026-05-23) — DONE
 
 Moved household demand config from a hardcoded `STAPLES` list in

@@ -384,7 +384,7 @@ function npcGrow(state, data, prices) {
     for (const actor of Object.values(state.actors)) {
         if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
         if ((actor.stress || 0) >= 1) continue; // growth freeze when squeezed
-        const target = growthTarget(actor, data);
+        const target = growthTarget(actor, data, prices);
         if (!target) continue;
         const def = buildings[target];
         if (!def) continue;
