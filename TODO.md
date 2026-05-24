@@ -62,18 +62,15 @@ Death dumps print to stderr inline during a run.
 
 ## Queued (next sprints, ordered by impact-to-risk)
 
-- **Defer first growth.** Don't grow before tick N (~100) or before
-  first sale. Cheap. Kills early over-builds. (engine/tick.js npcGrow)
-
-- **Stress-aware research pause.** Skip research when stress ≥ 2.
-  Saves wages for dying actors that are wasting them studying tech
-  they won't get to use. (engine/tick.js npcResearch)
-
-- **Buffer-stock gov pricing** (long-standing). Adaptive gov bid/ask
-  scaled by gov inventory: bid drops as gov stockpile grows, rises as
-  it depletes. Fixes inflation AND the corn-pivot degeneracy in one
-  change. (engine/market.js governmentOrders + items.yml gov_ballast
-  schema extension)
+- **Demand-aware margin signal.** recipeMarginPerTick currently uses
+  `qty_per_cycle × price × belief` as revenue — ignoring how much
+  recent market volume has been at that price. For items where gov is
+  effective sole buyer (pig-iron capped at 2/tick, steel at 1/tick,
+  machine-tool at 1/tick), actors see attractive margin signals while
+  the actual marketplace has hard volume ceilings. Cap revenue by
+  `min(qty_per_cycle, recent_volume_per_cycle) × price`. Should kill
+  the over-build into single-buyer chains. (engine/market.js
+  recipeMarginPerTick + needs state.marketHistory plumbed through)
 
 - **Diversified household staples.** Households buy brick, coal beyond
   corn. Already partially supported (`household:` block in items.yml).
@@ -92,6 +89,46 @@ Death dumps print to stderr inline during a run.
 - **Seeded RNG.** Worker hire order, NPC decision ties, recipe pick
   ties — all currently deterministic. Run 10 seeds @5000 ticks as a
   matrix; an emergent economy diverges across seeds.
+
+## Dead-end attempts (don't repeat)
+
+- **Stress-aware research pause** (skip research when stress ≥ 2):
+  zero measurable impact on survival. Research is free (1 point/tick,
+  no worker/cash cost), so pausing it doesn't save anything. Would
+  matter only if research were tied to a worker slot — separate
+  refactor.
+
+- **Grow cooldown** (per-actor 60-tick gate between successive grows):
+  same death count as baseline (40) but slightly worse chain health.
+  The cooldown doesn't address the root issue — that the margin signal
+  is wrong, not that growth is mistimed.
+
+- **Total-payroll wage runway in npcGrow** (require cash > [existing +
+  new] payroll × N ticks): 40 → 55 deaths. Healthy actors run on
+  revenue, not cash; conservative gate starves expansion.
+
+- **Buffer-stock gov pricing on pig-iron/steel/machine-tool**: prices
+  crash to 0.25× base as gov saturates, killing the actors whose
+  growth was attracted by the high signal. Buffer-stock only works
+  for items with real non-gov demand (e.g., corn has households) AND
+  needs marginRecipe to see gov's current bid, not just fair price.
+
+- **Buffer-stock on corn alone** (target_qty 4k or 20k): 2× death rate
+  because actors still pivot to corn based on anchor price; gov bid
+  drops as inventory grows; pivoted actors die when corn price
+  collapses. Same root issue — actors aren't reading gov's current bid.
+
+- **ore-co bessemer pretrain** (give ore-co bessemer-process at start
+  so it self-consumes pig-iron into steel): 30 deaths (better) but 4
+  final no-trade items vs 2 baseline. ore-co survives but the
+  pig-iron + coke markets dry up.
+
+- **Lower gov pig-iron bid** ($500 vs $1300, closer to cost): 61
+  deaths. ore-co revenue plunges; chain starves of money.
+
+- **Tighten defer gate to AND** (require both 100 ticks AND first
+  sale, instead of OR): 23 deaths but more final no-trade items.
+  The OR gate is closer to optimal for current setup.
 
 ## Mechanisms currently in place (for context recovery)
 
