@@ -30,6 +30,72 @@
 
 ## v1 — fix the scaffolding
 
+### Per-actor decision + trade instrumentation (2026-05-24) — DONE
+
+Each actor now keeps two ring buffers (last 100): `decisions[]` (research,
+grow, fill, demolish) and `tradeLog[]` (per-trade entries with side, item,
+qty, price, counterparty). Helpers exported from `state.js`. Hooked into
+`npcResearch`, `npcGrow`, `npcFillEmptySlots`, and `settle()`.
+
+On liquidation, `dumpDeath()` prints a compact one-liner to stderr showing
+last 3 decisions + 3 trades. `TT_TRACE_VERBOSE=1` dumps the full 30/20.
+Example:
+```
+DEATH t=657 ore-co cash=-30638 stress=4 dec=[research:industrial-chemistry@1,grow:blast-furnace@1,grow:blast-furnace@4] trd=[s:pig-iron:2@788/government,...]
+```
+
+Immediate diagnostic value: visible early-game over-building pattern
+(ore-co builds 2 blast-furnaces at t=1 and t=4 because default belief 1.0
+passes the margin gate), and cyclic respawn-then-die patterns where the
+same actor's last 3 decisions are nearly identical across multiple deaths.
+
+### Cross-niche tech-walking pivots (2026-05-24) — DONE
+
+`marginRecipe` previously restricted candidates to owned building types
+(to preserve niche diversity). Relaxed to also consider raw-extraction
+recipes in unowned buildings, with a `PIVOT_PENALTY = 0.4` discount on
+margin — so a pivot recipe must look 2.5× more profitable than the
+actor's existing recipes to win.
+
+Constrained to raw extraction only (no input chain dependency) for v1 —
+processing pivots would require sourcing inputs the actor doesn't
+already produce, much higher risk.
+
+Added `mode: expand|pivot` to grow-decision traces so the trace shows
+whether each new building extended a known niche or entered a new one.
+
+Harness: @5000 deaths 25 → 3. @50k deaths 84 → 61. Visible pivots in
+death traces (many actors selling corn at $25 to government in last
+trades — they diversified into the gov-subsidized corn niche). Bigger
+economy (14 alive, 75 buildings, 158 workers at @50k vs 14/51/100 prior).
+
+Side effect: every actor pivots to corn farming because gov ballast on
+corn ($50, 4.8× fair) makes it permanently profitable. Degenerate but
+stable — exposes the gov-subsidy-on-staples problem rather than
+introducing it.
+
+### Demolition: chronic-negative recipes (2026-05-24) — DONE
+
+Each running slot tracks `negMarginTicks` — increments by 1 when
+belief-weighted margin is negative, decrements (min 0) otherwise. When
+all slots in a building cross `DEMOLISH_NEGATIVE_TICKS = 300` AND the
+actor has more than one building of that type, the building is
+demolished. Recovers 30% of construction materials; workers go idle
+(picked up by `npcFillEmptySlots` next tick or laid off via stress).
+
+First attempt allowed demolition of any chronically-bad building —
+result: 13 deaths @5k because actors demolished primary niches (ore-co
+its iron-mine, cotton-co its cotton-field) and cascaded chain breaks.
+Redundancy gate (`count > 1`) preserves last-of-kind buildings.
+
+Harness: @5k deaths 3 → 4 (noise). @50k deaths 61 → 49 (best result
+in this series). Inflation regressed slightly: households $11.5M → $12.8M.
+
+Open: processor actors (textile, glass, chemical, electric) still
+struggle — they sit at low cash and stress=2-4 while raw-extraction
+actors (farm, cotton, sulfur, copper, coke) thrive on gov-subsidized
+demand. Same gov-ballast asymmetry from cross-niche.
+
 ### Gov ballast migrated to items.yml (2026-05-23) — DONE
 
 Moved the hardcoded `GOV_BALLAST` list to per-item `gov_ballast:` blocks
