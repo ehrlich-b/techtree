@@ -3,10 +3,11 @@
 ## Where we are
 
 Pre-v0 prototype. Engine + smoke harness work. Economy survives @50k with
-14/14 actors alive at end, ~49 deaths total over the run. Tech tree gets
-walked deep (electrical-engineering reached). Chain mostly stable; the
-loudest remaining artifact is a degenerate corn-pivot where every
-struggling actor diversifies into gov-subsidized corn farming.
+14/14 actors alive at end, ~26 deaths total over the run (post defer-
+first-growth + demand-aware margin). Tech tree walked deep
+(electrical-engineering reached). Chain mostly stable; the loudest
+remaining artifact is a degenerate corn-pivot where every struggling
+actor diversifies into gov-subsidized corn farming.
 
 The economy is held up by hand-tuned gov ballast and pre-pinned NPC
 niches. It's a simulation _of_ an economy, not an emergent one yet. v1
@@ -61,16 +62,6 @@ Death dumps print to stderr inline during a run.
   (predecessor: real demand reforms below).
 
 ## Queued (next sprints, ordered by impact-to-risk)
-
-- **Demand-aware margin signal.** recipeMarginPerTick currently uses
-  `qty_per_cycle × price × belief` as revenue — ignoring how much
-  recent market volume has been at that price. For items where gov is
-  effective sole buyer (pig-iron capped at 2/tick, steel at 1/tick,
-  machine-tool at 1/tick), actors see attractive margin signals while
-  the actual marketplace has hard volume ceilings. Cap revenue by
-  `min(qty_per_cycle, recent_volume_per_cycle) × price`. Should kill
-  the over-build into single-buyer chains. (engine/market.js
-  recipeMarginPerTick + needs state.marketHistory plumbed through)
 
 - **Diversified household staples.** Households buy brick, coal beyond
   corn. Already partially supported (`household:` block in items.yml).
@@ -163,6 +154,11 @@ Death dumps print to stderr inline during a run.
 - Demolition: chronic-negative recipes demolished when actor has >1 of
   the building type (redundancy gate). 30% material recovery.
   (engine/tick.js evaluateSlotsAndDemolish)
+- Demand-aware margin: when state.marketHistory has >=10 samples for
+  an output item, revenue is scaled by min(1, marketRate/outputRate)
+  — actors don't over-estimate margin on items where real volume is
+  hard-capped (gov-only buyers, slow-clearing chains).
+  (engine/market.js outputSaturation + recipeMarginPerTick)
 - Decision + trade instrumentation: per-actor 100-entry ring buffers.
   Death dump on liquidation. (engine/state.js recordDecision /
   logActorTrade; engine/tick.js dumpDeath)
