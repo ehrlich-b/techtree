@@ -214,6 +214,21 @@ function npcResearch(actor, data, tick) {
     // OR gates a tech_maintenance entry for an owned building (modernization
     // — researching the tech ramps the actor's bid demand for the gated
     // items, which incentivizes producers to keep supplying them).
+    // Also: downstream-demand targets — a tech that gates a recipe whose
+    // INPUTS include items the actor currently produces. Without this,
+    // a wire producer (electric-co) has no TARGET because nothing in their
+    // owned building is gated by an unresearched tech — they fall to WALK
+    // mode researching irrelevant techs while their wire output has no buyer.
+    // The downstream gate creates explicit demand for the actor's outputs.
+    const producedOutputs = new Set();
+    for (const b of actor.buildings || []) {
+        for (const slot of b.slots) {
+            if (!slot) continue;
+            const r = recipes[slot.recipe];
+            if (!r) continue;
+            for (const item of Object.keys(r.outputs || {})) producedOutputs.add(item);
+        }
+    }
     const targets = new Set();
     for (const [techId] of Object.entries(tech)) {
         if (actor.researched.has(techId)) continue;
@@ -230,6 +245,16 @@ function npcResearch(actor, data, tick) {
                 targets.add(techId);
                 break;
             }
+        }
+        if (targets.has(techId)) continue;
+        // Downstream-demand: tech gates a recipe whose inputs include any
+        // item the actor produces.
+        for (const r of Object.values(recipes)) {
+            if (r.tech !== techId) continue;
+            for (const item of Object.keys(r.inputs || {})) {
+                if (producedOutputs.has(item)) { targets.add(techId); break; }
+            }
+            if (targets.has(techId)) break;
         }
     }
     // Collect PATH techs: all prereqs (transitive) of any target.
