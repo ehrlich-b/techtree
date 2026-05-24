@@ -185,18 +185,20 @@ actors:
 
   electric-co:
     start_tick: 8000
-    cash: 40000
+    cash: 60000
     strategy: balanced
-    growth_building: wire-mill
+    growth_building: assembly-line
     starting_inventory:
-      brick: 200
-      steel: 40
-      coal: 30
-    starting_buildings: [wire-mill]
-    starting_tech: [ironworking, copper-smelting]
-    starting_workers: 4
+      brick: 300
+      steel: 60
+      coal: 40
+      gear: 5
+    starting_buildings: [wire-mill, assembly-line]
+    starting_tech: [ironworking, copper-smelting, bessemer-process, gear-cutting, precision-machining, steam-engineering, electrical-engineering]
+    starting_workers: 6
     starting_assignments:
       wire-mill: draw-wire
+      assembly-line: assemble-motor
 
   households:
     cash: 5000

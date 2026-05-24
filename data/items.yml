@@ -176,3 +176,6 @@ items:
     era: industrial
     tier: 5
     unit: count
+    household:
+      rate: 0.00005
+      bid_price: 20000
