@@ -391,11 +391,21 @@ function npcFillEmptySlots(state, data) {
     }
 }
 
+// Defer the very first growth until either GROWTH_DEFER_TICKS have elapsed
+// since spawn OR the actor has booked its first sale. Default belief 1.0 at
+// t=1-4 passes the margin gate, so without this gate actors over-build
+// expensive niche buildings before any market signal exists. Sale = real
+// market signal; tick floor = safety so silent niches eventually expand.
+const GROWTH_DEFER_TICKS = 100;
+
 function npcGrow(state, data, prices) {
     const buildings = data.buildings || {};
     for (const actor of Object.values(state.actors)) {
         if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
         if ((actor.stress || 0) >= 1) continue; // growth freeze when squeezed
+        const spawnTick = actor.spawnTick || 0;
+        const elapsed = state.tick - spawnTick;
+        if (elapsed < GROWTH_DEFER_TICKS && !actor.firstSaleTick) continue;
         const target = growthTarget(actor, data, prices);
         if (!target) continue;
         const def = buildings[target];
@@ -684,6 +694,7 @@ function respawnDead(state, data) {
         if (state.actors[entry.actorId]) continue; // already alive (shouldn't happen)
         const actor = createActor(data, entry.actorId);
         if (!actor) continue;
+        actor.spawnTick = state.tick;
         // Funding source: take seed cash from households (the cycle's cash
         // sink) when possible, else mint. Gov is exempt — gov cash is fiat
         // anchor and we don't want respawns to drain it.
@@ -709,6 +720,7 @@ function spawnPendingActors(state, data) {
         if (state.actors[id]) continue;
         const actor = createActor(data, id);
         if (!actor) continue;
+        actor.spawnTick = state.tick;
         const seed = actor.cash || 0;
         const households = state.actors[HOUSEHOLDS_ID];
         if (households && households.cash >= seed) households.cash -= seed;

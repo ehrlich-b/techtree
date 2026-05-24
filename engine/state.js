@@ -46,6 +46,8 @@ function createActor(data, id) {
         evictionServed: false,
         decisions: [],
         tradeLog: [],
+        spawnTick: 0,
+        firstSaleTick: null,
     };
     applyStartingAssignments(actor, def.starting_assignments || {}, data);
     return actor;
@@ -112,6 +114,8 @@ function load(filePath) {
         if (!a.pendingBids) a.pendingBids = [];
         if (!a.decisions) a.decisions = [];
         if (!a.tradeLog) a.tradeLog = [];
+        if (a.spawnTick === undefined) a.spawnTick = 0;
+        if (a.firstSaleTick === undefined) a.firstSaleTick = null;
         if (a.buildingCounter === undefined) a.buildingCounter = (a.buildings || []).length;
     }
     return raw;
@@ -150,6 +154,7 @@ function logActorTrade(actor, trade, side, tick) {
         cp: side === 'buy' ? trade.seller : trade.buyer,
     });
     if (actor.tradeLog.length > TRACE_CAP) actor.tradeLog.shift();
+    if (side === 'sell' && !actor.firstSaleTick) actor.firstSaleTick = tick;
 }
 
 module.exports = { initState, createActor, save, load, catchUp, recordDecision, logActorTrade };
