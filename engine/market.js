@@ -225,10 +225,16 @@ function recipeForBuilding(actor, data, type) {
 // Belief-weighted margin per recipe: estimate how profitable each recipe
 // the actor could run would be, using fair_price × actor.priceBelief as
 // the actor's price expectation for each item. Returns highest-margin
-// recipe whose margin exceeds MIN_GROWTH_MARGIN_PER_TICK. Same vertical-
-// integration restriction as bottleneck path — actors can grow into
-// owned building types or raw extraction only.
+// recipe whose margin exceeds MIN_GROWTH_MARGIN_PER_TICK. Cross-niche
+// entry is allowed into raw extraction only (no input chain risk) with
+// a pivot penalty.
 const MIN_GROWTH_MARGIN_PER_TICK = 1.0;
+// Pivot penalty: cross-niche entry (building type the actor doesn't own
+// yet) gets its margin discounted by this factor. Captures unmodeled
+// costs: cold-start worker skill, construction overhead, demand
+// uncertainty in a new niche. With penalty 0.4, a pivot recipe must
+// look 2.5× more profitable than the actor's owned recipes to win.
+const PIVOT_PENALTY = 0.4;
 
 // Per-tick belief-weighted margin for one recipe. For raw extraction
 // (no inputs), output is scaled by 1/sqrt(postBuildCount) to match
@@ -266,17 +272,20 @@ function marginRecipe(actor, data, prices) {
     let best = { building: null, margin: 0 };
     for (const r of Object.values(recipes)) {
         if (r.tech && !actor.researched.has(r.tech)) continue;
-        // Margin path refines OWNED niches only. Without this guard, the
-        // fair-price-baseline margin signal pulls every actor into the
-        // same handful of "best at default belief" recipes (farms,
-        // mines), collapsing niche diversity. New-chain entry is left
-        // to the bottleneck + growth_building paths below.
-        if (!haveTypes.has(r.building)) continue;
         if (!buildings[r.building]) continue;
+        const owned = haveTypes.has(r.building);
+        const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
+        // Cross-niche entry: only into raw extraction (no input chain
+        // dependency). Owned-niche expansion always allowed. Processing
+        // recipes in unowned buildings are skipped — the actor would
+        // need to source inputs they don't already produce.
+        if (!owned && !isRaw) continue;
         const postBuildCount = (countByType[r.building] || 0) + 1;
-        const perTick = recipeMarginPerTick(r, actor, prices, postBuildCount);
-        if (perTick > best.margin) {
-            best = { building: r.building, margin: perTick };
+        const baseMargin = recipeMarginPerTick(r, actor, prices, postBuildCount);
+        const pivotPenalty = owned ? 1.0 : PIVOT_PENALTY;
+        const score = baseMargin * pivotPenalty;
+        if (score > best.margin) {
+            best = { building: r.building, margin: score };
         }
     }
     return best;

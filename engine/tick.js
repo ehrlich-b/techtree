@@ -431,9 +431,11 @@ function npcGrow(state, data, prices) {
             type: target,
             slots: Array(numSlots).fill(null),
         };
+        const ownedAlready = actor.buildings.some(b => b.type === target);
         actor.buildings.push(newBldg);
         recordDecision(actor, 'grow', state.tick, {
             building: target,
+            mode: ownedAlready ? 'expand' : 'pivot',
             recipe: recipe ? recipe.id : null,
             cost: Math.round(materialsCost),
             cash: Math.round(actor.cash),
