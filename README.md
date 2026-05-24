@@ -14,14 +14,21 @@ simulation keeps running while you're away.
 
 ## Status
 
-Pre-v0. Anchor docs and project skeleton are in place; engine and seed data
-are stubs. See [TODO.md](TODO.md) for what's next.
+Pre-v0 prototype. Engine + smoke harness functional. Economy survives a
+50k-tick smoke with all 14 NPCs alive at the end; chain mostly stable with
+known fragilities (single-buyer processor chains, money inflation creep,
+degenerate gov-subsidized corn pivot). See [TODO.md](TODO.md) for open
+issues and the v1 frontier.
 
 ## Run
 
 ```
-make validate    # check data integrity (refs resolve, no cycles)
-make play        # start the CLI loop (TODO)
+make validate                                # check data integrity
+make play                                    # start the CLI loop
+make harness                                 # 5k-tick smoke
+make harness ARGS="--ticks 50000 --every 5000"
+make harness ARGS="--kill coke-co@4000"      # perturbation test
+TT_TRACE_VERBOSE=1 make harness              # full death dumps
 ```
 
 ## Layout
