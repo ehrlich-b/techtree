@@ -242,15 +242,38 @@ const PIVOT_PENALTY = 0.4;
 // over-estimates and actors keep building money-losing raw extractors.
 // postBuildCount is the number of same-type buildings AFTER adding one
 // more (so the caller can ask "would building one more be profitable?").
-function recipeMarginPerTick(r, actor, prices, postBuildCount) {
+//
+// marketHistory (optional): when provided, per-output revenue is scaled
+// down by a saturation factor if the recipe's per-tick output exceeds
+// what the market has been clearing recently. Caps the false-positive
+// margin signal on items where gov caps absorb less than theoretical
+// supply (pig-iron, steel, machine-tool). Disabled if marketHistory is
+// absent or item has <MIN_VOLUME_SAMPLES recent entries.
+const MIN_VOLUME_SAMPLES = 10;
+function outputSaturation(item, perTickOutput, marketHistory, currentTick) {
+    if (!marketHistory) return 1.0;
+    const hist = marketHistory[item];
+    if (!hist || hist.length < MIN_VOLUME_SAMPLES) return 1.0;
+    let totalQty = 0;
+    for (const e of hist) totalQty += e.qty;
+    const span = Math.max(1, currentTick - hist[0].tick);
+    const marketRate = totalQty / span;
+    if (marketRate >= perTickOutput) return 1.0;
+    return marketRate / perTickOutput;
+}
+
+function recipeMarginPerTick(r, actor, prices, postBuildCount, marketHistory, currentTick) {
     const beliefs = actor.priceBelief || {};
     const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
     const drFactor = isRaw ? 1.0 / Math.sqrt(postBuildCount || 1) : 1.0;
+    const seconds = r.seconds || 1;
     let rev = 0;
     for (const [item, qty] of Object.entries(r.outputs || {})) {
         const fairP = prices[item] || 0;
         const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
-        rev += qty * drFactor * fairP * belief;
+        const perTickOutput = qty * drFactor / seconds;
+        const sat = outputSaturation(item, perTickOutput, marketHistory, currentTick || 0);
+        rev += qty * drFactor * fairP * belief * sat;
     }
     let inputCost = 0;
     for (const [item, qty] of Object.entries(r.inputs || {})) {
@@ -263,7 +286,7 @@ function recipeMarginPerTick(r, actor, prices, postBuildCount) {
     return cycleMargin / (r.seconds || 1);
 }
 
-function marginRecipe(actor, data, prices) {
+function marginRecipe(actor, data, prices, marketHistory, currentTick) {
     const recipes = data.recipes || {};
     const buildings = data.buildings || {};
     const haveTypes = new Set((actor.buildings || []).map(b => b.type));
@@ -281,7 +304,7 @@ function marginRecipe(actor, data, prices) {
         // need to source inputs they don't already produce.
         if (!owned && !isRaw) continue;
         const postBuildCount = (countByType[r.building] || 0) + 1;
-        const baseMargin = recipeMarginPerTick(r, actor, prices, postBuildCount);
+        const baseMargin = recipeMarginPerTick(r, actor, prices, postBuildCount, marketHistory, currentTick);
         const pivotPenalty = owned ? 1.0 : PIVOT_PENALTY;
         const score = baseMargin * pivotPenalty;
         if (score > best.margin) {
@@ -303,7 +326,7 @@ function marginRecipe(actor, data, prices) {
 // Vertical integration is restricted in all paths: actors can grow into
 // owned building types or raw extraction. Can't grow into processing
 // buildings they don't own — that would consolidate chain producers.
-function growthTarget(actor, data, prices) {
+function growthTarget(actor, data, prices, marketHistory, currentTick) {
     if (!actor.growthBuilding) return null;
     // 1. Margin-driven: pick the highest-margin recipe the actor could
     //    run. Belief drift makes this self-correcting — oversupplied
@@ -311,7 +334,7 @@ function growthTarget(actor, data, prices) {
     //    recipes at default belief 1.0 → positive margin (cost × markup
     //    spread) → adoption.
     if (prices) {
-        const m = marginRecipe(actor, data, prices);
+        const m = marginRecipe(actor, data, prices, marketHistory, currentTick);
         if (m.building && m.margin >= MIN_GROWTH_MARGIN_PER_TICK) return m.building;
     }
     const recipes = data.recipes || {};
@@ -372,7 +395,7 @@ function growthTarget(actor, data, prices) {
         const countByType = {};
         for (const b of actor.buildings || []) countByType[b.type] = (countByType[b.type] || 0) + 1;
         const postBuildCount = (countByType[actor.growthBuilding] || 0) + 1;
-        const margin = recipeMarginPerTick(fallbackRecipe, actor, prices, postBuildCount);
+        const margin = recipeMarginPerTick(fallbackRecipe, actor, prices, postBuildCount, marketHistory, currentTick);
         if (margin < MIN_GROWTH_MARGIN_PER_TICK) return null;
         const beliefs = actor.priceBelief || {};
         for (const item of Object.keys(fallbackRecipe.outputs || {})) {

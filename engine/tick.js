@@ -406,7 +406,7 @@ function npcGrow(state, data, prices) {
         const spawnTick = actor.spawnTick || 0;
         const elapsed = state.tick - spawnTick;
         if (elapsed < GROWTH_DEFER_TICKS && !actor.firstSaleTick) continue;
-        const target = growthTarget(actor, data, prices);
+        const target = growthTarget(actor, data, prices, state.marketHistory, state.tick);
         if (!target) continue;
         const def = buildings[target];
         if (!def) continue;
@@ -497,7 +497,7 @@ function evaluateSlotsAndDemolish(state, data, prices) {
                 const recipe = recipes[slot.recipe];
                 if (!recipe) { allBad = false; continue; }
                 const postBuildCount = countByType[b.type] || 1;
-                const margin = recipeMarginPerTick(recipe, actor, prices, postBuildCount);
+                const margin = recipeMarginPerTick(recipe, actor, prices, postBuildCount, state.marketHistory, state.tick);
                 if (margin < 0) slot.negMarginTicks = (slot.negMarginTicks || 0) + 1;
                 else slot.negMarginTicks = Math.max(0, (slot.negMarginTicks || 0) - 1);
                 if ((slot.negMarginTicks || 0) < DEMOLISH_NEGATIVE_TICKS) allBad = false;
