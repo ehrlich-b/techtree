@@ -3,9 +3,10 @@
 ## Where we are
 
 Pre-v0 prototype. Engine + smoke harness work. Economy survives @50k with
-14/14 actors alive at end, ~26 deaths total over the run (post defer-
-first-growth + demand-aware margin). Tech tree walked deep
-(electrical-engineering reached). Chain mostly stable; the loudest
+14/14 actors alive at end, ~16 deaths total over the run (post motor
+household demand + vertically-integrated electric-co + coke-co worker
+bump). Tech tree walked deep (electrical-engineering reached, assemble-
+motor active for the first time). Chain mostly stable; the loudest
 remaining artifact is a degenerate corn-pivot where every struggling
 actor diversifies into gov-subsidized corn farming.
 
@@ -32,13 +33,13 @@ Death dumps print to stderr inline during a run.
 
 ## Open structural issues (visible in death traces / smoke output)
 
-- **electric-co survival gap.** Spawns at t=8000 producing wire,
-  which has no buyer until someone researches electrical-engineering
-  (8000 cost) for assemble-motor. Tech-walking now correctly targets
-  the path (downstream-demand targets), but $40k starting cash + 4
-  workers can't fund the 19500-tick prereq chain before dying. Either
-  delay spawn, increase cash, or pre-research more of the path.
-  (data/world.yml electric-co)
+- **electric-co survival gap.** Mostly fixed. electric-co is now
+  vertically integrated (wire-mill + assembly-line + electrical-
+  engineering preresearched) and motors have household demand. They
+  thrive from t=8000 to ~t=20000, then die when steel inventory
+  exhausts (smelt-steel still idle because nobody can profitably
+  produce steel — see "steel chain idle" below). Dropped from 14
+  deaths to 5-7 per 50k run.
 
 - **Early-game over-build.** Mostly addressed by defer-first-growth +
   demand-aware margin: actors no longer over-build at t=1-4. Still
@@ -62,6 +63,15 @@ Death dumps print to stderr inline during a run.
   × spread exceeds the max NPC bid × max_belief × spread, so it doesn't
   clear without gov ballast. Real fix is cost-based price discovery
   (predecessor: real demand reforms below).
+
+- **Steel chain idle.** smelt-steel never runs in the smoke even with
+  electric-co consuming steel for motors. ore-co would need bessemer-
+  process AND extra workers to staff both blast-furnace slots — both
+  tried (see dead-ends below), both regress. Root cause: pig-iron is
+  more reliably bid (gov $1300 cap 2) than steel (gov $3000 cap 1 +
+  thin industrial demand), so ore-co's margin calc never picks
+  smelt-steel for the free slot. electric-co survives 12000 ticks on
+  starting steel:60 then dies when it runs out.
 
 ## Queued (next sprints, ordered by impact-to-risk)
 
@@ -122,6 +132,31 @@ Death dumps print to stderr inline during a run.
 - **Tighten defer gate to AND** (require both 100 ticks AND first
   sale, instead of OR): 23 deaths but more final no-trade items.
   The OR gate is closer to optimal for current setup.
+
+- **ore-co bessemer pretrain + 9 workers + extra coke** (retry to see
+  if new motor demand changed the dynamic): 30 deaths (vs 16). ore-co
+  dies 16 times — extra workers + bessemer means they run both slots
+  but flood the pig-iron + steel markets, prices collapse, they
+  bleed payroll. Confirmed bessemer pretrain is a dead-end even with
+  the new motor demand pulling steel.
+
+- **Tighter PIVOT_PENALTY (0.4 → 0.25)** to keep actors in their core
+  niche: 30 deaths (vs 16). Pivots are actually saving rival-co and
+  textile-co when their core niche saturates. Restricting them just
+  trades one death pattern for another.
+
+- **Higher electric-co starting cash ($60k → $80k)**: 17 deaths
+  (vs 16). The extra cash funds more bad bets (more cross-niche
+  buildings during pivot), so it doesn't actually buy survival time.
+  $60k is the sweet spot.
+
+- **Brick input on farm-corn** (to disqualify farms from cross-niche
+  pivot via the !isRaw rule): 134 deaths — catastrophic. Adding any
+  input to a major staple recipe cascades hard because corn is
+  household rate 0.1 (the highest staple drain). Even 1 brick/cycle
+  starves farm-co when bricks are scarce, gov corn supply collapses,
+  households starve, system unwinds. Anti-pivot solutions need to
+  live at the growthTarget level, not in the recipe data.
 
 ## Mechanisms currently in place (for context recovery)
 
