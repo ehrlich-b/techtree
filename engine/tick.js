@@ -40,7 +40,7 @@
 const { wage, gainSkill, outputMultiplier, newWorker, BASE_WAGE } = require('./worker.js');
 const {
     fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
-    growthTarget, recipeForBuilding, staples,
+    growthTarget, recipeForBuilding, recipeMarginPerTick, staples,
     HOUSEHOLDS_ID, GOVERNMENT_ID, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
 const { createActor, recordDecision, logActorTrade } = require('./state.js');
@@ -457,6 +457,65 @@ function npcGrow(state, data, prices) {
     }
 }
 
+// Demolition: each running slot tracks consecutive ticks of negative
+// belief-weighted margin. Demolish a building only when:
+//   (a) all its slots have crossed DEMOLISH_NEGATIVE_TICKS, AND
+//   (b) the actor has MORE THAN ONE building of this type (redundant).
+// The redundancy rule prevents chain breaks — single-building niches
+// (e.g., ore-co's only iron-mine) are never demolished, even when
+// chronically unprofitable. Liquidation handles those. Over-built niches
+// (e.g., farm-co with 5 farms when market only sustains 2) shed dead
+// weight, recovering 30% of construction materials and freeing workers.
+const DEMOLISH_NEGATIVE_TICKS = 300;
+const DEMOLISH_MATERIAL_RECOVERY = 0.3;
+
+function evaluateSlotsAndDemolish(state, data, prices) {
+    const buildings = data.buildings || {};
+    const recipes = data.recipes || {};
+    for (const actor of Object.values(state.actors)) {
+        if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') continue;
+        const countByType = {};
+        for (const b of actor.buildings || []) countByType[b.type] = (countByType[b.type] || 0) + 1;
+
+        const toDemolish = [];
+        for (const b of actor.buildings || []) {
+            let hasActiveSlot = false;
+            let allBad = true;
+            for (const slot of b.slots) {
+                if (!slot) { allBad = false; continue; }
+                hasActiveSlot = true;
+                const recipe = recipes[slot.recipe];
+                if (!recipe) { allBad = false; continue; }
+                const postBuildCount = countByType[b.type] || 1;
+                const margin = recipeMarginPerTick(recipe, actor, prices, postBuildCount);
+                if (margin < 0) slot.negMarginTicks = (slot.negMarginTicks || 0) + 1;
+                else slot.negMarginTicks = Math.max(0, (slot.negMarginTicks || 0) - 1);
+                if ((slot.negMarginTicks || 0) < DEMOLISH_NEGATIVE_TICKS) allBad = false;
+            }
+            const isRedundant = (countByType[b.type] || 0) > 1;
+            if (hasActiveSlot && allBad && isRedundant) toDemolish.push(b);
+        }
+
+        for (const b of toDemolish) {
+            const def = buildings[b.type];
+            if (def && def.construction) {
+                for (const [item, amt] of Object.entries(def.construction)) {
+                    const recovered = Math.floor(amt * DEMOLISH_MATERIAL_RECOVERY);
+                    if (recovered > 0) actor.inventory[item] = (actor.inventory[item] || 0) + recovered;
+                }
+            }
+            const idx = actor.buildings.indexOf(b);
+            if (idx >= 0) actor.buildings.splice(idx, 1);
+            actor._workerIndex = null;
+            recordDecision(actor, 'demolish', state.tick, {
+                building: b.type,
+                slots: b.slots.length,
+                cash: Math.round(actor.cash || 0),
+            });
+        }
+    }
+}
+
 function applyPriceDrift(state, orders, trades) {
     const posted = {};
     for (const o of orders) {
@@ -688,6 +747,7 @@ function tick(state, data) {
 
     npcFillEmptySlots(state, data);
     npcGrow(state, data, prices);
+    evaluateSlotsAndDemolish(state, data, prices);
 
     const households = state.actors[HOUSEHOLDS_ID];
     const dead = [];

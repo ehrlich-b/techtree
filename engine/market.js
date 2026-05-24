@@ -596,7 +596,7 @@ function clear(orders) {
 
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
-    growthTarget, recipeForBuilding, staples,
+    growthTarget, recipeForBuilding, recipeMarginPerTick, staples,
     MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID,
     NPC_GROWTH_RUNWAY_TICKS,
 };
