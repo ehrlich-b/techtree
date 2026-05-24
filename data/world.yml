@@ -42,10 +42,10 @@ actors:
     growth_building: coke-oven
     starting_inventory:
       brick: 100
-      coal: 50
+      coal: 100
     starting_buildings: [coke-oven]
     starting_tech: [coal-tar]
-    starting_workers: 1
+    starting_workers: 2
     starting_assignments:
       coke-oven: bake-coke
 
