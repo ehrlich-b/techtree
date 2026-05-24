@@ -32,18 +32,20 @@ Death dumps print to stderr inline during a run.
 
 ## Open structural issues (visible in death traces / smoke output)
 
-- **Single-buyer fragility on processor chains.** Pattern visible in
-  death dumps: ore-co builds blast-furnace → researches bessemer
-  (~500 ticks) → wages bleed dry waiting for steel capacity → dies.
-  Gov ballast caps pig-iron purchases at 2/tick; no other external
-  buyer exists. Same shape for glass-co, electric-co. (engine/tick.js
-  npcResearch + npcGrow; engine/market.js governmentOrders)
+- **electric-co survival gap.** Spawns at t=8000 producing wire,
+  which has no buyer until someone researches electrical-engineering
+  (8000 cost) for assemble-motor. Tech-walking now correctly targets
+  the path (downstream-demand targets), but $40k starting cash + 4
+  workers can't fund the 19500-tick prereq chain before dying. Either
+  delay spawn, increase cash, or pre-research more of the path.
+  (data/world.yml electric-co)
 
-- **Early-game over-build.** At t=1-4, default belief 1.0 passes the
-  margin gate, so actors build expensive niche buildings (blast-furnace,
-  glass-furnace) before any market signal exists. ore-co builds 2
-  blast-furnaces at t=1 and t=4, then dies by t=657. (engine/market.js
-  growthTarget; gate is `marginRecipe` + belief-floor)
+- **Early-game over-build.** Mostly addressed by defer-first-growth +
+  demand-aware margin: actors no longer over-build at t=1-4. Still
+  fires at exactly t=100 when defer-gate lifts if first-sale signal
+  is from a transient gov subsidy; gate is OR not AND so a $50 corn
+  sale to gov satisfies the "first sale" condition. (engine/tick.js
+  GROWTH_DEFER_TICKS)
 
 - **Degenerate corn pivot.** Cross-niche raw-extraction pivots are
   working too well — every struggling actor builds a farm because gov
@@ -159,6 +161,11 @@ Death dumps print to stderr inline during a run.
   — actors don't over-estimate margin on items where real volume is
   hard-capped (gov-only buyers, slow-clearing chains).
   (engine/market.js outputSaturation + recipeMarginPerTick)
+- Downstream-demand tech targets: a tech is a TARGET for npcResearch
+  if it gates a recipe whose inputs include any item the actor
+  produces. Lets producers research toward creating demand for their
+  own output (e.g., wire → electrical-engineering for motors).
+  (engine/tick.js npcResearch)
 - Decision + trade instrumentation: per-actor 100-entry ring buffers.
   Death dump on liquidation. (engine/state.js recordDecision /
   logActorTrade; engine/tick.js dumpDeath)
