@@ -44,6 +44,8 @@ function createActor(data, id) {
         bankruptTicks: 0,
         stress: 0,
         evictionServed: false,
+        decisions: [],
+        tradeLog: [],
     };
     applyStartingAssignments(actor, def.starting_assignments || {}, data);
     return actor;
@@ -108,6 +110,8 @@ function load(filePath) {
         if (!a.priceBook) a.priceBook = {};
         if (!a.priceBelief) a.priceBelief = {};
         if (!a.pendingBids) a.pendingBids = [];
+        if (!a.decisions) a.decisions = [];
+        if (!a.tradeLog) a.tradeLog = [];
         if (a.buildingCounter === undefined) a.buildingCounter = (a.buildings || []).length;
     }
     return raw;
@@ -120,4 +124,32 @@ function catchUp(state, data, elapsedSeconds, tickFn) {
     return ticks;
 }
 
-module.exports = { initState, createActor, save, load, catchUp };
+// Per-actor decision and trade ring buffers (last 100). Synthetic actors
+// (households, government) are excluded — their behavior is fully scripted
+// and they generate too many events to be useful in the log.
+const TRACE_CAP = 100;
+
+function recordDecision(actor, kind, tick, detail) {
+    if (!actor) return;
+    if (actor.strategy === 'households' || actor.strategy === 'government') return;
+    if (!actor.decisions) actor.decisions = [];
+    actor.decisions.push({ tick, kind, ...(detail || {}) });
+    if (actor.decisions.length > TRACE_CAP) actor.decisions.shift();
+}
+
+function logActorTrade(actor, trade, side, tick) {
+    if (!actor) return;
+    if (actor.strategy === 'households' || actor.strategy === 'government') return;
+    if (!actor.tradeLog) actor.tradeLog = [];
+    actor.tradeLog.push({
+        tick,
+        side,
+        item: trade.item,
+        qty: trade.qty,
+        price: trade.price,
+        cp: side === 'buy' ? trade.seller : trade.buyer,
+    });
+    if (actor.tradeLog.length > TRACE_CAP) actor.tradeLog.shift();
+}
+
+module.exports = { initState, createActor, save, load, catchUp, recordDecision, logActorTrade };

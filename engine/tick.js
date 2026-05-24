@@ -43,7 +43,7 @@ const {
     growthTarget, recipeForBuilding, staples,
     HOUSEHOLDS_ID, GOVERNMENT_ID, NPC_GROWTH_RUNWAY_TICKS,
 } = require('./market.js');
-const { createActor } = require('./state.js');
+const { createActor, recordDecision, logActorTrade } = require('./state.js');
 
 const HISTORY_LIMIT = 100;
 // Organic stress timeline: insolvent actors don't die immediately — they
@@ -202,7 +202,7 @@ function advanceResearch(actor, data) {
 // bessemer before reaching steel, but kept dying mid-walk and losing
 // progress. With path priority, ore-co goes straight to coal-tar (prereq
 // for bessemer) then bessemer, halving time-to-steel.
-function npcResearch(actor, data) {
+function npcResearch(actor, data, tick) {
     if (!actor.strategy || actor.strategy === 'households' || actor.strategy === 'government') return;
     if (actor.researchInProgress) return;
     const tech = data.tech || {};
@@ -264,10 +264,14 @@ function npcResearch(actor, data) {
         }
         return best;
     };
-    const pick = pickCheapest(a => targets.has(a.techId))
-        || pickCheapest(a => onPath.has(a.techId))
-        || pickCheapest(() => true);
-    if (pick) actor.researchInProgress = { tech: pick.techId, progress: 0 };
+    let pick = pickCheapest(a => targets.has(a.techId));
+    let mode = pick ? 'target' : null;
+    if (!pick) { pick = pickCheapest(a => onPath.has(a.techId)); if (pick) mode = 'path'; }
+    if (!pick) { pick = pickCheapest(() => true); if (pick) mode = 'walk'; }
+    if (pick) {
+        actor.researchInProgress = { tech: pick.techId, progress: 0 };
+        recordDecision(actor, 'research', tick, { tech: pick.techId, cost: pick.cost, mode });
+    }
 }
 
 function gatherOrders(actor, data, prices, state) {
@@ -298,6 +302,8 @@ function settle(state, trade) {
     if (seller.strategy !== 'government') seller.cash += total;
     buyer.inventory[trade.item] = (buyer.inventory[trade.item] || 0) + trade.qty;
     seller.inventory[trade.item] = (seller.inventory[trade.item] || 0) - trade.qty;
+    logActorTrade(buyer, trade, 'buy', state.tick);
+    logActorTrade(seller, trade, 'sell', state.tick);
 }
 
 function recordTrade(state, trade) {
@@ -372,6 +378,12 @@ function npcFillEmptySlots(state, data) {
                         }
                     }
                 }
+                recordDecision(actor, 'fill', state.tick, {
+                    building: bldg.type,
+                    recipe: recipe.id,
+                    slot: s,
+                    hired: toHire,
+                });
                 filled = true;
                 break;
             }
@@ -420,6 +432,12 @@ function npcGrow(state, data, prices) {
             slots: Array(numSlots).fill(null),
         };
         actor.buildings.push(newBldg);
+        recordDecision(actor, 'grow', state.tick, {
+            building: target,
+            recipe: recipe ? recipe.id : null,
+            cost: Math.round(materialsCost),
+            cash: Math.round(actor.cash),
+        });
 
         if (recipe && workersNeeded > 0) {
             let idle = idleWorkerIds(actor);
@@ -534,7 +552,40 @@ function computeStress(actor) {
     return 4;
 }
 
+// Death dump: prints one stderr line per liquidation showing actor's last
+// 3 decisions + 3 trades. Compact format reads inline during harness runs
+// (which otherwise only see deaths via snapshot diffs). Set
+// TT_TRACE_VERBOSE=1 for the full 30 decisions + 20 trades on each death.
+function dumpDeath(state, actor) {
+    if (actor.strategy === 'households' || actor.strategy === 'government') return;
+    const decFmt = (d) => {
+        const target = d.tech || d.building || d.recipe || '';
+        return `${d.kind}:${target}@${d.tick}`;
+    };
+    const trdFmt = (t) => `${t.side === 'buy' ? 'b' : 's'}:${t.item}:${t.qty}@${Math.round(t.price)}/${t.cp}`;
+    const decisions = (actor.decisions || []).slice(-3).map(decFmt).join(',');
+    const trades = (actor.tradeLog || []).slice(-3).map(trdFmt).join(',');
+    const cash = Math.round(actor.cash || 0);
+    console.error(`DEATH t=${state.tick} ${actor.id} cash=${cash} stress=${actor.stress || 0} dec=[${decisions}] trd=[${trades}]`);
+
+    if (process.env.TT_TRACE_VERBOSE) {
+        const allDec = (actor.decisions || []).slice(-30);
+        const allTrd = (actor.tradeLog || []).slice(-20);
+        console.error(`  decisions (${allDec.length}):`);
+        for (const d of allDec) {
+            const { tick, kind, ...rest } = d;
+            console.error(`    t=${tick} ${kind} ${JSON.stringify(rest)}`);
+        }
+        console.error(`  trades (${allTrd.length}):`);
+        for (const t of allTrd) {
+            const dir = t.side === 'buy' ? '<-' : '->';
+            console.error(`    t=${t.tick} ${t.side} ${t.item} x${t.qty} @ $${t.price.toFixed(2)} ${dir} ${t.cp}`);
+        }
+    }
+}
+
 function liquidate(state, data, actor, prices) {
+    dumpDeath(state, actor);
     const buildings = data.buildings || {};
     let recovery = 0;
     for (const [item, qty] of Object.entries(actor.inventory || {})) {
@@ -611,7 +662,7 @@ function tick(state, data) {
     for (const actor of Object.values(state.actors)) {
         runProduction(actor, data);
         advanceResearch(actor, data);
-        npcResearch(actor, data);
+        npcResearch(actor, data, state.tick);
     }
 
     consumeStaples(state, data);
