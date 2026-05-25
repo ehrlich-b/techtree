@@ -2,21 +2,43 @@
 
 ## Where we are
 
-Pre-v0 prototype. Engine + smoke harness work. Economy survives @50k with
-14/14 actors alive at end, ~16 deaths total over the run (post motor
-household demand + vertically-integrated electric-co + coke-co worker
-bump). Tech tree walked deep (electrical-engineering reached, assemble-
+Pre-v0 prototype. Engine + smoke harness work. Main-engine economy
+survives @50k with 14/14 actors alive at end, ~0-16 deaths total over
+the run. Tech tree walked deep (electrical-engineering reached, assemble-
 motor active for the first time). Chain mostly stable; the loudest
 remaining artifact is a degenerate corn-pivot where every struggling
 actor diversifies into gov-subsidized corn farming.
 
-The economy is held up by hand-tuned gov ballast and pre-pinned NPC
-niches. It's a simulation _of_ an economy, not an emergent one yet. v1
-goal is replacing the hand-tuned scaffolding (gov subsidies, fixed
-`growth_building` per actor, belief saturation, hand-coded survival
-parameters) with mechanisms that produce real emergence: prices find
-non-cap levels, supply chains tolerate single-actor loss, NPCs choose
-niches by observation, runs diverge across seeds.
+The main-engine economy is held up by hand-tuned gov ballast and pre-
+pinned NPC niches. It's a simulation _of_ an economy, not an emergent
+one yet. v1 goal is replacing the hand-tuned scaffolding with mechanisms
+that produce real emergence: prices find non-cap levels, supply chains
+tolerate single-actor loss, NPCs choose niches by observation, runs
+diverge across seeds.
+
+**Sidecar diagnostic — Lengnick (2013) baseline replica.** Built as a
+self-contained sanity probe (`engine/lengnick.js`, `make lengnick`) to
+confirm the ABM literature's stability mechanisms work in this codebase.
+Reaches stable equilibrium at @50k across 5 seeds: unemployment 3.5-7.4%,
+price $5.3-5.7, wage $14.3-15.5, inventory in-band, zero bankruptcies,
+money supply exactly conserved. Confirms the bug isn't structural — it's
+in the main engine's decision rules. The pieces that did the work and
+are missing from the main engine:
+  1. Cost-anchored price bounds: `1.025 × mc ≤ price ≤ 1.15 × mc`.
+     Without an upper bound, our belief multiplier hits its wall and
+     prices ratchet without anchoring back to cost.
+  2. Inventory band drives hiring/firing (lo=0.25× demand, hi=1.0×).
+     Our margin-driven growth ignores inventory; this is the supply-
+     follows-demand mechanism we never built right.
+  3. Dividends recycle excess firm cash to households (reserve = 6×
+     monthly wage bill). Our hh-cash-drain hack is the same idea but
+     shaped wrong (cliff vs flow).
+  4. Wage-down requires γ=24 months of consecutive full employment.
+     This is the only damping that prevents a wage-price spiral when
+     vacancies are persistent.
+  5. Bounded shopping search (vendor list = 7, swap rate 25% on
+     stockout/cheaper-found). We don't have a "household shopping"
+     primitive at all — gov + households just bid at fixed prices.
 
 ## Running
 

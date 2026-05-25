@@ -5,7 +5,7 @@ DATA = data
 ENGINE = engine
 CLI = cli
 
-.PHONY: help validate play harness clean
+.PHONY: help validate play harness lengnick clean
 
 help:
 	@echo "TechTree"
@@ -14,6 +14,7 @@ help:
 	@echo "  validate   Check data integrity (refs resolve, no tech cycles)."
 	@echo "  play       Start the CLI play loop."
 	@echo "  harness    Run the stability stress harness (5k ticks default)."
+	@echo "  lengnick   Run the Lengnick baseline ABM (50k ticks default)."
 	@echo "  clean      Remove save.json."
 
 validate:
@@ -24,6 +25,9 @@ play:
 
 harness:
 	@$(NODE) $(ENGINE)/harness.js $(ARGS)
+
+lengnick:
+	@$(NODE) $(ENGINE)/lengnick.js $(ARGS)
 
 clean:
 	@rm -f save.json
