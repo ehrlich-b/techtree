@@ -53,10 +53,12 @@ Death dumps print to stderr inline during a run.
   bid on corn at $50 is ~4.8× fair price. Pivot is rational; the
   underlying gov-subsidy asymmetry is the real problem.
 
-- **Money inflation creep.** Households at $12.8M @50k (vs $214k
-  baseline = 60× inflation). Gov ballast injects ~$200/tick net into
-  the system (buyer-of-last-resort with no sterilization). Real fix is
-  buffer-stock pricing (see queued).
+- **Money inflation creep.** Fixed via households cash drain
+  (HOUSEHOLDS_CASH_CAP=$100k, HOUSEHOLDS_DRAIN_RATE=0.001 per tick of
+  excess, cash deleted). Households now settle at $300-400k @50k (vs
+  $15M before). Side effect: heavy chain now stays alive end-to-end,
+  no-trade events 30→16 over the run, NPC deaths drop to ~0 on the
+  base smoke and machine-co perturbation.
 
 - **Belief saturation.** priceBelief multiplier hits [0.5, 2.0] walls
   rather than finding equilibrium. For machine-tool the ask × max_belief

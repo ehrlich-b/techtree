@@ -65,6 +65,14 @@ const CREDIT_RUNWAY_TICKS = 60;
 // expected when it's structurally unprofitable.
 const RESPAWN_DELAY = 200;
 
+// Households cash drain: gov-issued cash flows in via wages from actors
+// selling to gov-ballast markets, faster than households spend on staples.
+// Above HOUSEHOLDS_CASH_CAP, drain at HOUSEHOLDS_DRAIN_RATE per tick of
+// the excess. Modeled as savings depletion / taxes-out; the cash is
+// deleted (not transferred) to bound the money supply at equilibrium.
+const HOUSEHOLDS_CASH_CAP = 100000;
+const HOUSEHOLDS_DRAIN_RATE = 0.001;
+
 // Stress levels per actor, recomputed each tick from cash-vs-wage-runway:
 //   0 healthy:    cash >= GROWTH_RUNWAY ticks of wages — grows aggressively
 //   1 squeezed:   cash 50-GROWTH_RUNWAY ticks — growth freeze
@@ -819,6 +827,9 @@ function tick(state, data) {
         }
 
         if (actor.bankruptTicks > BANKRUPTCY_TICKS) dead.push(actor);
+    }
+    if (households && households.cash > HOUSEHOLDS_CASH_CAP) {
+        households.cash -= (households.cash - HOUSEHOLDS_CASH_CAP) * HOUSEHOLDS_DRAIN_RATE;
     }
     for (const a of dead) liquidate(state, data, a, prices);
     respawnDead(state, data);
