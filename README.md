@@ -15,11 +15,15 @@ simulation keeps running while you're away.
 ## Status
 
 Pre-v0 prototype. Engine + smoke harness functional. Cost-anchored pricing
-landed: the full heavy chain clears in the open market, prices discover
+landed: the heavy chain clears in the open market, prices discover
 cost-anchored levels (no belief-wall saturation), and the corn monoculture
-is gone. The economy is now active rather than frozen; the open frontier is
-firm churn in thin-margin single-producer chains (needs seeded RNG to tune
-+ multi-supplier redundancy). See [TODO.md](TODO.md) for the full picture.
+is gone. A seeded ensemble (`make harness ARGS="--seeds N"`) now measures
+robustness instead of trusting one run — and it shows the economy is **not
+yet robust: ~30% of seeds stay healthy to 50k**, with thin-margin firms
+(chemical-co) decapitalizing and breaking their chains. The open frontier
+is porting the proven testbed recipe — market-clearing prices + firm
+working-capital credit — to move that number. See [TODO.md](TODO.md) for
+the full picture.
 
 ## Run
 

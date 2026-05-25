@@ -8,8 +8,10 @@ landed** (replaces the old belief multiplier) and the economy is now
 steel → machine-tool) clears in the real market, prices discover
 cost-anchored levels (everything 0.8–1.3× fair, no more 2× belief walls),
 and the corn monoculture is gone (1 farm vs 16). Money inflation dropped
-from ~9.7× to ~3× over 50k. These wins are structural and hold across
-trajectories.
+from ~9.7× to ~3× over 50k. The cost-anchored *mechanism* is structural —
+but the ensemble (now built, below) shows the **outcome is not robust: only
+3/10 seeds stay healthy to 50k**. The single `make harness` PASS we shipped
+is a lucky trajectory, not a stable economy.
 
 **Reframe (important).** The gov ballast and pinned NPC niches are *not*
 debt to be removed — they're the economy's anchors, exactly how shipping
@@ -25,13 +27,16 @@ deaths/50k (vs 30 in the frozen baseline — but that baseline had a dead
 chain). It oscillates 14–16/16 alive; the harness endpoint sometimes
 catches an actor mid-respawn. Root cause is thin-margin single-producer
 chains + 200-tick respawn gaps that propagate shocks — the "single-actor
-loss breaks the chain" fragility. It is *chaotic to hand-tune*: the
-engine has no seeded RNG, so a single trajectory is high-variance and
-small parameter pokes cause large regime shifts (corn slots seen swinging
-1→19→11 on near-identical configs). The next two steps are therefore
-ordered: (1) **seeded RNG + ensemble eval** so churn is measurable at
-all, then (2) **multi-supplier redundancy** so one death doesn't zero a
-chain link. Both are below.
+loss breaks the chain" fragility. **The instrument is now built**
+(`make harness ARGS="--seeds N --ticks T"`, init-cash jitter per seed —
+see harness.js/state.js) and it pins the fragility precisely: at 10×50k,
+**3/10 healthy**, dominant failures **chemical-co dies (4/10)** and the
+**pig-iron / machine-tool chains go dormant** (`no-trade`, 3/10) — the
+exact firm-decapitalization-breaks-the-chain signature the 2-sector
+testbed solved. Next two steps, ordered: (1) **port the testbed recipe**
+(market-clearing prices + working-capital credit) and re-run the ensemble
+to move 30% → ?, then (2) **multi-supplier redundancy** so one death
+doesn't zero a chain link. Both are below.
 
 **Sidecar diagnostic — Lengnick (2013) baseline replica.** Built as a
 self-contained sanity probe (`engine/lengnick.js`, `make lengnick`) to
@@ -89,13 +94,15 @@ CREDIT_MONTHS (6 = sweet spot; higher overheats).
 market-clearing price discovery + a firm credit sector. The main engine
 already has analogs of both — a credit facility (60-tick wage runway) and
 gov anchors that substitute for clean price discovery (which is why it
-already clears the heavy chain). So the port is de-risked. **But the main
-engine has no seeded RNG**, so any pricing change there can only be
-validated on one chaotic trajectory — the n=1 trap that caused the prior
-floundering. **Port order is therefore: (1) seeded RNG + ensemble eval in
-the main engine** (now the critical path — see Queued), then (2) evaluate
-market-clearing pricing against the current cost-anchored cap. Do not port
-pricing changes before the instrument exists.
+already clears the heavy chain). So the port is de-risked. **The seeded
+ensemble instrument is now built in the main engine** (`harness --seeds`),
+and it gives us the before-number the port must beat: **30% healthy
+(3/10)**. Port order from here: (1) ✓ instrument — done; (2) **market-
+clearing prices + working-capital credit** (the proven recipe), re-run the
+ensemble, and only keep the change if it moves 30% upward. Now that the
+instrument exists, every pricing change is validated against the
+distribution, not a single chaotic trajectory — the discipline that ends
+the floundering.
 
 Already ported (last session): cost-anchored price bounds (ask = own mc ×
 markup [1.025, 1.15]) + inventory-band markup signal — the heavy chain
@@ -183,14 +190,20 @@ Death dumps print to stderr inline during a run.
   brick/iron-ore if those become bottlenecks. Single-actor death
   should stop killing downstream demand or upstream supply.
 
-- **Seeded RNG + ensemble eval. NOW THE CRITICAL PATH.** Worker hire
-  order, NPC decision ties, recipe pick ties — all currently
-  deterministic, so the sim is one chaotic trajectory and single-run
-  metrics (deaths, corn slots) are high-variance: tiny param pokes flip
-  the whole regime, making the firm-churn untunable by hand. Add a seeded
-  RNG, inject small behavioral noise, run N seeds, report mean/spread.
-  This both makes churn measurable AND delivers the "runs diverge across
-  seeds" emergence property. Do this before any further churn tuning.
+- **Seeded RNG + ensemble eval. ✓ DONE** (`harness --seeds N`, commit
+  f9ec5ce). Approach note: rather than inject per-tick behavioral noise
+  into hire/decision/recipe ties (which would add hot-loop RNG + cost), the
+  seed perturbs only **initial actor cash (±8%) once at init** — cash gates
+  every stress/affordability decision in tick.js, so a small starting
+  spread fans the deterministic engine into distinct trajectories at zero
+  per-tick cost (tick loop stays deterministic; no-seed path byte-
+  identical). Reuses `checkInvariants` as the classifier (empty = healthy).
+  First measurement: **10×50k = 3/10 healthy** — chemical-co death (4/10)
+  + pig-iron/machine-tool dormancy (3/10) are the dominant failures. This
+  is the before-number for the pricing port. (Known limitation: at horizons
+  below an actor's `start_tick`, `checkInvariants` reports it as `dead:` —
+  spurious for short ensembles; 50k is past all spawns, so the result is
+  clean. One-line guard worth adding.)
 
 - **Multiple suppliers per item (churn fix).** The firm-churn frontier:
   thin-margin single-producer chain links (coke-co, steel-co, ore-co for
