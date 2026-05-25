@@ -2,19 +2,36 @@
 
 ## Where we are
 
-Pre-v0 prototype. Engine + smoke harness work. Main-engine economy
-survives @50k with 14/14 actors alive at end, ~0-16 deaths total over
-the run. Tech tree walked deep (electrical-engineering reached, assemble-
-motor active for the first time). Chain mostly stable; the loudest
-remaining artifact is a degenerate corn-pivot where every struggling
-actor diversifies into gov-subsidized corn farming.
+Pre-v0 prototype. Engine + smoke harness work. **Cost-anchored pricing
+landed** (replaces the old belief multiplier) and the economy is now
+*active* rather than frozen: the full heavy chain (coke → pig-iron →
+steel → machine-tool) clears in the real market, prices discover
+cost-anchored levels (everything 0.8–1.3× fair, no more 2× belief walls),
+and the corn monoculture is gone (1 farm vs 16). Money inflation dropped
+from ~9.7× to ~3× over 50k. These wins are structural and hold across
+trajectories.
 
-The main-engine economy is held up by hand-tuned gov ballast and pre-
-pinned NPC niches. It's a simulation _of_ an economy, not an emergent
-one yet. v1 goal is replacing the hand-tuned scaffolding with mechanisms
-that produce real emergence: prices find non-cap levels, supply chains
-tolerate single-actor loss, NPCs choose niches by observation, runs
-diverge across seeds.
+**Reframe (important).** The gov ballast and pinned NPC niches are *not*
+debt to be removed — they're the economy's anchors, exactly how shipping
+economic games work (Victoria 3, Capitalism Lab). The 1-sector Lengnick
+proof showed the micro-rules *can* emerge; the job was never "zero
+scaffolding," it was "legible, responsive, non-degenerate prices on top
+of a few designed anchors." That's now achieved. Emergence here means
+the *middle layer* self-organizes (prices, chain response, niche
+filling), not that boundary conditions are absent.
+
+**Residual: firm churn.** The activated economy surfaces ~180–250 NPC
+deaths/50k (vs 30 in the frozen baseline — but that baseline had a dead
+chain). It oscillates 14–16/16 alive; the harness endpoint sometimes
+catches an actor mid-respawn. Root cause is thin-margin single-producer
+chains + 200-tick respawn gaps that propagate shocks — the "single-actor
+loss breaks the chain" fragility. It is *chaotic to hand-tune*: the
+engine has no seeded RNG, so a single trajectory is high-variance and
+small parameter pokes cause large regime shifts (corn slots seen swinging
+1→19→11 on near-identical configs). The next two steps are therefore
+ordered: (1) **seeded RNG + ensemble eval** so churn is measurable at
+all, then (2) **multi-supplier redundancy** so one death doesn't zero a
+chain link. Both are below.
 
 **Sidecar diagnostic — Lengnick (2013) baseline replica.** Built as a
 self-contained sanity probe (`engine/lengnick.js`, `make lengnick`) to
@@ -41,38 +58,50 @@ are missing from the main engine:
      primitive at all — gov + households just bid at fixed prices.
 
 **Sidecar follow-on — 2-sector Lengnick** (`engine/lengnick2.js`,
-`make lengnick2`). NEGATIVE result, important for engine-port scoping.
-Naively extending the 1-sector model to a producer→manufacturer chain
-fails across the entire parameter space we probed:
-  - **Without on-the-job search** (Lengnick π=0): manufacturers absorb
-    all the workers via vacancy-driven wage raises; producers can't
-    compete; chain collapses by t=500 with hyperinflation on the
-    consumer side and producer extinction.
-  - **With on-the-job search** (π=0.1): wage spiral. Both sectors have
-    persistent vacancies at 0% unemployment; γ=24 cuts can't keep up
-    with raises. Prices to $10^20 at t=5000 (capped only by precision).
-  - **Aggressive target-headcount firing**: locks into a depression
-    equilibrium — 87% unemployment, prices/wages decay to floor,
-    no escape signal.
-  - **Lower γ** (6 vs 24) and various param tweaks don't fix this —
-    they shift which failure mode is reached but not the existence.
-The fundamental issue: cross-sector labor competition + chain
-coupling means a single-tick inventory-direction signal can't allocate
-labor correctly when production is constrained by multiple resources
-(labor AND inputs for the downstream sector). The 1-sector recipe is
-not drop-in for multi-stage chains.
+`make lengnick2`, `--ensemble N` for seeded multi-seed eval). **SOLVED.**
+The naive 1-sector recipe does NOT generalize — the bare model has a
+dominant depression attractor (~88% unemployment, every seed). Stability
+needs two mechanisms together, neither sufficient alone (the stock-flow-
+consistent prescription — Caiani et al. 2016):
+  1. **Market-clearing prices** (`PRICE_CLEARING`). Price moves proportional
+     to the inventory gap with an open ceiling (cost floor still binds), so
+     a demand spike is rationed by a price rise instead of an unfillable
+     stockout. The 1.025–1.15×mc cap was forcing permanent empty shelves →
+     vacancy-driven wage spiral → cash exhaustion → collapse. Alone: full
+     employment for ~1500 ticks, then inflates and collapses.
+  2. **Firm working-capital credit** (`CREDIT_ENABLE`, limit = N×wage bill).
+     Firms borrow to cover payroll instead of shedding labor on a transient
+     cash dip (the decapitalization that kills #1 alone); repaid from
+     revenue. Money-honest: loans net out of the money gate.
+Together: **19/20 seeds healthy at 50k**, unemployment median 6.3%, both
+sectors staffed, money conserved, stable the whole run. Both toggles default
+off (bare baseline = depression, preserved). Knobs: PRICE_CLEAR_GAIN,
+CREDIT_MONTHS (6 = sweet spot; higher overheats).
+  Open (cosmetic, not stability): nominal price *level* random-walks up (no
+  monetary anchor); firms churn (~3k bankruptcies/50k) under aggregate
+  stability — the same micro-churn-vs-macro-stability the main engine shows.
+  How it was found: a seeded ensemble + written health gate (`--ensemble`,
+  classify/GATE) turned chaotic single-trajectory tuning into reproducible
+  yes/no signals (~24 experiments, each a clean refutation or confirmation).
+  That instrument is the reusable asset.
 
-**Implication for the engine port.** Porting Lengnick rules into the
-main TechTree engine will not be enough by itself — the existing engine
-has 7+ chains and the 2-sector experiment shows even one upstream stage
-breaks the recipe. Additional mechanisms needed (any of):
-  - Multi-step planning (firms anticipate input costs / availability).
-  - Investment/savings buffers that don't fluctuate per-period.
-  - Government as macro-stabilizer (Mark-0 approach), but mechanistically
-    grounded — taxes balance spending, not gov_ballast price subsidies.
-  - Coordinated wage discovery — currently each firm independent, but
-    cross-sector labor competition needs aggregate signal.
-This is post-v0 scope. v0 should accept hand-tuned scaffolding.
+**Implication for the engine port.** The proven recipe is now concrete:
+market-clearing price discovery + a firm credit sector. The main engine
+already has analogs of both — a credit facility (60-tick wage runway) and
+gov anchors that substitute for clean price discovery (which is why it
+already clears the heavy chain). So the port is de-risked. **But the main
+engine has no seeded RNG**, so any pricing change there can only be
+validated on one chaotic trajectory — the n=1 trap that caused the prior
+floundering. **Port order is therefore: (1) seeded RNG + ensemble eval in
+the main engine** (now the critical path — see Queued), then (2) evaluate
+market-clearing pricing against the current cost-anchored cap. Do not port
+pricing changes before the instrument exists.
+
+Already ported (last session): cost-anchored price bounds (ask = own mc ×
+markup [1.025, 1.15]) + inventory-band markup signal — the heavy chain
+clears, prices anchor to cost, no saturation walls. Dividends approximated
+by the households cash drain; γ-month wage damping and bounded shopping
+remain unported, not currently blocking.
 
 ## Running
 
@@ -104,10 +133,13 @@ Death dumps print to stderr inline during a run.
   sale to gov satisfies the "first sale" condition. (engine/tick.js
   GROWTH_DEFER_TICKS)
 
-- **Degenerate corn pivot.** Cross-niche raw-extraction pivots are
-  working too well — every struggling actor builds a farm because gov
-  bid on corn at $50 is ~4.8× fair price. Pivot is rational; the
-  underlying gov-subsidy asymmetry is the real problem.
+- **Degenerate corn pivot. RESOLVED.** Two-part fix: (a) re-priced corn
+  anchors to a real retail margin (gov bid $50→$8, household $50→$14;
+  removed gov corn market-maker ask) so the ~7× arbitrage is gone, and
+  (b) added a pivot shortage gate — cross-niche raw pivots require the
+  target clearing ≥1.3× fair (`PIVOT_PRICE_RATIO`), plus a growth glut
+  gate. farm-corn down from 16 slots to ~1. Corn clears at ~1.1–1.3×
+  fair.
 
 - **Money inflation creep.** Fixed via households cash drain
   (HOUSEHOLDS_CASH_CAP=$100k, HOUSEHOLDS_DRAIN_RATE=0.001 per tick of
@@ -116,22 +148,22 @@ Death dumps print to stderr inline during a run.
   no-trade events 30→16 over the run, NPC deaths drop to ~0 on the
   base smoke and machine-co perturbation.
 
-- **Belief saturation.** priceBelief multiplier hits [0.5, 2.0] walls
-  rather than finding equilibrium. For machine-tool the ask × max_belief
-  × spread exceeds the max NPC bid × max_belief × spread, so it doesn't
-  clear without gov ballast. Real fix is cost-based price discovery
-  (predecessor: real demand reforms below).
+- **Belief saturation. RESOLVED — this was the headline bug.** Replaced
+  the priceBelief multiplier entirely with cost-anchored pricing: ask =
+  own marginal cost × markup in [1.025, 1.15], markup nudged by inventory
+  band; buyers bid at observed market VWAP. The machine-tool / heavy-chain
+  no-trade deadlock (ask drifted above every bid) is gone — the whole
+  chain clears at 0.8–1.1× fair. (engine/market.js npcOrders +
+  actorUnitCost; engine/tick.js updatePricing)
 
-- **Steel chain partially fixed via separate steel-co.** Spawning a
-  dedicated steel-co (start_tick=3000, bessemer-process pretrained,
-  blast-furnace + 3 workers + minimal inventory) makes smelt-steel
-  run mid-run and clears steel to electric-co at $3600-4100/unit. They
-  still overgrow (margin-driven growth picks blast-furnace; they can't
-  staff slot 2 with only 3 workers, so the second building is pure
-  cost). Currently dies 1-2× per 50k run then respawns. Real fix would
-  be a staffing-aware growthTarget that skips growing buildings whose
-  current slots can't be staffed. Cumulative effect on smoke: 40→35
-  no-trade events, 2→1 dead checkpoints over the run.
+- **Steel chain clears. Staffing-gate idea dropped as obviated.** Under
+  cost-anchored pricing, steel-co's old over-build death was a *false
+  margin signal* (belief said "build" while steel didn't actually sell);
+  market-referenced margin + the glut gate now block expansion when steel
+  isn't moving, so no separate staffing-aware growthTarget is needed. (A
+  naive idle-slot gate would also wrongly freeze 1-recipe-2-slot buildings
+  like spinning-mill/loom/wire-mill.) steel-co still churns as a thin
+  single-product actor — see firm-churn frontier above.
 
 ## Queued (next sprints, ordered by impact-to-risk)
 
@@ -151,18 +183,42 @@ Death dumps print to stderr inline during a run.
   brick/iron-ore if those become bottlenecks. Single-actor death
   should stop killing downstream demand or upstream supply.
 
-- **Staffing-aware growthTarget.** Skip building types whose current
-  slots aren't fully staffed. Right now steel-co (3 workers, 1 blast-
-  furnace, 1 slot) keeps picking blast-furnace as growth target — it
-  builds a second one but can't staff it, dies 2k ticks later from the
-  brick spend. Same pattern would hit any actor with a high-margin
-  building they're fully utilizing.
+- **Seeded RNG + ensemble eval. NOW THE CRITICAL PATH.** Worker hire
+  order, NPC decision ties, recipe pick ties — all currently
+  deterministic, so the sim is one chaotic trajectory and single-run
+  metrics (deaths, corn slots) are high-variance: tiny param pokes flip
+  the whole regime, making the firm-churn untunable by hand. Add a seeded
+  RNG, inject small behavioral noise, run N seeds, report mean/spread.
+  This both makes churn measurable AND delivers the "runs diverge across
+  seeds" emergence property. Do this before any further churn tuning.
 
-- **Seeded RNG.** Worker hire order, NPC decision ties, recipe pick
-  ties — all currently deterministic. Run 10 seeds @5000 ticks as a
-  matrix; an emergent economy diverges across seeds.
+- **Multiple suppliers per item (churn fix).** The firm-churn frontier:
+  thin-margin single-producer chain links (coke-co, steel-co, ore-co for
+  pig-iron) die in correlated cascades, and respawn-into-the-same-niche
+  reignites it. More producers per link + shorter/smarter respawn so one
+  death doesn't zero a chain stage. Pairs with the gov-strategic-reserve
+  idea (see dead-ends — shelved for now, but the right shape).
+
+- **Staffing-aware growthTarget. DROPPED (obviated).** Cost-anchored
+  margin + glut gate already block the over-build death this was meant to
+  fix; an idle-slot gate would wrongly freeze 1-recipe-2-slot buildings.
 
 ## Dead-end attempts (don't repeat)
+
+- **Gov strategic-reserve asks** (give gov ask_price on coke/pig-iron/
+  steel/machine-tool + starting reserves, so it sells from stock to
+  buffer an upstream producer's death). Sound *concept* — addresses the
+  real "upstream death starves downstream" fragility, and gov already
+  hoards the inventory it buys. But under cost-anchored pricing it removed
+  an input constraint on downstream producers, unleashed a construction
+  surge, and blew brick to 5.3× fair while the chaotic re-trajectory
+  revived the corn pivot (19 farms). Reverted. Revisit *after* seeded RNG
+  exists to tune it, and pair with a brick-supply response.
+
+- **Bumping coke gov bid to make the floor "effective"** ($450→$480, so
+  gov bid clears above the producer's cost-floor ask): regime-shifted into
+  corn=19 farms, machine-tool no-trade, deaths 346. Pure trajectory chaos
+  — confirms churn params are not hand-tunable without seeded RNG.
 
 - **Stress-aware research pause** (skip research when stress ≥ 2):
   zero measurable impact on survival. Research is free (1 point/tick,
@@ -236,19 +292,32 @@ Death dumps print to stderr inline during a run.
 
 ## Mechanisms currently in place (for context recovery)
 
-- Per-actor `priceBelief` per item, drifting on fill outcomes, clamped
-  [0.5, 2.0]. (engine/tick.js applyPriceDrift)
+- Cost-anchored pricing: NPC ask = own marginal cost × per-item markup in
+  [1.025, 1.15]; markup nudged each tick by inventory band; buyers bid at
+  observed market VWAP (fair as fallback). Replaced the old priceBelief
+  multiplier. (engine/market.js npcOrders + actorUnitCost + marketRef;
+  engine/tick.js updatePricing)
+- Inventory-band markup signal: `salesEMA` (smoothed units sold/tick)
+  sizes lo/hi bands in ticks-of-sales; below lo → raise markup, above hi
+  → cut. (engine/tick.js updatePricing, INV_LOW_TICKS/INV_HIGH_TICKS)
+- Growth glut gate: don't build capacity for an output stocked above its
+  hi band — supply-follows-demand overbuild brake. (engine/tick.js npcGrow)
+- Pivot shortage gate: cross-niche raw pivots require the target clearing
+  ≥1.3× fair (PIVOT_PRICE_RATIO) on top of the 0.4× PIVOT_PENALTY.
+  (engine/market.js marginRecipe)
+- Skill-seeded crews: starting + growth-hired workers seeded to skill 0.5
+  in the recipe's tech (output 1.25×), same as tech-adoption hires — so
+  respawned actors aren't born at 0.5× output bleeding into death.
+  (engine/state.js applyStartingAssignments; engine/tick.js npcGrow)
 - Synthetic actors: `households` (wage absorber, staple buyer) and
   `government` (money issuer, buyer-of-last-resort with qty caps).
   Gov cash side suppressed in `settle` — trades create/destroy money.
 - Tech-walking research: TARGET (owned-building recipe) → PATH
   (transitive prereq of a target) → WALK (cheapest available).
   (engine/tick.js npcResearch)
-- Margin-driven growth target: belief-weighted per-recipe margin picks
+- Margin-driven growth target: market-referenced per-recipe margin picks
   the highest-margin building each tick. (engine/market.js
   growthTarget + marginRecipe + recipeMarginPerTick)
-- Cross-niche pivots: raw-extraction recipes in unowned building types
-  considered with 0.4× PIVOT_PENALTY. (engine/market.js marginRecipe)
 - DR on raw extraction: per-building yield × `1/sqrt(N)` for raw
   recipes; total scales sublinearly. (engine/tick.js runProduction +
   engine/market.js recipeMarginPerTick)

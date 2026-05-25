@@ -60,6 +60,22 @@ const DEFAULTS = {
     MIN_EMPLOYEES: 1,
     RESERVE_MONTHS: 6,
 
+    // Market-clearing price discovery (heavier mechanism under test). When
+    // on, price moves proportional to the inventory gap with an open ceiling,
+    // so excess demand is rationed by a price spike instead of an unfillable
+    // stockout (the wage-spiral trigger). Default off = bare Lengnick bounds.
+    PRICE_CLEARING: false,
+    PRICE_CLEAR_GAIN: 0.2,     // proportional price move/tick toward clearing
+    PRICE_RELAX: 0.02,         // in-band pull back toward cost floor (anchor)
+    PRICE_CEIL_MULT: 50,       // safety ceiling (× mc) under clearing
+
+    // Working-capital credit (SFC-style): firms borrow to cover payroll
+    // instead of shedding labor on a transient cash dip; repaid from revenue.
+    // Loans create money (tracked in bankCredit) and net out of moneyTotal.
+    CREDIT_ENABLE: false,
+    CREDIT_MONTHS: 12,         // max loan = N × current wage bill
+    CREDIT_BUFFER_MONTHS: 1,   // keep N × wage bill before repaying debt
+
     SEED: 42,
 };
 
@@ -150,6 +166,7 @@ function init(p, rng) {
     return {
         firms, hh, tick: 0,
         voidCash: 0,
+        bankCredit: 0,
         totalProduced: { input: 0, widget: 0 },
         totalSold: { input: 0, widget: 0 },
         bankruptcies: 0,
@@ -166,6 +183,13 @@ function step(state, p, rng) {
     for (const f of firms) {
         if (f.employees.size === 0) continue;
         const need = f.wage * f.employees.size;
+        // Working-capital credit: borrow to cover payroll before shedding
+        // labor, so a transient cash dip doesn't cascade into layoffs.
+        if (p.CREDIT_ENABLE && f.cash < need) {
+            const limit = p.CREDIT_MONTHS * need;
+            const borrow = Math.min(need - f.cash, Math.max(0, limit - (f.debt || 0)));
+            if (borrow > 0) { f.cash += borrow; f.debt = (f.debt || 0) + borrow; state.bankCredit += borrow; }
+        }
         if (f.cash < need) {
             const canAfford = Math.max(0, Math.floor(f.cash / Math.max(f.wage, 0.01)));
             const empArr = [...f.employees];
@@ -327,10 +351,26 @@ function step(state, p, rng) {
             }
             mc = (f.wage / p.M_OUTPUT_PER_EMP) + inputCost * p.INPUTS_PER_WIDGET;
         }
-        const priceCeil = p.PRICE_MARKUP_HI * mc;
         const priceFloor = p.PRICE_MARKUP_LO * mc;
+        const priceCeil = (p.PRICE_CLEARING ? p.PRICE_CEIL_MULT : p.PRICE_MARKUP_HI) * mc;
 
-        if (rng() < p.PRICE_ADJ_PROB) {
+        if (p.PRICE_CLEARING) {
+            // Move price proportional to the inventory gap: shortage (inv<lo)
+            // raises price to ration demand down to supply; glut lowers it.
+            if (rng() < p.PRICE_ADJ_PROB) {
+                if (f.outputInv < lo) {
+                    const shortage = Math.min((lo - f.outputInv) / Math.max(lo, 1e-9), 1);
+                    f.price *= 1 + p.PRICE_CLEAR_GAIN * shortage;
+                } else if (f.outputInv > hi) {
+                    const glut = Math.min((f.outputInv - hi) / Math.max(hi, 1e-9), 1);
+                    f.price *= 1 - p.PRICE_CLEAR_GAIN * glut;
+                } else {
+                    // in-band: relax toward cost floor — nominal anchor that
+                    // stops prices ratcheting up when the market is balanced.
+                    f.price += (priceFloor - f.price) * p.PRICE_RELAX;
+                }
+            }
+        } else if (rng() < p.PRICE_ADJ_PROB) {
             if (f.outputInv < lo && f.price < priceCeil) {
                 f.price *= 1 + rng() * p.PRICE_ADJ_MAX;
                 if (f.price > priceCeil) f.price = priceCeil;
@@ -426,7 +466,20 @@ function step(state, p, rng) {
         }
     }
 
-    // ── Phase H: dividends ──────────────────────────────────────────────
+    // ── Phase H: debt service, then dividends ───────────────────────────
+    // Repay loans from cash above a 1-month operating buffer before paying
+    // dividends — repayment destroys the money the loan created.
+    if (p.CREDIT_ENABLE) {
+        for (const f of firms) {
+            if ((f.debt || 0) <= 0) continue;
+            const buffer = p.CREDIT_BUFFER_MONTHS * f.wage * f.employees.size;
+            const free = f.cash - buffer;
+            if (free > 0) {
+                const repay = Math.min(f.debt, free);
+                f.cash -= repay; f.debt -= repay; state.bankCredit -= repay;
+            }
+        }
+    }
     let pool = 0;
     for (const f of firms) {
         const bill = f.wage * f.employees.size;
@@ -450,6 +503,8 @@ function step(state, p, rng) {
             hh[wid].wage = 0;
         }
         state.voidCash += f.cash;
+        // Write off unpaid loan: bank eats the loss (kept money-neutral).
+        if (f.debt) { state.voidCash -= f.debt; state.bankCredit -= f.debt; f.debt = 0; }
         f.employees.clear();
 
         // Reset to median of same-sector survivors.
@@ -503,7 +558,7 @@ function snapshot(state, p) {
         pInvAvg: avg(producers.map(f => f.outputInv)),
         mInvAvg: avg(mfrs.map(f => f.outputInv)),
         mInputInvAvg: avg(mfrs.map(f => f.inputInv)),
-        moneyTotal: fCash + hCash + state.voidCash,
+        moneyTotal: fCash + hCash + state.voidCash - (state.bankCredit || 0),
         firmCash: fCash,
         hhCash: hCash,
         bankruptcies: state.bankruptcies,
@@ -524,7 +579,46 @@ function run(opts = {}) {
     return { state, params: p, snapshots };
 }
 
-module.exports = { run, init, step, snapshot, DEFAULTS };
+// ── Health gate ─────────────────────────────────────────────────────────
+// "2-sector stable" = both sectors alive, frictional (not collapsed, not
+// overheated) unemployment, cost-anchored prices that haven't exploded, and
+// conserved money. Mirrors the 1-sector success criteria (unemp 3.5-7.4%,
+// stable prices, money conserved) with slack for the extra sector.
+const GATE = {
+    UNEMP_LO: 2,        // below → overheated (persistent vacancies, wage-spiral risk)
+    UNEMP_HI: 15,       // above → demand-collapse / depression
+    PRICE_MAX: 1e4,     // above (or non-finite) → hyperinflation
+    MONEY_PCT: 10,      // |money drift| above → accounting leak
+};
+
+function classify(s, initMoney) {
+    const moneyPct = Math.abs((s.moneyTotal - initMoney) / initMoney * 100);
+    if (!isFinite(s.mPriceAvg) || !isFinite(s.pPriceAvg) ||
+        s.mPriceAvg > GATE.PRICE_MAX || s.pPriceAvg > GATE.PRICE_MAX) return 'hyperinflation';
+    if (moneyPct > GATE.MONEY_PCT) return 'money-leak';
+    if (s.empP <= 0 || s.empM <= 0) return 'sector-dead';
+    if (s.unempPct > GATE.UNEMP_HI) return 'depression';
+    if (s.unempPct < GATE.UNEMP_LO) return 'overheated';
+    return 'healthy';
+}
+
+function ensemble(n, opts = {}) {
+    const ticks = opts.ticks || 50000;
+    const results = [];
+    for (let seed = 1; seed <= n; seed++) {
+        const { snapshots } = run({ ...opts, SEED: seed, ticks });
+        const last = snapshots[snapshots.length - 1];
+        const initMoney = snapshots[0].moneyTotal;
+        results.push({
+            seed, last,
+            klass: classify(last, initMoney),
+            moneyPct: (last.moneyTotal - initMoney) / initMoney * 100,
+        });
+    }
+    return results;
+}
+
+module.exports = { run, init, step, snapshot, classify, ensemble, GATE, DEFAULTS };
 
 if (require.main === module) {
     const args = process.argv.slice(2);
@@ -534,6 +628,37 @@ if (require.main === module) {
         if (k === '--ticks') opts.ticks = parseInt(args[++i]);
         else if (k === '--every') opts.every = parseInt(args[++i]);
         else if (k === '--seed') opts.SEED = parseInt(args[++i]);
+        else if (k === '--ensemble') opts.ensemble = parseInt(args[++i]);
+    }
+
+    if (opts.ensemble) {
+        const t0 = Date.now();
+        const results = ensemble(opts.ensemble, opts);
+        const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+        const ticks = opts.ticks || 50000;
+        console.log(`Lengnick-2 ensemble — ${opts.ensemble} seeds, ${ticks} ticks each (ran in ${elapsed}s)\n`);
+        console.log('  seed  class            unemp%   pPrice   mPrice   bnkr   money%');
+        for (const r of results) {
+            console.log(
+                String(r.seed).padStart(6) + '  ' +
+                r.klass.padEnd(15) + ' ' +
+                r.last.unempPct.toFixed(1).padStart(7) + ' ' +
+                r.last.pPriceAvg.toFixed(3).padStart(8) + ' ' +
+                r.last.mPriceAvg.toFixed(3).padStart(8) + ' ' +
+                String(r.last.bankruptcies).padStart(6) + ' ' +
+                r.moneyPct.toFixed(1).padStart(7)
+            );
+        }
+        const tally = {};
+        for (const r of results) tally[r.klass] = (tally[r.klass] || 0) + 1;
+        const unemps = results.map(r => r.last.unempPct).sort((a, b) => a - b);
+        const med = unemps[Math.floor(unemps.length / 2)];
+        const healthy = tally.healthy || 0;
+        console.log('\nclasses: ' + Object.entries(tally).map(([k, v]) => `${k} ${v}`).join('  '));
+        console.log(`unemp%: min ${unemps[0].toFixed(1)}  median ${med.toFixed(1)}  max ${unemps[unemps.length - 1].toFixed(1)}`);
+        const frac = healthy / opts.ensemble;
+        console.log(`\nRESULT: ${frac >= 0.9 ? 'PASS' : 'FAIL'}  (healthy ${healthy}/${opts.ensemble} = ${(frac * 100).toFixed(0)}%, gate ≥ 90%)`);
+        process.exit(0);
     }
 
     const t0 = Date.now();
