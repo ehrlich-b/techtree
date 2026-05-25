@@ -40,6 +40,40 @@ are missing from the main engine:
      stockout/cheaper-found). We don't have a "household shopping"
      primitive at all — gov + households just bid at fixed prices.
 
+**Sidecar follow-on — 2-sector Lengnick** (`engine/lengnick2.js`,
+`make lengnick2`). NEGATIVE result, important for engine-port scoping.
+Naively extending the 1-sector model to a producer→manufacturer chain
+fails across the entire parameter space we probed:
+  - **Without on-the-job search** (Lengnick π=0): manufacturers absorb
+    all the workers via vacancy-driven wage raises; producers can't
+    compete; chain collapses by t=500 with hyperinflation on the
+    consumer side and producer extinction.
+  - **With on-the-job search** (π=0.1): wage spiral. Both sectors have
+    persistent vacancies at 0% unemployment; γ=24 cuts can't keep up
+    with raises. Prices to $10^20 at t=5000 (capped only by precision).
+  - **Aggressive target-headcount firing**: locks into a depression
+    equilibrium — 87% unemployment, prices/wages decay to floor,
+    no escape signal.
+  - **Lower γ** (6 vs 24) and various param tweaks don't fix this —
+    they shift which failure mode is reached but not the existence.
+The fundamental issue: cross-sector labor competition + chain
+coupling means a single-tick inventory-direction signal can't allocate
+labor correctly when production is constrained by multiple resources
+(labor AND inputs for the downstream sector). The 1-sector recipe is
+not drop-in for multi-stage chains.
+
+**Implication for the engine port.** Porting Lengnick rules into the
+main TechTree engine will not be enough by itself — the existing engine
+has 7+ chains and the 2-sector experiment shows even one upstream stage
+breaks the recipe. Additional mechanisms needed (any of):
+  - Multi-step planning (firms anticipate input costs / availability).
+  - Investment/savings buffers that don't fluctuate per-period.
+  - Government as macro-stabilizer (Mark-0 approach), but mechanistically
+    grounded — taxes balance spending, not gov_ballast price subsidies.
+  - Coordinated wage discovery — currently each firm independent, but
+    cross-sector labor competition needs aggregate signal.
+This is post-v0 scope. v0 should accept hand-tuned scaffolding.
+
 ## Running
 
 ```

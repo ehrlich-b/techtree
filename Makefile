@@ -5,7 +5,7 @@ DATA = data
 ENGINE = engine
 CLI = cli
 
-.PHONY: help validate play harness lengnick clean
+.PHONY: help validate play harness lengnick lengnick2 clean
 
 help:
 	@echo "TechTree"
@@ -28,6 +28,9 @@ harness:
 
 lengnick:
 	@$(NODE) $(ENGINE)/lengnick.js $(ARGS)
+
+lengnick2:
+	@$(NODE) $(ENGINE)/lengnick2.js $(ARGS)
 
 clean:
 	@rm -f save.json
