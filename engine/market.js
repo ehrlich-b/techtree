@@ -7,14 +7,16 @@
  * clear: per-item double auction. Sort bids desc / asks asc, match top of
  * book at midpoint until prices no longer cross. Self-trades skipped.
  *
- * npcOrders: NPCs ask surplus inventory at fair × (1 + spread) × belief; bid
- * for short input items (per running slot, NPC_INPUT_BUFFER_CYCLES of buffer)
- * at fair × (1 - spread) × belief, capped by NPC_BID_BUDGET_FRAC of cash.
- * `belief` is a per-actor-per-item multiplier that drifts each tick from
- * fill outcomes (see applyPriceDrift in tick.js): unfilled asks/bids drift
- * the actor's belief away from fair to chase a clear; fully filled drifts
- * back. Heterogeneous beliefs let producers raise prices when demand
- * outruns supply without static tuning.
+ * npcOrders: NPCs ask surplus inventory at their OWN marginal cost × a
+ * per-item markup held in a tight cost-anchored band [MARKUP_LO, MARKUP_HI]
+ * (Lengnick eqs 8-10). The markup is nudged each tick by inventory direction
+ * (see updatePricing in tick.js): inventory below the demand band → raise
+ * markup toward the ceiling (scarce); above → cut toward the floor (glut).
+ * Because the anchor is the seller's realized cost (input purchase prices +
+ * BASE_WAGE labor), prices track cost and cannot ratchet to a saturation
+ * wall the way the old fair × belief multiplier did. Buyers bid at the
+ * observed market reference (recent VWAP, fair as fallback), so a producer
+ * raising price on scarcity is met rather than deadlocked.
  *
  * householdOrders: the synthetic 'households' actor absorbs wages and
  * eats one unit of each STAPLES item per worker per tick at its rate. It
@@ -38,27 +40,39 @@ const { BASE_WAGE, outputMultiplier } = require('./worker.js');
 const MARKUP = 1.2;
 const NPC_SPREAD = 0.05;
 const FAIRPRICE_ITERATIONS = 8;
+
+// Cost-anchored markup band (Lengnick ϕ/ϕ̄). Seller ask = realized marginal
+// cost × markup, with markup clamped to [MARKUP_LO, MARKUP_HI]. The band is
+// tight so price stays pinned near cost; the floor guarantees positive
+// margin, the ceiling prevents the runaway the old belief multiplier hit.
+// MARKUP_MID is the init / fallback markup for items with no history yet.
+const MARKUP_LO = 1.025;
+const MARKUP_HI = 1.15;
+const MARKUP_MID = 1.08;
 const NPC_INPUT_BUFFER_CYCLES = 5;
 const NPC_MAINTENANCE_BUFFER_TICKS = 200;
 const NPC_BID_BUDGET_FRAC = 0.5;
 
-// Fire-sale discount on ask prices when the actor is in stress. Distressed
-// (cash on credit) actors halve their ask to attract buyers; insolvent
-// actors slash further. Bypasses the belief-floor clamp — a dying seller
-// will take almost anything for inventory.
-const FIRE_SALE_DISCOUNT_DISTRESSED = 0.5;
-const FIRE_SALE_DISCOUNT_INSOLVENT = 0.2;
+// Fire-sale discount on ask prices when the actor is in stress. Under
+// cost-anchored pricing a deep discount means selling below cost, which
+// *deepens* a distressed actor's hole instead of saving it — so distressed
+// (cash on credit, still operating) actors only shave to near cost to
+// guarantee a clear, while truly insolvent actors dump hard to raise cash
+// before the bankruptcy clock runs out.
+const FIRE_SALE_DISCOUNT_DISTRESSED = 0.95;
+const FIRE_SALE_DISCOUNT_INSOLVENT = 0.3;
 
 const HOUSEHOLDS_ID = 'households';
 const GOVERNMENT_ID = 'government';
 const HOUSEHOLD_BUFFER_TICKS = 10;
 const HOUSEHOLD_BID_BUDGET_FRAC = 0.5;
 // Gov absorbs surplus staple supply up to GOV_BID_BUFFER × household per-tick
-// demand. Beyond that, producer surplus has no buyer at the floor; their
-// belief drifts down → ask drops → real-market clearing below floor. Caps
-// the money-creation rate so farm-co cash growth doesn't compound infinitely.
-// At K=2, farm-co revenue/worker ≈ wages (slow growth equilibrium). Higher
-// K drives compounding inflation; lower K starves farm-co.
+// demand. Beyond that, producer surplus has no buyer at the floor; the glut
+// drives the producer's markup to its floor and inventory piles until the
+// glut gate halts further farm growth. Caps the money-creation rate so
+// farm-co cash growth doesn't compound infinitely. At K=2, farm-co
+// revenue/worker ≈ wages (slow growth equilibrium). Higher K drives
+// compounding inflation; lower K starves farm-co.
 const GOV_BID_BUFFER = 2;
 
 // NPCs grow by building more of their `growthBuilding` once cash clears a
@@ -67,12 +81,6 @@ const GOV_BID_BUFFER = 2;
 // they already hold.
 const NPC_GROWTH_RUNWAY_TICKS = 200;
 const NPC_GROWTH_BUDGET_FRAC = 0.7;
-// Growth gate: if the actor's belief for their growthBuilding's output has
-// drifted to (or near) the floor of [MIN_BELIEF, MAX_BELIEF], they're
-// overproducing — block fallback growth. Set slightly above MIN_BELIEF
-// (0.5) so the gate fires once belief has hit the floor and hasn't yet
-// drifted back up.
-const GROWTH_FLOOR_BELIEF = 0.55;
 
 // Household demand config lives on each item (data/items.yml,
 // `household: { rate, bid_price, elasticity? }`). `staples(data)` reads
@@ -169,6 +177,60 @@ function fairPrice(data) {
     return prices;
 }
 
+// Observed market reference price for an item: volume-weighted average of
+// recent trades, falling back to fair price when the market is thin or
+// silent. This is the shared cross-actor signal — buyers bid off it and
+// growth/demolition margins value output off it — so price discovery is
+// grounded in what actually clears, not a per-actor belief that can drift
+// to a wall. Recomputed lazily and memoized per tick on state.marketHistory.
+const MARKET_REF_LOOKBACK = 100;
+function marketRef(item, marketHistory, fallback) {
+    const hist = marketHistory && marketHistory[item];
+    if (!hist || hist.length === 0) return fallback;
+    let qty = 0;
+    let priceSum = 0;
+    for (let i = 0; i < hist.length; i++) {
+        qty += hist[i].qty;
+        priceSum += hist[i].price * hist[i].qty;
+    }
+    if (qty <= 0) return fallback;
+    return priceSum / qty;
+}
+
+// Realized marginal cost of producing `outItem` via `recipe`, from the
+// actor's vantage: input items valued at the market reference (what the
+// actor pays for them), labor at BASE_WAGE × workers × seconds (matching
+// fairPrice's labor model). drDivisor folds in diminishing returns for raw
+// extraction (sqrt(N) of same-type buildings) so over-extended raw
+// producers correctly see a higher per-unit cost and price up.
+function actorUnitCost(recipe, outItem, refOf, drDivisor) {
+    let inputCost = 0;
+    for (const [inItem, qty] of Object.entries(recipe.inputs || {})) {
+        inputCost += refOf(inItem) * qty;
+    }
+    const wageCost = (recipe.workers || 0) * BASE_WAGE * (recipe.seconds || 0);
+    const outQty = (recipe.outputs || {})[outItem] || 1;
+    return ((inputCost + wageCost) * (drDivisor || 1)) / outQty;
+}
+
+// Map each item the actor currently produces → the recipe producing it (first
+// running slot wins). Used to cost-anchor asks: an actor prices an output off
+// the recipe it actually runs to make it.
+function producedOutputRecipes(actor, recipes) {
+    const out = {};
+    for (const b of actor.buildings || []) {
+        for (const slot of b.slots) {
+            if (!slot) continue;
+            const r = recipes[slot.recipe];
+            if (!r) continue;
+            for (const item of Object.keys(r.outputs || {})) {
+                if (!out[item]) out[item] = r;
+            }
+        }
+    }
+    return out;
+}
+
 function inputDemand(actor, recipes, buildings) {
     const need = {};
     const researched = actor.researched || new Set();
@@ -222,9 +284,9 @@ function recipeForBuilding(actor, data, type) {
     return best;
 }
 
-// Belief-weighted margin per recipe: estimate how profitable each recipe
-// the actor could run would be, using fair_price × actor.priceBelief as
-// the actor's price expectation for each item. Returns highest-margin
+// Market-referenced margin per recipe: estimate how profitable each recipe
+// the actor could run would be, valuing outputs and inputs at the observed
+// market reference (recent VWAP, fair as fallback). Returns highest-margin
 // recipe whose margin exceeds MIN_GROWTH_MARGIN_PER_TICK. Cross-niche
 // entry is allowed into raw extraction only (no input chain risk) with
 // a pivot penalty.
@@ -235,8 +297,13 @@ const MIN_GROWTH_MARGIN_PER_TICK = 1.0;
 // uncertainty in a new niche. With penalty 0.4, a pivot recipe must
 // look 2.5× more profitable than the actor's owned recipes to win.
 const PIVOT_PENALTY = 0.4;
+// Cross-niche pivots into raw extraction also require the target item to be
+// clearing at least this multiple of its fair cost — a real shortage signal.
+// Cost-anchored prices normally sit ≤1.15× cost, so this gates pivots to
+// genuine demand spikes and kills the reflexive staple-pivot churn.
+const PIVOT_PRICE_RATIO = 1.3;
 
-// Per-tick belief-weighted margin for one recipe. For raw extraction
+// Per-tick market-referenced margin for one recipe. For raw extraction
 // (no inputs), output is scaled by 1/sqrt(postBuildCount) to match
 // runProduction's diminishing-returns factor — otherwise margin
 // over-estimates and actors keep building money-losing raw extractors.
@@ -263,23 +330,24 @@ function outputSaturation(item, perTickOutput, marketHistory, currentTick) {
 }
 
 function recipeMarginPerTick(r, actor, prices, postBuildCount, marketHistory, currentTick) {
-    const beliefs = actor.priceBelief || {};
+    // Value output + inputs at the observed market reference (recent VWAP,
+    // fair as fallback) rather than fair × belief. Growth and demolition
+    // then read the price the market is actually paying, so an oversupplied
+    // item self-prunes (its VWAP falls → margin negative) without relying on
+    // a belief multiplier that could be stuck at a wall.
+    const refOf = (item) => marketRef(item, marketHistory, prices[item] || 0);
     const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
     const drFactor = isRaw ? 1.0 / Math.sqrt(postBuildCount || 1) : 1.0;
     const seconds = r.seconds || 1;
     let rev = 0;
     for (const [item, qty] of Object.entries(r.outputs || {})) {
-        const fairP = prices[item] || 0;
-        const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
         const perTickOutput = qty * drFactor / seconds;
         const sat = outputSaturation(item, perTickOutput, marketHistory, currentTick || 0);
-        rev += qty * drFactor * fairP * belief * sat;
+        rev += qty * drFactor * refOf(item) * sat;
     }
     let inputCost = 0;
     for (const [item, qty] of Object.entries(r.inputs || {})) {
-        const fairP = prices[item] || 0;
-        const belief = beliefs[item] !== undefined ? beliefs[item] : 1.0;
-        inputCost += qty * fairP * belief;
+        inputCost += qty * refOf(item);
     }
     const wageCost = (r.workers || 0) * BASE_WAGE * (r.seconds || 0);
     const cycleMargin = rev - inputCost - wageCost;
@@ -303,6 +371,18 @@ function marginRecipe(actor, data, prices, marketHistory, currentTick) {
         // recipes in unowned buildings are skipped — the actor would
         // need to source inputs they don't already produce.
         if (!owned && !isRaw) continue;
+        // Pivot shortage gate: only abandon your niche for a raw extraction
+        // whose output is clearing well above its fair cost — a genuine
+        // shortage worth chasing. Under cost-anchored pricing, well-supplied
+        // commodities sit near cost, so this blocks the reflexive pivot into
+        // gov/household-propped staples (the old corn trap) while still
+        // letting actors move into a niche the market is actually starved
+        // for. Owned-niche expansion is exempt.
+        if (!owned) {
+            const out = Object.keys(r.outputs || {})[0];
+            const ref = marketRef(out, marketHistory, prices[out] || 0);
+            if (ref < (prices[out] || 0) * PIVOT_PRICE_RATIO) continue;
+        }
         const postBuildCount = (countByType[r.building] || 0) + 1;
         const baseMargin = recipeMarginPerTick(r, actor, prices, postBuildCount, marketHistory, currentTick);
         const pivotPenalty = owned ? 1.0 : PIVOT_PENALTY;
@@ -315,10 +395,10 @@ function marginRecipe(actor, data, prices, marketHistory, currentTick) {
 }
 
 // Growth target priority:
-// 1. Margin-driven: highest belief-weighted per-tick margin recipe.
+// 1. Margin-driven: highest market-referenced per-tick margin recipe.
 //    Picks up new opportunities (researched techs, items clearing high)
-//    and prunes oversupplied recipes (belief drifts down → margin
-//    negative → ignored).
+//    and prunes oversupplied recipes (their VWAP falls → margin negative
+//    → ignored).
 // 2. Bottleneck: most-negative net flow item drives expansion of a
 //    recipe producing it. Useful for internal supply chain (e.g., need
 //    more clay for kilns).
@@ -329,10 +409,10 @@ function marginRecipe(actor, data, prices, marketHistory, currentTick) {
 function growthTarget(actor, data, prices, marketHistory, currentTick) {
     if (!actor.growthBuilding) return null;
     // 1. Margin-driven: pick the highest-margin recipe the actor could
-    //    run. Belief drift makes this self-correcting — oversupplied
-    //    items belief-floor → margin negative → drop. New techs unlock
-    //    recipes at default belief 1.0 → positive margin (cost × markup
-    //    spread) → adoption.
+    //    run, valued at the market reference. Self-correcting — an
+    //    oversupplied item's VWAP falls → margin negative → dropped. A
+    //    newly-unlocked tech's output clears above cost → positive margin
+    //    → adoption.
     if (prices) {
         const m = marginRecipe(actor, data, prices, marketHistory, currentTick);
         if (m.building && m.margin >= MIN_GROWTH_MARGIN_PER_TICK) return m.building;
@@ -383,13 +463,12 @@ function growthTarget(actor, data, prices, marketHistory, currentTick) {
             if (buildings[r.building]) return r.building;
         }
     }
-    // Falling back to default growthBuilding — gate on oversupply.
-    // Primary gate: post-build margin. If building one more would lose
-    // money per tick (after DR for raw extraction), don't grow. Catches
-    // raw extractors before they bankrupt themselves (belief 0.8-0.95
-    // range where margin is negative but belief-floor hasn't fired).
-    // Secondary gate: belief floor (existing) as a strict safety bound.
-    // Resilience: when demand returns, belief drifts up and growth resumes.
+    // Falling back to default growthBuilding — gate on oversupply via
+    // post-build margin. If building one more would lose money per tick (at
+    // the market reference price, after DR for raw extraction), don't grow.
+    // When demand returns, the reference price rises → margin positive →
+    // growth resumes. The inventory-band glut gate (gluttedOutputs) is a
+    // second, faster brake applied by the caller.
     const fallbackRecipe = recipeForBuilding(actor, data, actor.growthBuilding);
     if (fallbackRecipe && prices) {
         const countByType = {};
@@ -397,17 +476,12 @@ function growthTarget(actor, data, prices, marketHistory, currentTick) {
         const postBuildCount = (countByType[actor.growthBuilding] || 0) + 1;
         const margin = recipeMarginPerTick(fallbackRecipe, actor, prices, postBuildCount, marketHistory, currentTick);
         if (margin < MIN_GROWTH_MARGIN_PER_TICK) return null;
-        const beliefs = actor.priceBelief || {};
-        for (const item of Object.keys(fallbackRecipe.outputs || {})) {
-            const b = beliefs[item];
-            if (b !== undefined && b <= GROWTH_FLOOR_BELIEF) return null;
-        }
     }
     return actor.growthBuilding;
 }
 
-function growthRunwayCost(actor, data, prices) {
-    const target = growthTarget(actor, data, prices);
+function growthRunwayCost(actor, data, prices, marketHistory) {
+    const target = growthTarget(actor, data, prices, marketHistory);
     if (!target) return 0;
     const def = (data.buildings || {})[target];
     if (!def || !def.construction) return 0;
@@ -424,11 +498,11 @@ function growthRunwayCost(actor, data, prices) {
     return materialsCost + wageRunway;
 }
 
-function growthReserve(actor, data, prices) {
+function growthReserve(actor, data, prices, marketHistory) {
     const reserve = {};
-    const target = growthTarget(actor, data, prices);
+    const target = growthTarget(actor, data, prices, marketHistory);
     if (!target) return reserve;
-    if ((actor.cash || 0) < growthRunwayCost(actor, data, prices)) return reserve;
+    if ((actor.cash || 0) < growthRunwayCost(actor, data, prices, marketHistory)) return reserve;
     const def = (data.buildings || {})[target];
     if (!def || !def.construction) return reserve;
     for (const [item, amt] of Object.entries(def.construction)) {
@@ -437,14 +511,17 @@ function growthReserve(actor, data, prices) {
     return reserve;
 }
 
-function npcOrders(actor, data, prices) {
+function npcOrders(actor, data, prices, marketHistory) {
     const recipes = data.recipes || {};
-    const beliefs = actor.priceBelief || {};
-    const beliefOf = (item) => beliefs[item] || 1.0;
+    const refOf = (item) => marketRef(item, marketHistory, prices[item] || 0);
+    const markups = actor.askMarkup || {};
+    const outRecipe = producedOutputRecipes(actor, recipes);
+    const countByType = {};
+    for (const b of actor.buildings || []) countByType[b.type] = (countByType[b.type] || 0) + 1;
     const bids = [];
     const asks = [];
     const inputNeed = inputDemand(actor, recipes, data.buildings || {});
-    const growthNeed = growthReserve(actor, data, prices);
+    const growthNeed = growthReserve(actor, data, prices, marketHistory);
     const reserve = { ...inputNeed };
     for (const [item, amt] of Object.entries(growthNeed)) {
         reserve[item] = (reserve[item] || 0) + amt;
@@ -464,17 +541,36 @@ function npcOrders(actor, data, prices) {
         else if (stress >= 3) effectiveReserve = effectiveReserve / 2;
         const surplus = qty - effectiveReserve;
         if (surplus <= 0) continue;
-        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item) * stressDiscount;
+        // Cost-anchored ask: realized marginal cost × the actor's per-item
+        // markup (held in [MARKUP_LO, MARKUP_HI], moved by inventory). Items
+        // the actor doesn't produce (leftover inputs) liquidate at the market
+        // reference + spread.
+        let price;
+        const r = outRecipe[item];
+        if (r) {
+            const isRaw = !r.inputs || Object.keys(r.inputs).length === 0;
+            const drDivisor = isRaw ? Math.sqrt(countByType[r.building] || 1) : 1;
+            const uc = actorUnitCost(r, item, refOf, drDivisor);
+            const markup = markups[item] !== undefined ? markups[item] : MARKUP_MID;
+            price = uc * markup;
+        } else {
+            price = refOf(item) * (1 + NPC_SPREAD);
+        }
+        price *= stressDiscount;
         if (price <= 0) continue;
         asks.push({ actor: actor.id, item, side: 'ask', price, qty: surplus });
     }
 
+    // Bids reference the observed market price so buyers meet cost-anchored
+    // asks instead of sitting below them (the old fair × (1−spread) × belief
+    // bid was a chronic source of no-trade). A small spread premium secures
+    // the purchase against competing buyers.
     let budget = Math.max(0, (actor.cash || 0) * NPC_BID_BUDGET_FRAC);
     for (const [item, n] of Object.entries(inputNeed)) {
         const have = actor.inventory[item] || 0;
         const short = n - have;
         if (short <= 0) continue;
-        const price = (prices[item] || 0) * (1 - NPC_SPREAD) * beliefOf(item);
+        const price = refOf(item) * (1 + NPC_SPREAD);
         if (price <= 0) continue;
         const affordable = Math.floor(budget / price);
         const qty = Math.min(short, affordable);
@@ -489,11 +585,7 @@ function npcOrders(actor, data, prices) {
         const have = actor.inventory[item] || 0;
         const short = n - have;
         if (short <= 0) continue;
-        // Growth bids cross the spread — NPC needs the material to expand
-        // and is willing to pay the market ask (fair × 1+spread). Without
-        // this, growth bids and surplus asks both sit at ±spread and
-        // never clear.
-        const price = (prices[item] || 0) * (1 + NPC_SPREAD) * beliefOf(item);
+        const price = refOf(item) * (1 + NPC_SPREAD);
         if (price <= 0) continue;
         const affordable = Math.floor(growthBudget / price);
         const qty = Math.min(short, affordable);
@@ -620,6 +712,7 @@ function clear(orders) {
 module.exports = {
     fairPrice, clear, npcOrders, playerOrders, householdOrders, governmentOrders,
     growthTarget, recipeForBuilding, recipeMarginPerTick, staples,
+    marketRef, producedOutputRecipes,
     MARKUP, NPC_SPREAD, HOUSEHOLDS_ID, GOVERNMENT_ID,
-    NPC_GROWTH_RUNWAY_TICKS,
+    MARKUP_LO, MARKUP_HI, MARKUP_MID, NPC_GROWTH_RUNWAY_TICKS,
 };

@@ -37,7 +37,8 @@ function createActor(data, id) {
         researched: new Set(def.starting_tech || []),
         researchInProgress: null,
         priceBook: {},
-        priceBelief: {},
+        askMarkup: {},
+        salesEMA: {},
         pendingBids: [],
         strategy: def.strategy || null,
         growthBuilding: def.growth_building || null,
@@ -75,6 +76,13 @@ function initState(data, opts = {}) {
     };
 }
 
+// Workers placed on a starting slot are seeded with skill 0.5 in the
+// recipe's tech (output multiplier 1.25), same as tech-adoption hires in
+// npcFillEmptySlots. Without this, every initial AND respawned actor is born
+// with skill-0 crews running at 0.5× output — a guaranteed loss at
+// cost-anchored margins, so respawns die into the same hole and churn. The
+// seed models hiring experienced labor for a known trade.
+const STARTING_SKILL = 0.5;
 function applyStartingAssignments(actor, assignments, data) {
     const recipes = data.recipes || {};
     const idleQueue = [...actor.workers];
@@ -85,8 +93,13 @@ function applyStartingAssignments(actor, assignments, data) {
         if (!bldg) continue;
         const need = recipe.workers || 0;
         if (idleQueue.length < need) continue;
-        const workerIds = idleQueue.splice(0, need).map(w => w.id);
-        bldg.slots[0] = { recipe: recipeId, progress: 0, workerIds };
+        const assigned = idleQueue.splice(0, need);
+        if (recipe.tech) {
+            for (const w of assigned) {
+                if ((w.skill[recipe.tech] || 0) < STARTING_SKILL) w.skill[recipe.tech] = STARTING_SKILL;
+            }
+        }
+        bldg.slots[0] = { recipe: recipeId, progress: 0, workerIds: assigned.map(w => w.id) };
     }
 }
 
@@ -110,7 +123,8 @@ function load(filePath) {
     for (const a of Object.values(raw.actors || {})) {
         a.researched = new Set(a.researched);
         if (!a.priceBook) a.priceBook = {};
-        if (!a.priceBelief) a.priceBelief = {};
+        if (!a.askMarkup) a.askMarkup = {};
+        if (!a.salesEMA) a.salesEMA = {};
         if (!a.pendingBids) a.pendingBids = [];
         if (!a.decisions) a.decisions = [];
         if (!a.tradeLog) a.tradeLog = [];

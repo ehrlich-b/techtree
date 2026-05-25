@@ -14,11 +14,12 @@ simulation keeps running while you're away.
 
 ## Status
 
-Pre-v0 prototype. Engine + smoke harness functional. Economy survives a
-50k-tick smoke with all 14 NPCs alive at the end; chain mostly stable with
-known fragilities (single-buyer processor chains, money inflation creep,
-degenerate gov-subsidized corn pivot). See [TODO.md](TODO.md) for open
-issues and the v1 frontier.
+Pre-v0 prototype. Engine + smoke harness functional. Cost-anchored pricing
+landed: the full heavy chain clears in the open market, prices discover
+cost-anchored levels (no belief-wall saturation), and the corn monoculture
+is gone. The economy is now active rather than frozen; the open frontier is
+firm churn in thin-margin single-producer chains (needs seeded RNG to tune
++ multi-supplier redundancy). See [TODO.md](TODO.md) for the full picture.
 
 ## Run
 

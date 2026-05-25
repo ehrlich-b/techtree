@@ -100,8 +100,10 @@ A company. Player is one; NPCs are others. Per-actor state:
 - `cash`, `inventory` (item → qty), `workers`, `buildings` (with slot
   assignments), `researched` (Set), `researchInProgress` (or null).
 - `priceBook` — player only — auto-ask prices.
-- `priceBelief` — NPC only — per-item multiplier in [0.5, 2.0],
-  drifting each tick from fill outcomes.
+- `askMarkup` — NPC only — per-item markup in `[1.025, 1.15]` applied to
+  the actor's own marginal cost; nudged each tick by inventory direction.
+- `salesEMA` — NPC only — smoothed per-item units-sold-per-tick, sizing
+  the inventory band that drives `askMarkup` and the growth glut gate.
 - `strategy` — `null` (player), `'households'`, `'government'`, or an
   NPC strategy string. The two synthetic strategies are scripted; all
   other NPC actors use a single generic order/growth path.
@@ -137,13 +139,14 @@ A company. Player is one; NPCs are others. Per-actor state:
 2. **Household consumption.** Drain `totalWorkers × rate` from
    households inventory per staple item.
 3. **Order gathering + clearing.** Each actor posts bids/asks: NPCs
-   via `npcOrders` (surplus asks + input/maintenance/growth bids),
-   households via `householdOrders` (staple bids), gov via
-   `governmentOrders` (ballast bids/asks), player via `playerOrders`
-   (priceBook + pendingBids). Per-item double auction matches at
-   midpoint.
-4. **Price drift.** NPC priceBelief drifts on fill outcomes: filled
-   ask → up, unfilled ask → down; bids inverted.
+   via `npcOrders` (cost-anchored surplus asks + market-referenced
+   input/maintenance/growth bids), households via `householdOrders`
+   (staple bids), gov via `governmentOrders` (ballast bids/asks), player
+   via `playerOrders` (priceBook + pendingBids). Per-item double auction
+   matches at midpoint.
+4. **Pricing update.** Each NPC's per-item `askMarkup` is nudged one step
+   by inventory direction (below the demand band → raise toward the
+   ceiling; glut → cut toward the floor). See Market.
 5. **Slot adoption + growth + demolition.** Empty slots get filled
    with the best researched recipe (`npcFillEmptySlots`). New
    buildings constructed when growthTarget + materials + cash
@@ -160,28 +163,49 @@ A company. Player is one; NPCs are others. Per-actor state:
 ### Market
 
 `fair_price(item)` is a fixed-point iteration over the recipe graph
-(8 iterations, converges). Computed once per data load and cached.
+(8 iterations, converges). Computed once per data load and cached. It is
+the bootstrap/fallback reference, not the trading price.
 
-NPCs ask surplus inventory at `fair × (1 + spread) × belief`. They
-bid for input + maintenance + growth-material shortfalls at
-`fair × (1 ± spread) × belief`, budgeted at fractions of cash.
-Distressed actors (stress ≥ 3) discount asks (0.5×); insolvent
-(stress 4) discount further (0.2×). Belief values clamped [0.5, 2.0].
+**Cost-anchored pricing (Lengnick eqs 8-10).** NPCs ask surplus
+inventory at their *own realized marginal cost* × a per-item markup held
+in `[1.025, 1.15]`. Marginal cost values inputs at the observed market
+reference (recent VWAP, fair as fallback) and labor at `BASE_WAGE ×
+workers × seconds`; raw extraction folds in the `1/√N` DR factor. The
+markup is nudged each tick by inventory direction: inventory below the
+demand band (`INV_LOW_TICKS × smoothed-sell-rate`) → raise toward the
+ceiling; above (`INV_HIGH_TICKS ×`) → cut toward the floor. Because the
+anchor is cost, prices track cost and can't ratchet to a saturation wall.
+
+Buyers (input/maintenance/growth bids) bid at the market reference ×
+`(1 + spread)`, so a producer raising price on scarcity is met rather
+than deadlocked. Distressed sellers (stress ≥ 3) shave only to near cost
+(0.95×) to clear without selling below cost; insolvent (stress 4) dump
+harder (0.3×) to raise cash before the bankruptcy clock runs out.
+
+The market reference is the shared cross-actor signal: it is what buyers
+bid off and what growth/demolition margins value output at, so price
+discovery is grounded in what actually clears.
 
 ### Growth target
 
 `growthTarget(actor, data, prices)` returns the building type to
 construct next:
 
-1. **Margin path** — highest belief-weighted per-tick margin recipe
+1. **Margin path** — highest market-referenced per-tick margin recipe
    the actor could run. Considered: any owned-building recipe, plus
    raw-extraction recipes in unowned building types (with a 0.4×
-   `PIVOT_PENALTY`). Gated on `MIN_GROWTH_MARGIN_PER_TICK = 1.0`.
+   `PIVOT_PENALTY`). Cross-niche pivots additionally require the target
+   item to be clearing ≥ `PIVOT_PRICE_RATIO` (1.3×) of its fair cost —
+   a real shortage, not a reflexive staple pivot. Gated on
+   `MIN_GROWTH_MARGIN_PER_TICK = 1.0`.
 2. **Bottleneck path** — most-negative net flow item drives growth of
    a recipe that produces it (raw or owned-niche only).
-3. **Fallback `growthBuilding`** — actor's seed niche, gated by both
-   the same margin floor and a belief-floor (≤ 0.55 → oversupplied,
-   don't grow).
+3. **Fallback `growthBuilding`** — actor's seed niche, gated by the
+   margin floor.
+
+All paths are subject to a **glut gate** in `npcGrow`: don't add capacity
+for an output already stocked above its hi inventory band — the
+supply-follows-demand brake that stops overbuild into a crashing price.
 
 ### Resilience
 

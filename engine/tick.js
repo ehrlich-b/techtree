@@ -17,10 +17,11 @@
  *      at midpoint. Trades transfer inventory always and cash for
  *      non-government participants — gov is the money issuer and exempt
  *      from the cash side. pendingBids drained.
- *   4. Price drift: each NPC's per-item priceBelief is nudged from this
- *      tick's fill outcome. Fully filled ask / unfilled bid → drift toward
- *      higher prices; unfilled ask / fully filled bid → drift toward
- *      lower prices. Households + gov skipped (synthetic anchors).
+ *   4. Pricing update: each NPC's per-item ask markup is nudged one step by
+ *      inventory direction (below demand band → raise toward MARKUP_HI;
+ *      glut → cut toward MARKUP_LO). Asks are cost-anchored (marginal cost ×
+ *      markup), so this moves price within a tight band around cost rather
+ *      than drifting a belief multiplier to a wall. Households + gov skipped.
  *   5. NPC growth: NPCs with `growthBuilding` and cash above the runway
  *      threshold (materials at fair price + a wage cushion) construct
  *      one new building per tick when they hold all required materials,
@@ -41,7 +42,9 @@ const { wage, gainSkill, outputMultiplier, newWorker, BASE_WAGE } = require('./w
 const {
     fairPrice, npcOrders, playerOrders, householdOrders, governmentOrders, clear,
     growthTarget, recipeForBuilding, recipeMarginPerTick, staples,
+    producedOutputRecipes,
     HOUSEHOLDS_ID, GOVERNMENT_ID, NPC_GROWTH_RUNWAY_TICKS,
+    MARKUP_LO, MARKUP_HI, MARKUP_MID,
 } = require('./market.js');
 const { createActor, recordDecision, logActorTrade } = require('./state.js');
 
@@ -82,15 +85,18 @@ const HOUSEHOLDS_DRAIN_RATE = 0.001;
 const STRESS_SQUEEZED_TICKS = 200;
 const STRESS_STRESSED_TICKS = 50;
 
-// Per-actor-per-item price belief drifts from fill outcomes each tick:
-// fully filled ask → +PRICE_DRIFT (could've asked more); unfilled ask →
-// −PRICE_DRIFT (too high). Bids inverted: fully filled bid → −PRICE_DRIFT
-// (could've paid less); unfilled bid → +PRICE_DRIFT (too low). Clamped to
-// [MIN_BELIEF, MAX_BELIEF] so beliefs can't run away. Households + gov
-// skipped — they're synthetic anchors.
-const PRICE_DRIFT = 0.005;
-const MIN_BELIEF = 0.5;
-const MAX_BELIEF = 2.0;
+// Cost-anchored markup adjustment (Lengnick ϑ). Each tick, for every item an
+// actor produces, its ask markup is nudged one step by inventory direction:
+// inventory below the demand band (selling out) → raise toward MARKUP_HI;
+// above the band (glut) → cut toward MARKUP_LO. The band is sized in
+// ticks-of-sales off a smoothed estimate of the item's recent sell rate, so
+// "too much inventory" is relative to how fast it actually moves. This is the
+// supply-follows-demand price signal that replaces the old belief drift.
+const MARKUP_ADJ = 0.01;
+const SALES_EMA = 0.05;        // smoothing on per-item units-sold-per-tick
+const MIN_DEMAND_UNITS = 0.2;  // floor so a never-sold item still has a band
+const INV_LOW_TICKS = 20;      // below this many ticks-of-sales → scarce
+const INV_HIGH_TICKS = 100;    // above this many ticks-of-sales → glut
 
 // Worker lookup is hot: called per slot per tick. Cache the id-map on the
 // actor, invalidated whenever actor.workers grows/shrinks. Same cache is
@@ -310,7 +316,7 @@ function npcResearch(actor, data, tick) {
 function gatherOrders(actor, data, prices, state) {
     if (actor.strategy === 'households') return householdOrders(actor, data, prices, state);
     if (actor.strategy === 'government') return governmentOrders(actor, state, data);
-    if (actor.strategy) return npcOrders(actor, data, prices);
+    if (actor.strategy) return npcOrders(actor, data, prices, state.marketHistory);
     return playerOrders(actor);
 }
 
@@ -425,10 +431,11 @@ function npcFillEmptySlots(state, data) {
 }
 
 // Defer the very first growth until either GROWTH_DEFER_TICKS have elapsed
-// since spawn OR the actor has booked its first sale. Default belief 1.0 at
-// t=1-4 passes the margin gate, so without this gate actors over-build
-// expensive niche buildings before any market signal exists. Sale = real
-// market signal; tick floor = safety so silent niches eventually expand.
+// since spawn OR the actor has booked its first sale. Before any trade the
+// market reference falls back to fair price, which passes the margin gate,
+// so without this gate actors over-build expensive niche buildings before
+// any real signal exists. Sale = real signal; tick floor = safety so silent
+// niches eventually expand.
 const GROWTH_DEFER_TICKS = 100;
 
 function npcGrow(state, data, prices) {
@@ -446,6 +453,21 @@ function npcGrow(state, data, prices) {
         const construction = def.construction || {};
         const recipe = recipeForBuilding(actor, data, target);
         const workersNeeded = recipe ? (recipe.workers || 0) : 0;
+
+        // Glut gate (supply-follows-demand): don't add capacity for an output
+        // the actor is already overstocked on. Inventory above the hi band
+        // (ticks-of-sales off the smoothed sell rate — same band the markup
+        // signal uses) means demand isn't pulling current production; another
+        // building would just deepen the glut and burn construction materials.
+        // This is the overbuild brake that stops 16 actors piling into corn
+        // and coke producers stacking ovens onto a crashing price.
+        if (recipe) {
+            const primary = Object.keys(recipe.outputs || {})[0];
+            if (primary) {
+                const demand = Math.max((actor.salesEMA || {})[primary] || 0, MIN_DEMAND_UNITS);
+                if ((actor.inventory[primary] || 0) > demand * INV_HIGH_TICKS) continue;
+            }
+        }
 
         // Cash check counts only MISSING materials (what actor would buy).
         // Items already produced internally don't drain cash.
@@ -491,17 +513,24 @@ function npcGrow(state, data, prices) {
                 actor.workers.push(newWorker(`${actor.id}-w${actor.workerCounter++}`));
             }
             idle = idleWorkerIds(actor);
-            newBldg.slots[0] = {
-                recipe: recipe.id,
-                progress: 0,
-                workerIds: idle.slice(0, workersNeeded),
-            };
+            const workerIds = idle.slice(0, workersNeeded);
+            // Seed skill on the crew (same ADOPTION_SKILL as slot-fill /
+            // starting assignments) so a new building isn't born at 0.5×
+            // output and bleeding while skill ramps.
+            if (recipe.tech) {
+                const byId = ensureWorkerIndex(actor);
+                for (const id of workerIds) {
+                    const w = byId[id];
+                    if (w && (w.skill[recipe.tech] || 0) < ADOPTION_SKILL) w.skill[recipe.tech] = ADOPTION_SKILL;
+                }
+            }
+            newBldg.slots[0] = { recipe: recipe.id, progress: 0, workerIds };
         }
     }
 }
 
 // Demolition: each running slot tracks consecutive ticks of negative
-// belief-weighted margin. Demolish a building only when:
+// market-referenced margin. Demolish a building only when:
 //   (a) all its slots have crossed DEMOLISH_NEGATIVE_TICKS, AND
 //   (b) the actor has MORE THAN ONE building of this type (redundant).
 // The redundancy rule prevents chain breaks — single-building niches
@@ -559,32 +588,33 @@ function evaluateSlotsAndDemolish(state, data, prices) {
     }
 }
 
-function applyPriceDrift(state, orders, trades) {
-    const posted = {};
-    for (const o of orders) {
-        if (!o || !(o.qty > 0)) continue;
-        const key = `${o.actor}|${o.item}|${o.side}`;
-        posted[key] = (posted[key] || 0) + o.qty;
-    }
-    const filled = {};
+function updatePricing(state, data, trades) {
+    const recipes = data.recipes || {};
+    // Per-actor-per-item units sold this tick (the demand signal).
+    const sold = {};
     for (const t of trades) {
-        const buyKey = `${t.buyer}|${t.item}|bid`;
-        const sellKey = `${t.seller}|${t.item}|ask`;
-        filled[buyKey] = (filled[buyKey] || 0) + t.qty;
-        filled[sellKey] = (filled[sellKey] || 0) + t.qty;
+        const s = sold[t.seller] || (sold[t.seller] = {});
+        s[t.item] = (s[t.item] || 0) + t.qty;
     }
-    for (const [key, qty] of Object.entries(posted)) {
-        const [actorId, item, side] = key.split('|');
-        const actor = state.actors[actorId];
-        if (!actor) continue;
+    for (const actor of Object.values(state.actors)) {
         if (actor.strategy === 'households' || actor.strategy === 'government') continue;
-        if (!actor.priceBelief) actor.priceBelief = {};
-        const ratio = (filled[key] || 0) / qty;
-        const delta = side === 'ask'
-            ? (ratio - 0.5) * 2 * PRICE_DRIFT
-            : (0.5 - ratio) * 2 * PRICE_DRIFT;
-        const cur = actor.priceBelief[item] || 1.0;
-        actor.priceBelief[item] = Math.max(MIN_BELIEF, Math.min(MAX_BELIEF, cur + delta));
+        if (!actor.salesEMA) actor.salesEMA = {};
+        if (!actor.askMarkup) actor.askMarkup = {};
+        const soldA = sold[actor.id] || {};
+        // Only items the actor actually produces carry a cost-anchored markup.
+        for (const item of Object.keys(producedOutputRecipes(actor, recipes))) {
+            const s = soldA[item] || 0;
+            const prev = actor.salesEMA[item];
+            actor.salesEMA[item] = prev === undefined ? s : (1 - SALES_EMA) * prev + SALES_EMA * s;
+            const demand = Math.max(actor.salesEMA[item], MIN_DEMAND_UNITS);
+            const inv = actor.inventory[item] || 0;
+            const lo = demand * INV_LOW_TICKS;
+            const hi = demand * INV_HIGH_TICKS;
+            let m = actor.askMarkup[item] !== undefined ? actor.askMarkup[item] : MARKUP_MID;
+            if (inv < lo) m = Math.min(MARKUP_HI, m * (1 + MARKUP_ADJ));
+            else if (inv > hi) m = Math.max(MARKUP_LO, m * (1 - MARKUP_ADJ));
+            actor.askMarkup[item] = m;
+        }
     }
 }
 
@@ -786,7 +816,7 @@ function tick(state, data) {
         recordTrade(state, t);
     }
 
-    applyPriceDrift(state, orders, trades);
+    updatePricing(state, data, trades);
 
     for (const actor of Object.values(state.actors)) actor.pendingBids = [];
 
@@ -807,10 +837,12 @@ function tick(state, data) {
 
         actor.stress = computeStress(actor);
 
-        // Distressed/insolvent: shed one idle worker per tick to cut payroll.
+        // Squeezed and worse: shed one idle worker per tick to cut payroll.
         // Running production is preserved (assigned workers untouched); only
-        // bench workers go. Matches real firms' first-line cost-cutting.
-        if (actor.stress >= 3) layoffOneIdle(actor);
+        // bench workers go. Triggering at stress 2 (hiring-freeze tier) rather
+        // than 3 stops idle crews from bleeding a thin-margin actor into the
+        // credit hole before it reacts. Matches real firms' first-line cut.
+        if (actor.stress >= 2) layoffOneIdle(actor);
 
         // Stress 4 (insolvent): bankruptcy clock runs. Below clock,
         // distressed actors deteriorate visibly (handled in order

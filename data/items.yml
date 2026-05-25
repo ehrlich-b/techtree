@@ -33,10 +33,9 @@ items:
     unit: kg
     household:
       rate: 0.1
-      bid_price: 50
+      bid_price: 14
     gov_ballast:
-      bid_price: 50
-      ask_price: 50
+      bid_price: 8
       qty_cap: 8
 
   coke:
@@ -44,6 +43,9 @@ items:
     era: industrial
     tier: 2
     unit: kg
+    gov_ballast:
+      bid_price: 450
+      qty_cap: 3
 
   pig-iron:
     name: "Pig Iron"
