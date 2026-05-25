@@ -87,10 +87,11 @@ Death dumps print to stderr inline during a run.
   to processing (with input-availability check) and have actors
   discover their niche end-to-end from observed prices.
 
-- **Multiple suppliers per item.** Spawn a second coke-co.
-  steel-co is now separate from ore-co (partial — see structural issues).
-  Single-actor death should stop killing downstream demand or upstream
-  supply.
+- **Multiple suppliers per item.** Done for coke (coke-co-2,
+  start_tick=2000) and steel (separated from ore-co). Coke-co kill
+  test confirms the chain stays alive when one dies. Could extend to
+  brick/iron-ore if those become bottlenecks. Single-actor death
+  should stop killing downstream demand or upstream supply.
 
 - **Staffing-aware growthTarget.** Skip building types whose current
   slots aren't fully staffed. Right now steel-co (3 workers, 1 blast-

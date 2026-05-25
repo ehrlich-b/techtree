@@ -49,6 +49,20 @@ actors:
     starting_assignments:
       coke-oven: bake-coke
 
+  coke-co-2:
+    start_tick: 2000
+    cash: 12000
+    strategy: balanced
+    growth_building: coke-oven
+    starting_inventory:
+      brick: 30
+      coal: 50
+    starting_buildings: [coke-oven]
+    starting_tech: [coal-tar]
+    starting_workers: 2
+    starting_assignments:
+      coke-oven: bake-coke
+
   ore-co:
     cash: 25000
     strategy: balanced
