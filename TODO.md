@@ -64,14 +64,16 @@ Death dumps print to stderr inline during a run.
   clear without gov ballast. Real fix is cost-based price discovery
   (predecessor: real demand reforms below).
 
-- **Steel chain idle.** smelt-steel never runs in the smoke even with
-  electric-co consuming steel for motors. ore-co would need bessemer-
-  process AND extra workers to staff both blast-furnace slots — both
-  tried (see dead-ends below), both regress. Root cause: pig-iron is
-  more reliably bid (gov $1300 cap 2) than steel (gov $3000 cap 1 +
-  thin industrial demand), so ore-co's margin calc never picks
-  smelt-steel for the free slot. electric-co survives 12000 ticks on
-  starting steel:60 then dies when it runs out.
+- **Steel chain partially fixed via separate steel-co.** Spawning a
+  dedicated steel-co (start_tick=3000, bessemer-process pretrained,
+  blast-furnace + 3 workers + minimal inventory) makes smelt-steel
+  run mid-run and clears steel to electric-co at $3600-4100/unit. They
+  still overgrow (margin-driven growth picks blast-furnace; they can't
+  staff slot 2 with only 3 workers, so the second building is pure
+  cost). Currently dies 1-2× per 50k run then respawns. Real fix would
+  be a staffing-aware growthTarget that skips growing buildings whose
+  current slots can't be staffed. Cumulative effect on smoke: 40→35
+  no-trade events, 2→1 dead checkpoints over the run.
 
 ## Queued (next sprints, ordered by impact-to-risk)
 
@@ -85,9 +87,17 @@ Death dumps print to stderr inline during a run.
   to processing (with input-availability check) and have actors
   discover their niche end-to-end from observed prices.
 
-- **Multiple suppliers per item.** Spawn a second coke-co, separate
-  steel-co from ore-co. Single-actor death stops killing downstream
-  demand or upstream supply.
+- **Multiple suppliers per item.** Spawn a second coke-co.
+  steel-co is now separate from ore-co (partial — see structural issues).
+  Single-actor death should stop killing downstream demand or upstream
+  supply.
+
+- **Staffing-aware growthTarget.** Skip building types whose current
+  slots aren't fully staffed. Right now steel-co (3 workers, 1 blast-
+  furnace, 1 slot) keeps picking blast-furnace as growth target — it
+  builds a second one but can't staff it, dies 2k ticks later from the
+  brick spend. Same pattern would hit any actor with a high-margin
+  building they're fully utilizing.
 
 - **Seeded RNG.** Worker hire order, NPC decision ties, recipe pick
   ties — all currently deterministic. Run 10 seeds @5000 ticks as a

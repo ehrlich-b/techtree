@@ -64,6 +64,21 @@ actors:
       quarry: quarry-limestone
       blast-furnace: smelt-pig-iron
 
+  steel-co:
+    start_tick: 3000
+    cash: 25000
+    strategy: balanced
+    growth_building: blast-furnace
+    starting_inventory:
+      brick: 50
+      pig-iron: 10
+      coke: 5
+    starting_buildings: [blast-furnace]
+    starting_tech: [ironworking, coal-tar, bessemer-process]
+    starting_workers: 3
+    starting_assignments:
+      blast-furnace: smelt-steel
+
   machine-co:
     cash: 30000
     strategy: balanced
