@@ -171,6 +171,13 @@ Death dumps print to stderr inline during a run.
   households starve, system unwinds. Anti-pivot solutions need to
   live at the growthTarget level, not in the recipe data.
 
+- **Cross-niche pivot cap (1 or 2 per actor)**: cap=1 = 29 no-trade /
+  3 dead (vs 30/1); cap=2 = 32/2. Pivots are a real survival mechanism
+  — restricting them just kills the actors who were using corn as cash
+  ballast. The corn pile-on (14 farms) is rational given the gov+
+  household corn bid. Real fix needs to make corn less attractive
+  without breaking the staple market — open problem.
+
 ## Mechanisms currently in place (for context recovery)
 
 - Per-actor `priceBelief` per item, drifting on fill outcomes, clamped
