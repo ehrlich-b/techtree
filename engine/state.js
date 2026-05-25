@@ -54,6 +54,33 @@ function createActor(data, id) {
     return actor;
 }
 
+// Seeded PRNG (mulberry32). Used only to perturb starting conditions for
+// ensemble evaluation (harness --seeds) — the tick loop itself has no
+// randomness and stays fully deterministic.
+function makeRng(seed) {
+    let a = seed | 0;
+    return function() {
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        let t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+// Ensemble seeding perturbs each non-synthetic actor's starting cash by up to
+// ±this fraction. Cash sets initial stress and gates every affordability
+// decision (hire/build/bankruptcy thresholds in tick.js), so a small spread
+// here fans the deterministic dynamics into distinct trajectories — turning a
+// single PASS/FAIL into a measurable distribution. One pass at init; no
+// per-tick cost.
+const INIT_CASH_JITTER = 0.08;
+function seedInitialConditions(state, rng) {
+    for (const a of Object.values(state.actors)) {
+        if (a.strategy === 'households' || a.strategy === 'government') continue;
+        a.cash *= 1 + (rng() * 2 - 1) * INIT_CASH_JITTER;
+    }
+}
+
 function initState(data, opts = {}) {
     const tickRateMs = opts.tickRateMs || 1000;
     const actors = {};
@@ -65,7 +92,7 @@ function initState(data, opts = {}) {
         if ((def.start_tick || 0) > 0) continue;
         actors[id] = createActor(data, id);
     }
-    return {
+    const state = {
         tick: 0,
         tickRateMs,
         startedAt: Date.now(),
@@ -74,6 +101,9 @@ function initState(data, opts = {}) {
         marketHistory: {},
         respawnQueue: [],
     };
+    // No seed → no perturbation; play and single-run harness stay byte-identical.
+    if (opts.seed != null) seedInitialConditions(state, makeRng(opts.seed));
+    return state;
 }
 
 // Workers placed on a starting slot are seeded with skill 0.5 in the

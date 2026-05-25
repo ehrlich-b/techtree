@@ -331,6 +331,46 @@ function runScenario(opts = {}) {
     return finalSnap;
 }
 
+// One headless seeded run, no logging. Returns the final-tick invariant
+// failures plus summary stats. Reuses checkInvariants as the classifier:
+// empty failures == healthy.
+function runSeed(data, baseOpts, seed) {
+    const ticks = baseOpts.ticks || 5000;
+    const killSpec = baseOpts.kill || null;
+    const state = initState(data, { seed });
+    const baselineCash = totalCash(state);
+    let killed = false;
+    for (let t = 1; t <= ticks; t++) {
+        if (killSpec && !killed && t === killSpec.tick) {
+            if (state.actors[killSpec.actorId]) {
+                delete state.actors[killSpec.actorId];
+                if (killSpec.actorId !== 'player' && (data.actors || {})[killSpec.actorId]) {
+                    if (!state.respawnQueue) state.respawnQueue = [];
+                    state.respawnQueue.push({ actorId: killSpec.actorId, deathTick: t });
+                }
+            }
+            killed = true;
+        }
+        tick(state, data);
+    }
+    const failures = checkInvariants(state, data, baselineCash);
+    const real = Object.values(state.actors).filter(a => !isSynthetic(a));
+    return {
+        seed,
+        failures,
+        alive: real.length,
+        buildings: real.reduce((s, a) => s + (a.buildings || []).length, 0),
+        workers: real.reduce((s, a) => s + (a.workers || []).length, 0),
+        moneyRatio: baselineCash > 0 ? totalCash(state) / baselineCash : 0,
+    };
+}
+
+function ensemble(data, baseOpts, n) {
+    const results = [];
+    for (let seed = 1; seed <= n; seed++) results.push(runSeed(data, baseOpts, seed));
+    return results;
+}
+
 function parseArgs(argv) {
     const opts = {};
     for (let i = 2; i < argv.length; i++) {
@@ -339,6 +379,7 @@ function parseArgs(argv) {
         else if (a === '--every') opts.every = parseInt(argv[++i], 10);
         else if (a === '--events') opts.events = true;
         else if (a === '--data') opts.data = argv[++i];
+        else if (a === '--seeds') opts.seeds = parseInt(argv[++i], 10);
         else if (a === '--kill') {
             const spec = argv[++i] || '';
             const [actorId, tickStr] = spec.split('@');
@@ -349,7 +390,47 @@ function parseArgs(argv) {
 }
 
 if (require.main === module) {
-    runScenario(parseArgs(process.argv));
+    const opts = parseArgs(process.argv);
+    if (opts.seeds) {
+        const dataDir = opts.data || path.join(__dirname, '..', 'data');
+        const data = loadData(dataDir);
+        const errs = validate(data);
+        if (errs.length) {
+            console.error('validation failed:');
+            for (const e of errs) console.error(`  - ${e}`);
+            process.exit(1);
+        }
+        const ticks = opts.ticks || 5000;
+        const t0 = Date.now();
+        const results = ensemble(data, opts, opts.seeds);
+        const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+        const killStr = opts.kill ? `  kill=${opts.kill.actorId}@${opts.kill.tick}` : '';
+        console.log(`main-engine ensemble — ${opts.seeds} seeds, ${ticks} ticks each${killStr} (ran in ${elapsed}s)\n`);
+        console.log('  seed  result    alive    b      w    money   violations');
+        for (const r of results) {
+            const ok = r.failures.length === 0;
+            console.log(
+                String(r.seed).padStart(6) + '  ' +
+                (ok ? 'healthy' : 'FAIL').padEnd(8) + ' ' +
+                String(r.alive).padStart(5) + ' ' +
+                String(r.buildings).padStart(5) + ' ' +
+                String(r.workers).padStart(6) + ' ' +
+                (r.moneyRatio.toFixed(2) + 'x').padStart(7) + '  ' +
+                (ok ? '-' : r.failures.join(','))
+            );
+        }
+        const tally = {};
+        for (const r of results) {
+            const key = r.failures.length === 0 ? 'healthy' : r.failures[0].split(':')[0];
+            tally[key] = (tally[key] || 0) + 1;
+        }
+        const healthy = tally.healthy || 0;
+        const frac = healthy / opts.seeds;
+        console.log('\nclasses: ' + Object.entries(tally).map(([k, v]) => `${k} ${v}`).join('  '));
+        console.log(`\nRESULT: ${frac >= 0.9 ? 'PASS' : 'FAIL'}  (healthy ${healthy}/${opts.seeds} = ${(frac * 100).toFixed(0)}%, gate >= 90%)`);
+        process.exit(0);
+    }
+    runScenario(opts);
 }
 
 module.exports = {
